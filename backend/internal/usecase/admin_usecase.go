@@ -13,20 +13,20 @@ type AdminUseCase struct {
 	userRepo   repository.UserRepository
 	reportRepo repository.ReportRepository
 	subRepo    repository.SubmissionRepository
-	entryRepo  repository.EntryRepository
+	wordRepo   repository.WordRepository
 }
 
 func NewAdminUseCase(
 	userRepo repository.UserRepository,
 	reportRepo repository.ReportRepository,
 	subRepo repository.SubmissionRepository,
-	entryRepo repository.EntryRepository,
+	wordRepo repository.WordRepository,
 ) *AdminUseCase {
 	return &AdminUseCase{
 		userRepo:   userRepo,
 		reportRepo: reportRepo,
 		subRepo:    subRepo,
-		entryRepo:  entryRepo,
+		wordRepo:   wordRepo,
 	}
 }
 

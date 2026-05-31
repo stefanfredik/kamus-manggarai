@@ -10,10 +10,10 @@ export function useEntryDetail(slug: string | undefined) {
   });
 }
 
-export function useEntryList(page: number, limit: number, letter?: string) {
+export function useEntryList(page: number, limit: number, letter?: string, lang?: string) {
   return useQuery({
-    queryKey: ['entries', page, limit, letter ?? ''],
-    queryFn: () => dictionaryApi.listEntries(page, limit, letter),
+    queryKey: ['entries', page, limit, letter ?? '', lang ?? ''],
+    queryFn: () => dictionaryApi.listEntries(page, limit, letter, lang),
     placeholderData: (prev) => prev,
   });
 }

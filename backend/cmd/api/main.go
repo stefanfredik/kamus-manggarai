@@ -77,7 +77,7 @@ func main() {
 	oauthSvc := oauth.New(cfg.Google)
 
 	userRepo := postgres.NewUserRepo(pgPool)
-	entryRepo := postgres.NewEntryRepo(pgPool)
+	wordRepo := postgres.NewWordRepo(pgPool)
 	submissionRepo := postgres.NewSubmissionRepo(pgPool)
 	reportRepo := postgres.NewReportRepo(pgPool)
 	notifRepo := postgres.NewNotificationRepo(pgPool)
@@ -87,17 +87,17 @@ func main() {
 
 	authUC := usecase.NewAuthUseCase(cfg.JWT, cfg.App.FrontendURL, userRepo, tokenRepo, oauthSvc)
 	notifUC := usecase.NewNotificationUseCase(notifRepo)
-	entryUC := usecase.NewEntryUseCase(entryRepo, cacheRepo)
-	searchUC := usecase.NewSearchUseCase(entryRepo, cacheRepo)
-	reportUC := usecase.NewReportUseCase(reportRepo, entryRepo)
-	submissionUC := usecase.NewSubmissionUseCase(submissionRepo, userRepo, entryUC, notifUC)
-	reviewUC := usecase.NewReviewUseCase(submissionRepo, userRepo, entryUC, notifUC)
-	adminUC := usecase.NewAdminUseCase(userRepo, reportRepo, submissionRepo, entryRepo)
+	wordUC := usecase.NewWordUseCase(wordRepo, cacheRepo)
+	searchUC := usecase.NewSearchUseCase(wordRepo, cacheRepo)
+	reportUC := usecase.NewReportUseCase(reportRepo, wordRepo)
+	submissionUC := usecase.NewSubmissionUseCase(submissionRepo, userRepo, wordUC, notifUC)
+	reviewUC := usecase.NewReviewUseCase(submissionRepo, userRepo, wordUC, notifUC)
+	adminUC := usecase.NewAdminUseCase(userRepo, reportRepo, submissionRepo, wordRepo)
 
 	cookieSecure := cfg.App.Env == "production"
 	handlers := httpdelivery.Handlers{
 		Auth:       handler.NewAuthHandler(authUC, cfg.App.FrontendURL, cookieSecure),
-		Dictionary: handler.NewDictionaryHandler(entryUC, searchUC, reportUC),
+		Dictionary: handler.NewDictionaryHandler(wordUC, searchUC, reportUC),
 		Submission: handler.NewSubmissionHandler(submissionUC, notifUC),
 		Review:     handler.NewReviewHandler(reviewUC),
 		Admin:      handler.NewAdminHandler(adminUC, analyticsDB),

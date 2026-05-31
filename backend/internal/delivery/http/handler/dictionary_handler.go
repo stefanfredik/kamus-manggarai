@@ -14,18 +14,18 @@ import (
 )
 
 type DictionaryHandler struct {
-	entryUC  *usecase.EntryUseCase
+	wordUC   *usecase.WordUseCase
 	searchUC *usecase.SearchUseCase
 	reportUC *usecase.ReportUseCase
 }
 
 func NewDictionaryHandler(
-	entryUC *usecase.EntryUseCase,
+	wordUC *usecase.WordUseCase,
 	searchUC *usecase.SearchUseCase,
 	reportUC *usecase.ReportUseCase,
 ) *DictionaryHandler {
 	return &DictionaryHandler{
-		entryUC:  entryUC,
+		wordUC:   wordUC,
 		searchUC: searchUC,
 		reportUC: reportUC,
 	}
@@ -34,10 +34,11 @@ func NewDictionaryHandler(
 func (h *DictionaryHandler) ListEntries(c fiber.Ctx) error {
 	p := pagination.FromQuery(c)
 
-	items, total, err := h.entryUC.ListEntries(c.Context(), repository.EntryFilter{
-		Letter: strings.TrimSpace(c.Query("letter")),
-		Page:   p.Page,
-		Limit:  p.Limit,
+	items, total, err := h.wordUC.ListWords(c.Context(), repository.WordFilter{
+		Language: strings.TrimSpace(c.Query("lang")),
+		Letter:   strings.TrimSpace(c.Query("letter")),
+		Page:     p.Page,
+		Limit:    p.Limit,
 	})
 	if err != nil {
 		return response.Error(c, err)
@@ -50,7 +51,7 @@ func (h *DictionaryHandler) GetEntryDetail(c fiber.Ctx) error {
 	if slug == "" {
 		return response.Error(c, apperror.ErrBadRequest.WithMessage("slug dibutuhkan"))
 	}
-	detail, err := h.entryUC.GetEntryDetail(c.Context(), slug)
+	detail, err := h.wordUC.GetWordDetail(c.Context(), slug)
 	if err != nil {
 		return response.Error(c, err)
 	}

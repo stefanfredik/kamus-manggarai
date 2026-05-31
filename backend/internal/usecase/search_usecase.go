@@ -17,11 +17,11 @@ import (
 const cacheTTLSearch = 120
 
 type SearchResult struct {
-	Items       []*entity.EntrySummary `json:"items"`
-	Total       int64                  `json:"total"`
-	Page        int                    `json:"page"`
-	Limit       int                    `json:"limit"`
-	Suggestions []string               `json:"suggestions,omitempty"`
+	Items       []*entity.WordSummary `json:"items"`
+	Total       int64                 `json:"total"`
+	Page        int                   `json:"page"`
+	Limit       int                   `json:"limit"`
+	Suggestions []string              `json:"suggestions,omitempty"`
 }
 
 type SearchInput struct {
@@ -32,12 +32,12 @@ type SearchInput struct {
 }
 
 type SearchUseCase struct {
-	entryRepo repository.EntryRepository
-	cache     repository.CacheRepository
+	wordRepo repository.WordRepository
+	cache    repository.CacheRepository
 }
 
-func NewSearchUseCase(entryRepo repository.EntryRepository, cache repository.CacheRepository) *SearchUseCase {
-	return &SearchUseCase{entryRepo: entryRepo, cache: cache}
+func NewSearchUseCase(wordRepo repository.WordRepository, cache repository.CacheRepository) *SearchUseCase {
+	return &SearchUseCase{wordRepo: wordRepo, cache: cache}
 }
 
 func (u *SearchUseCase) Search(ctx context.Context, input SearchInput) (*SearchResult, error) {
@@ -69,7 +69,7 @@ func (u *SearchUseCase) Search(ctx context.Context, input SearchInput) (*SearchR
 		// non-fatal: fall through to live search
 	}
 
-	items, total, err := u.entryRepo.Search(ctx, repository.SearchFilter{
+	items, total, err := u.wordRepo.Search(ctx, repository.SearchFilter{
 		Query:     input.Query,
 		Direction: input.Direction,
 		Page:      input.Page,
@@ -88,7 +88,7 @@ func (u *SearchUseCase) Search(ctx context.Context, input SearchInput) (*SearchR
 
 	// If nothing found, offer "did you mean" suggestions.
 	if total == 0 {
-		if sugg, sErr := u.entryRepo.Suggest(ctx, input.Query, input.Direction, 5); sErr == nil {
+		if sugg, sErr := u.wordRepo.Suggest(ctx, input.Query, input.Direction, 5); sErr == nil {
 			result.Suggestions = sugg
 		}
 	}

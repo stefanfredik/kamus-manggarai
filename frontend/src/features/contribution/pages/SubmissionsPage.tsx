@@ -46,7 +46,7 @@ export function SubmissionsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold">
-                      {s.payload.manggarai} <span className="text-slate-400">→</span> {formatTranslations(s.payload.senses)}
+                      {s.payload.headword} <span className="text-slate-400">→</span> {formatTranslations(s.payload.translations)}
                     </h3>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                       <span className={status.cls}>{status.label}</span>

@@ -10,11 +10,11 @@ import (
 
 type ReportUseCase struct {
 	reportRepo repository.ReportRepository
-	entryRepo  repository.EntryRepository
+	wordRepo   repository.WordRepository
 }
 
-func NewReportUseCase(reportRepo repository.ReportRepository, entryRepo repository.EntryRepository) *ReportUseCase {
-	return &ReportUseCase{reportRepo: reportRepo, entryRepo: entryRepo}
+func NewReportUseCase(reportRepo repository.ReportRepository, wordRepo repository.WordRepository) *ReportUseCase {
+	return &ReportUseCase{reportRepo: reportRepo, wordRepo: wordRepo}
 }
 
 type CreateReportInput struct {
@@ -23,12 +23,12 @@ type CreateReportInput struct {
 }
 
 func (u *ReportUseCase) ReportEntry(ctx context.Context, slug string, input CreateReportInput, reporterID *uuid.UUID) (*entity.Report, error) {
-	entry, err := u.entryRepo.FindBySlug(ctx, slug)
+	word, err := u.wordRepo.FindBySlug(ctx, slug)
 	if err != nil {
 		return nil, err
 	}
 	report := &entity.Report{
-		EntryID:     entry.ID,
+		EntryID:     word.ID,
 		ReportedBy:  reporterID,
 		Reason:      input.Reason,
 		Description: input.Description,

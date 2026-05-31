@@ -31,7 +31,7 @@ export function ReviewQueuePage() {
             <Link key={s.id} to={`/validator/${s.id}`} className="group card flex items-center justify-between gap-3 transition-all hover:-translate-y-0.5 hover:shadow-card">
               <div className="min-w-0 flex-1">
                 <h3 className="font-semibold">
-                  {s.payload.manggarai} <span className="text-slate-400">→</span> {formatTranslations(s.payload.senses)}
+                  {s.payload.headword} <span className="text-slate-400">→</span> {formatTranslations(s.payload.translations)}
                 </h3>
                 <p className="mt-0.5 text-xs text-slate-500">
                   oleh {s.submitter_name} • {formatRelative(s.created_at)}

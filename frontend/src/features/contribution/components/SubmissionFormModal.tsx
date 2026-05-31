@@ -3,9 +3,10 @@ import { Plus, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   contributionApi,
+  type Language,
   type SubmissionPayload,
   type SubmissionDerivedInput,
-  type SubmissionSenseInput,
+  type SubmissionTranslationInput,
 } from '../api/contributionApi';
 import { extractError } from '@/lib/axios';
 import { Modal } from '@/shared/components/Modal';
@@ -22,9 +23,14 @@ const PARTS_OF_SPEECH = [
   'interjeksi',
 ];
 
-type SenseDraft = { indonesian: string; part_of_speech: string; notes: string };
+const LANG_LABEL: Record<Language, string> = {
+  mgr: 'Manggarai',
+  id: 'Indonesia',
+};
 
-const emptySense = (): SenseDraft => ({ indonesian: '', part_of_speech: '', notes: '' });
+type TranslationDraft = { lemma: string; part_of_speech: string; notes: string };
+
+const emptyTranslation = (): TranslationDraft => ({ lemma: '', part_of_speech: '', notes: '' });
 
 interface SubmissionFormModalProps {
   open: boolean;
@@ -35,16 +41,22 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
   const toast = useToast();
   const qc = useQueryClient();
 
-  const [manggarai, setManggarai] = useState('');
+  const [sourceLang, setSourceLang] = useState<Language>('mgr');
+  const [headword, setHeadword] = useState('');
+  const [partOfSpeech, setPartOfSpeech] = useState('');
   const [source, setSource] = useState('');
-  const [senses, setSenses] = useState<SenseDraft[]>([emptySense()]);
+  const [translations, setTranslations] = useState<TranslationDraft[]>([emptyTranslation()]);
   const [derived, setDerived] = useState<SubmissionDerivedInput[]>([]);
   const [error, setError] = useState<string | null>(null);
 
+  const targetLang: Language = sourceLang === 'mgr' ? 'id' : 'mgr';
+
   function reset() {
-    setManggarai('');
+    setSourceLang('mgr');
+    setHeadword('');
+    setPartOfSpeech('');
     setSource('');
-    setSenses([emptySense()]);
+    setTranslations([emptyTranslation()]);
     setDerived([]);
     setError(null);
   }
@@ -70,15 +82,15 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
     onClose();
   }
 
-  // ---- senses ----
-  function addSense() {
-    setSenses((prev) => [...prev, emptySense()]);
+  // ---- translations ----
+  function addTranslation() {
+    setTranslations((prev) => [...prev, emptyTranslation()]);
   }
-  function updateSense(idx: number, patch: Partial<SenseDraft>) {
-    setSenses((prev) => prev.map((s, i) => (i === idx ? { ...s, ...patch } : s)));
+  function updateTranslation(idx: number, patch: Partial<TranslationDraft>) {
+    setTranslations((prev) => prev.map((t, i) => (i === idx ? { ...t, ...patch } : t)));
   }
-  function removeSense(idx: number) {
-    setSenses((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
+  function removeTranslation(idx: number) {
+    setTranslations((prev) => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== idx)));
   }
 
   // ---- derived ----
@@ -96,21 +108,21 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
     e.preventDefault();
     setError(null);
 
-    if (!manggarai.trim()) {
-      setError('Kata Bahasa Manggarai wajib diisi');
+    if (!headword.trim()) {
+      setError(`Kata Bahasa ${LANG_LABEL[sourceLang]} wajib diisi`);
       return;
     }
 
-    const cleanedSenses: SubmissionSenseInput[] = senses
-      .map((s) => ({
-        indonesian: s.indonesian.trim(),
-        part_of_speech: s.part_of_speech || undefined,
-        notes: s.notes.trim() || undefined,
+    const cleanedTranslations: SubmissionTranslationInput[] = translations
+      .map((t) => ({
+        lemma: t.lemma.trim(),
+        part_of_speech: t.part_of_speech || undefined,
+        notes: t.notes.trim() || undefined,
       }))
-      .filter((s) => s.indonesian !== '');
+      .filter((t) => t.lemma !== '');
 
-    if (cleanedSenses.length === 0) {
-      setError('Minimal satu terjemahan Bahasa Indonesia wajib diisi');
+    if (cleanedTranslations.length === 0) {
+      setError(`Minimal satu terjemahan Bahasa ${LANG_LABEL[targetLang]} wajib diisi`);
       return;
     }
 
@@ -123,9 +135,11 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
     }
 
     submitMutation.mutate({
-      manggarai: manggarai.trim(),
-      senses: cleanedSenses,
+      source_lang: sourceLang,
+      headword: headword.trim(),
+      part_of_speech: partOfSpeech || undefined,
       source: source || undefined,
+      translations: cleanedTranslations,
       derived: cleanedDerived.length > 0 ? cleanedDerived : undefined,
     });
   }
@@ -142,20 +156,51 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
         Submit Kosakata Baru
       </h2>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        Satu kata Manggarai bisa memiliki beberapa arti. Tambahkan terjemahan sebanyak yang
-        diperlukan. Kata turunan bersifat opsional.
+        Pilih arah, isi kata utama, lalu tambahkan satu atau lebih terjemahan. Kata turunan
+        bersifat opsional.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        {/* Direction selector */}
+        <div>
+          <span className="mb-1 block text-sm font-medium">Arah</span>
+          <div className="inline-flex rounded-xl bg-slate-100 p-0.5 text-sm dark:bg-slate-700/40">
+            <button
+              type="button"
+              onClick={() => setSourceLang('mgr')}
+              className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
+                sourceLang === 'mgr'
+                  ? 'bg-white text-primary-700 shadow-sm dark:bg-slate-700 dark:text-primary-200'
+                  : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+              }`}
+            >
+              Manggarai → Indonesia
+            </button>
+            <button
+              type="button"
+              onClick={() => setSourceLang('id')}
+              className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
+                sourceLang === 'id'
+                  ? 'bg-white text-primary-700 shadow-sm dark:bg-slate-700 dark:text-primary-200'
+                  : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
+              }`}
+            >
+              Indonesia → Manggarai
+            </button>
+          </div>
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">Kata Bahasa Manggarai *</label>
+            <label className="mb-1 block text-sm font-medium">
+              Kata Bahasa {LANG_LABEL[sourceLang]} *
+            </label>
             <input
-              value={manggarai}
-              onChange={(e) => setManggarai(e.target.value)}
+              value={headword}
+              onChange={(e) => setHeadword(e.target.value)}
               className="input"
               required
-              placeholder="Contoh: hang"
+              placeholder={sourceLang === 'mgr' ? 'Contoh: hang' : 'Contoh: makan'}
             />
           </div>
           <div>
@@ -169,34 +214,50 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
           </div>
         </div>
 
-        {/* Senses (arti / terjemahan) */}
+        <div>
+          <label className="mb-1 block text-sm font-medium">Kelas kata kata utama (opsional)</label>
+          <select
+            value={partOfSpeech}
+            onChange={(e) => setPartOfSpeech(e.target.value)}
+            className="input"
+          >
+            <option value="">— pilih —</option>
+            {PARTS_OF_SPEECH.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Translations */}
         <div className="space-y-3 rounded-xl border border-slate-200 p-4 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold">Arti / Terjemahan *</h3>
+              <h3 className="font-semibold">Terjemahan (Bahasa {LANG_LABEL[targetLang]}) *</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Tambahkan satu atau lebih padanan Bahasa Indonesia.
+                Tambahkan satu atau lebih padanan Bahasa {LANG_LABEL[targetLang]}.
               </p>
             </div>
-            <button type="button" onClick={addSense} className="btn-outline text-xs">
-              <Plus size={14} /> Tambah arti
+            <button type="button" onClick={addTranslation} className="btn-outline text-xs">
+              <Plus size={14} /> Tambah
             </button>
           </div>
 
           <div className="space-y-3">
-            {senses.map((s, idx) => (
+            {translations.map((t, idx) => (
               <div
                 key={idx}
                 className="space-y-2 rounded-lg border border-slate-200 p-3 dark:border-slate-700"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    Arti {idx + 1}
+                    Terjemahan {idx + 1}
                   </span>
-                  {senses.length > 1 && (
+                  {translations.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => removeSense(idx)}
+                      onClick={() => removeTranslation(idx)}
                       className="flex items-center gap-1 text-xs text-rose-600 hover:underline"
                     >
                       <Trash2 size={13} /> Hapus
@@ -205,14 +266,14 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <input
-                    value={s.indonesian}
-                    onChange={(e) => updateSense(idx, { indonesian: e.target.value })}
+                    value={t.lemma}
+                    onChange={(e) => updateTranslation(idx, { lemma: e.target.value })}
                     className="input text-sm"
-                    placeholder="Terjemahan Indonesia *"
+                    placeholder={`Kata Bahasa ${LANG_LABEL[targetLang]} *`}
                   />
                   <select
-                    value={s.part_of_speech}
-                    onChange={(e) => updateSense(idx, { part_of_speech: e.target.value })}
+                    value={t.part_of_speech}
+                    onChange={(e) => updateTranslation(idx, { part_of_speech: e.target.value })}
                     className="input text-sm"
                   >
                     <option value="">— kelas kata —</option>
@@ -224,11 +285,11 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                   </select>
                 </div>
                 <textarea
-                  value={s.notes}
-                  onChange={(e) => updateSense(idx, { notes: e.target.value })}
+                  value={t.notes}
+                  onChange={(e) => updateTranslation(idx, { notes: e.target.value })}
                   rows={2}
                   className="input text-sm"
-                  placeholder="Catatan penggunaan untuk arti ini (opsional)…"
+                  placeholder="Catatan penggunaan untuk terjemahan ini (opsional)…"
                 />
               </div>
             ))}
@@ -259,13 +320,13 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                     value={d.word}
                     onChange={(e) => updateDerived(idx, { word: e.target.value })}
                     className="input text-sm"
-                    placeholder="Kata turunan (Manggarai)"
+                    placeholder={`Kata turunan (${LANG_LABEL[sourceLang]})`}
                   />
                   <input
                     value={d.translation}
                     onChange={(e) => updateDerived(idx, { translation: e.target.value })}
                     className="input text-sm"
-                    placeholder="Arti (Indonesia)"
+                    placeholder={`Arti (${LANG_LABEL[targetLang]})`}
                   />
                   <button
                     type="button"

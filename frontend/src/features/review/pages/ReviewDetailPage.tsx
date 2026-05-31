@@ -60,9 +60,19 @@ export function ReviewDetailPage() {
       </Link>
 
       <div className="card">
-        <h1 className="text-2xl font-bold text-primary-700 dark:text-primary-300">
-          {sub.payload.manggarai}
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-primary-700 dark:text-primary-300">
+            {sub.payload.headword}
+          </h1>
+          <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            {sub.payload.source_lang === 'id' ? 'Indonesia' : 'Manggarai'}
+          </span>
+          {sub.payload.part_of_speech && (
+            <span className="text-sm italic text-slate-500 dark:text-slate-400">
+              {sub.payload.part_of_speech}
+            </span>
+          )}
+        </div>
         <p className="mt-2 text-sm text-slate-500">
           Diajukan oleh <span className="font-medium">{sub.submitter_name}</span> • {formatRelative(sub.created_at)}
         </p>
@@ -73,30 +83,30 @@ export function ReviewDetailPage() {
 
       <section className="mt-4">
         <h2 className="mb-2 text-lg font-semibold">
-          {sub.payload.senses && sub.payload.senses.length > 1 ? 'Arti & Terjemahan' : 'Terjemahan'}
+          Terjemahan ({sub.payload.source_lang === 'id' ? 'Manggarai' : 'Indonesia'})
         </h2>
         <div className="card">
           <ol className="space-y-3">
-            {sub.payload.senses?.map((sense, idx) => (
+            {sub.payload.translations?.map((t, idx) => (
               <li key={idx} className="rounded-lg bg-slate-50 p-3 dark:bg-slate-700/40">
                 <div className="flex items-baseline gap-2">
-                  {sub.payload.senses.length > 1 && (
+                  {sub.payload.translations.length > 1 && (
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-100 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-200">
                       {idx + 1}
                     </span>
                   )}
                   <span className="text-base font-semibold text-slate-800 dark:text-slate-100">
-                    {sense.indonesian}
+                    {t.lemma}
                   </span>
-                  {sense.part_of_speech && (
+                  {t.part_of_speech && (
                     <span className="text-xs italic text-slate-500 dark:text-slate-400">
-                      {sense.part_of_speech}
+                      {t.part_of_speech}
                     </span>
                   )}
                 </div>
-                {sense.notes && (
+                {t.notes && (
                   <p className="mt-1.5 border-l-2 border-primary-200 pl-3 text-sm text-slate-600 dark:border-primary-700 dark:text-slate-300">
-                    {sense.notes}
+                    {t.notes}
                   </p>
                 )}
               </li>

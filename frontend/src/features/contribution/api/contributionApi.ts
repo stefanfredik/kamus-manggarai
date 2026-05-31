@@ -6,16 +6,20 @@ export interface SubmissionDerivedInput {
   translation: string;
 }
 
-export interface SubmissionSenseInput {
-  indonesian: string;
+export type Language = 'id' | 'mgr';
+
+export interface SubmissionTranslationInput {
+  lemma: string;
   part_of_speech?: string;
   notes?: string;
 }
 
 export interface SubmissionPayload {
-  manggarai: string;
-  senses: SubmissionSenseInput[];
+  source_lang: Language;
+  headword: string;
+  part_of_speech?: string;
   source?: string;
+  translations: SubmissionTranslationInput[];
   derived?: SubmissionDerivedInput[];
 }
 

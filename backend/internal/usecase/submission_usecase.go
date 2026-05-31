@@ -13,37 +13,43 @@ import (
 type SubmissionUseCase struct {
 	submissionRepo repository.SubmissionRepository
 	userRepo       repository.UserRepository
-	entryUseCase   *EntryUseCase
+	wordUseCase    *WordUseCase
 	notificationUC *NotificationUseCase
 }
 
 func NewSubmissionUseCase(
 	submissionRepo repository.SubmissionRepository,
 	userRepo repository.UserRepository,
-	entryUseCase *EntryUseCase,
+	wordUseCase *WordUseCase,
 	notifUC *NotificationUseCase,
 ) *SubmissionUseCase {
 	return &SubmissionUseCase{
 		submissionRepo: submissionRepo,
 		userRepo:       userRepo,
-		entryUseCase:   entryUseCase,
+		wordUseCase:    wordUseCase,
 		notificationUC: notifUC,
 	}
 }
 
 func (u *SubmissionUseCase) Submit(ctx context.Context, payload entity.SubmissionPayload, userID uuid.UUID) (*entity.Submission, error) {
-	if strings.TrimSpace(payload.Manggarai) == "" {
-		return nil, apperror.ErrValidation.WithMessage("kata Bahasa Manggarai wajib diisi")
+	if payload.SourceLang == "" {
+		payload.SourceLang = entity.LangManggarai
 	}
-	hasSense := false
-	for _, s := range payload.Senses {
-		if strings.TrimSpace(s.Indonesian) != "" {
-			hasSense = true
+	if payload.SourceLang != entity.LangIndonesian && payload.SourceLang != entity.LangManggarai {
+		return nil, apperror.ErrValidation.WithMessage("bahasa sumber tidak valid")
+	}
+	if strings.TrimSpace(payload.Headword) == "" {
+		return nil, apperror.ErrValidation.WithMessage("kata utama wajib diisi")
+	}
+	hasTranslation := false
+	for _, t := range payload.Translations {
+		if strings.TrimSpace(t.Lemma) != "" {
+			hasTranslation = true
 			break
 		}
 	}
-	if !hasSense {
-		return nil, apperror.ErrValidation.WithMessage("minimal satu terjemahan Bahasa Indonesia wajib diisi")
+	if !hasTranslation {
+		return nil, apperror.ErrValidation.WithMessage("minimal satu terjemahan wajib diisi")
 	}
 	for _, d := range payload.Derived {
 		if strings.TrimSpace(d.Word) != "" && strings.TrimSpace(d.Translation) == "" {
@@ -66,22 +72,17 @@ func (u *SubmissionUseCase) Submit(ctx context.Context, payload entity.Submissio
 	}
 
 	if user.CanAutoPublish() {
-		entry, err := u.entryUseCase.CreateEntry(ctx, CreateEntryInput{
-			Manggarai: payload.Manggarai,
-			Senses:    payload.Senses,
-			Source:    payload.Source,
-			Derived:   payload.Derived,
-		}, &userID)
+		word, err := u.wordUseCase.CreateWord(ctx, payloadToCreateWordInput(payload), &userID)
 		if err != nil {
 			return nil, err
 		}
 
 		submission.Status = entity.SubmissionStatusApproved
-		submission.ResultingEntryID = &entry.ID
+		submission.ResultingEntryID = &word.ID
 		if err := u.submissionRepo.Create(ctx, submission); err != nil {
 			return nil, err
 		}
-		_ = u.submissionRepo.UpdateStatus(ctx, submission.ID, entity.SubmissionStatusApproved, userID, nil, false, &entry.ID)
+		_ = u.submissionRepo.UpdateStatus(ctx, submission.ID, entity.SubmissionStatusApproved, userID, nil, false, &word.ID)
 		return submission, nil
 	}
 
@@ -89,6 +90,18 @@ func (u *SubmissionUseCase) Submit(ctx context.Context, payload entity.Submissio
 		return nil, err
 	}
 	return submission, nil
+}
+
+// payloadToCreateWordInput maps a submission payload to the word creation input.
+func payloadToCreateWordInput(payload entity.SubmissionPayload) CreateWordInput {
+	return CreateWordInput{
+		SourceLang:   payload.SourceLang,
+		Headword:     payload.Headword,
+		PartOfSpeech: payload.PartOfSpeech,
+		Source:       payload.Source,
+		Translations: payload.Translations,
+		Derived:      payload.Derived,
+	}
 }
 
 func (u *SubmissionUseCase) GetMySubmissions(ctx context.Context, userID uuid.UUID, page, limit int) ([]*entity.Submission, int64, error) {

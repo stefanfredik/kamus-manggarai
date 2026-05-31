@@ -12,20 +12,20 @@ import (
 type ReviewUseCase struct {
 	submissionRepo repository.SubmissionRepository
 	userRepo       repository.UserRepository
-	entryUseCase   *EntryUseCase
+	wordUseCase    *WordUseCase
 	notifUC        *NotificationUseCase
 }
 
 func NewReviewUseCase(
 	submissionRepo repository.SubmissionRepository,
 	userRepo repository.UserRepository,
-	entryUC *EntryUseCase,
+	wordUC *WordUseCase,
 	notifUC *NotificationUseCase,
 ) *ReviewUseCase {
 	return &ReviewUseCase{
 		submissionRepo: submissionRepo,
 		userRepo:       userRepo,
-		entryUseCase:   entryUC,
+		wordUseCase:    wordUC,
 		notifUC:        notifUC,
 	}
 }
@@ -54,21 +54,16 @@ func (u *ReviewUseCase) ApproveSubmission(ctx context.Context, submissionID uuid
 		return nil, apperror.ErrForbidden.WithMessage("tidak dapat mereview submission sendiri")
 	}
 
-	entry, err := u.entryUseCase.CreateEntry(ctx, CreateEntryInput{
-		Manggarai: submission.Payload.Manggarai,
-		Senses:    submission.Payload.Senses,
-		Source:    submission.Payload.Source,
-		Derived:   submission.Payload.Derived,
-	}, &submission.SubmittedBy)
+	word, err := u.wordUseCase.CreateWord(ctx, payloadToCreateWordInput(submission.Payload), &submission.SubmittedBy)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := u.submissionRepo.UpdateStatus(ctx, submissionID, entity.SubmissionStatusApproved, reviewerID, nil, false, &entry.ID); err != nil {
+	if err := u.submissionRepo.UpdateStatus(ctx, submissionID, entity.SubmissionStatusApproved, reviewerID, nil, false, &word.ID); err != nil {
 		return nil, err
 	}
 
-	_ = u.notifUC.NotifySubmissionApproved(ctx, submission.SubmittedBy, submissionID, submission.Payload.PrimaryIndonesian(), entry.Slug)
+	_ = u.notifUC.NotifySubmissionApproved(ctx, submission.SubmittedBy, submissionID, submission.Payload.Headword, word.Slug)
 
 	return u.submissionRepo.FindByID(ctx, submissionID)
 }
@@ -97,7 +92,7 @@ func (u *ReviewUseCase) RejectSubmission(ctx context.Context, submissionID uuid.
 		return nil, err
 	}
 
-	_ = u.notifUC.NotifySubmissionRejected(ctx, submission.SubmittedBy, submissionID, submission.Payload.PrimaryIndonesian(), notes)
+	_ = u.notifUC.NotifySubmissionRejected(ctx, submission.SubmittedBy, submissionID, submission.Payload.Headword, notes)
 
 	return u.submissionRepo.FindByID(ctx, submissionID)
 }
@@ -126,21 +121,16 @@ func (u *ReviewUseCase) ReviseAndPublish(ctx context.Context, submissionID uuid.
 		return nil, err
 	}
 
-	entry, err := u.entryUseCase.CreateEntry(ctx, CreateEntryInput{
-		Manggarai: payload.Manggarai,
-		Senses:    payload.Senses,
-		Source:    payload.Source,
-		Derived:   payload.Derived,
-	}, &submission.SubmittedBy)
+	word, err := u.wordUseCase.CreateWord(ctx, payloadToCreateWordInput(payload), &submission.SubmittedBy)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := u.submissionRepo.UpdateStatus(ctx, submissionID, entity.SubmissionStatusApproved, reviewerID, notes, true, &entry.ID); err != nil {
+	if err := u.submissionRepo.UpdateStatus(ctx, submissionID, entity.SubmissionStatusApproved, reviewerID, notes, true, &word.ID); err != nil {
 		return nil, err
 	}
 
-	_ = u.notifUC.NotifySubmissionEditedPublished(ctx, submission.SubmittedBy, submissionID, payload.PrimaryIndonesian(), entry.Slug)
+	_ = u.notifUC.NotifySubmissionEditedPublished(ctx, submission.SubmittedBy, submissionID, payload.Headword, word.Slug)
 
 	return u.submissionRepo.FindByID(ctx, submissionID)
 }

@@ -17,28 +17,39 @@ type SubmissionDerivedInput struct {
 	Translation string `json:"translation"`
 }
 
-// SubmissionSenseInput is one proposed meaning: an Indonesian translation with
-// its own part of speech and notes.
-type SubmissionSenseInput struct {
-	Indonesian   string  `json:"indonesian"`
+// SubmissionTranslationInput is one counterpart lemma proposed for the
+// headword, with its own part of speech and notes.
+type SubmissionTranslationInput struct {
+	Lemma        string  `json:"lemma"`
 	PartOfSpeech *string `json:"part_of_speech,omitempty"`
 	Notes        *string `json:"notes,omitempty"`
 }
 
-// SubmissionPayload is what a contributor submits: one Manggarai headword with
-// one or more senses (Indonesian translations) and optional derived words.
+// SubmissionPayload is what a contributor submits: a headword in a chosen
+// language with one or more counterpart translations in the other language.
 type SubmissionPayload struct {
-	Manggarai string                   `json:"manggarai"`
-	Senses    []SubmissionSenseInput   `json:"senses"`
-	Source    *string                  `json:"source,omitempty"`
-	Derived   []SubmissionDerivedInput `json:"derived,omitempty"`
+	// SourceLang is the language of the headword ("id" or "mgr").
+	SourceLang   string                       `json:"source_lang"`
+	Headword     string                       `json:"headword"`
+	PartOfSpeech *string                      `json:"part_of_speech,omitempty"`
+	Source       *string                      `json:"source,omitempty"`
+	Translations []SubmissionTranslationInput `json:"translations"`
+	Derived      []SubmissionDerivedInput     `json:"derived,omitempty"`
 }
 
-// PrimaryIndonesian returns the first sense's Indonesian translation, used for
+// TargetLang returns the language of the counterpart translations.
+func (p SubmissionPayload) TargetLang() string {
+	if p.SourceLang == LangIndonesian {
+		return LangManggarai
+	}
+	return LangIndonesian
+}
+
+// PrimaryTranslation returns the first counterpart lemma, used for
 // notifications and display fallbacks.
-func (p SubmissionPayload) PrimaryIndonesian() string {
-	if len(p.Senses) > 0 {
-		return p.Senses[0].Indonesian
+func (p SubmissionPayload) PrimaryTranslation() string {
+	if len(p.Translations) > 0 {
+		return p.Translations[0].Lemma
 	}
 	return ""
 }

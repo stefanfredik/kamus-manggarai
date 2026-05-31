@@ -13,9 +13,11 @@ export const dictionaryApi = {
     page = 1,
     limit = 20,
     letter?: string,
+    lang?: string,
   ): Promise<{ items: EntrySummary[]; meta: PaginationMeta }> {
     const params: Record<string, string | number> = { page, limit };
     if (letter) params.letter = letter;
+    if (lang) params.lang = lang;
     const resp = await api.get<ApiResponse<EntrySummary[]>>('/entries', { params });
     return {
       items: resp.data.data,

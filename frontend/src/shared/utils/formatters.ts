@@ -19,10 +19,10 @@ export function formatRelative(input: string | Date): string {
   return formatDate(date);
 }
 
-/** Join a submission payload's senses into a readable translation string. */
+/** Join a submission payload's translations into a readable string. */
 export function formatTranslations(
-  senses: Array<{ indonesian: string }> | undefined,
+  translations: Array<{ lemma: string }> | undefined,
 ): string {
-  if (!senses || senses.length === 0) return '';
-  return senses.map((s) => s.indonesian).filter(Boolean).join('; ');
+  if (!translations || translations.length === 0) return '';
+  return translations.map((t) => t.lemma).filter(Boolean).join('; ');
 }

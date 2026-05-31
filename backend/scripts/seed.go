@@ -34,7 +34,7 @@ func main() {
 	defer pool.Close()
 
 	userRepo := postgres.NewUserRepo(pool)
-	entryRepo := postgres.NewEntryRepo(pool)
+	entryRepo := postgres.NewWordRepo(pool)
 
 	adminUser := seedAdminUser(ctx, userRepo, cfg.SeedAdmin)
 
@@ -47,8 +47,8 @@ func main() {
 	defer redisClient.Close()
 
 	cache := redisrepo.NewCacheRepo(redisClient)
-	entryUC := usecase.NewEntryUseCase(entryRepo, cache)
-	seedEntries(ctx, entryUC, adminUser.ID)
+	wordUC := usecase.NewWordUseCase(entryRepo, cache)
+	seedEntries(ctx, wordUC, adminUser.ID)
 
 	fmt.Println("seed completed successfully")
 }
@@ -85,13 +85,15 @@ func seedAdminUser(ctx context.Context, repo interface {
 	return user
 }
 
-func seedEntries(ctx context.Context, uc *usecase.EntryUseCase, adminID uuid.UUID) {
-	samples := []usecase.CreateEntryInput{
+func seedEntries(ctx context.Context, uc *usecase.WordUseCase, adminID uuid.UUID) {
+	samples := []usecase.CreateWordInput{
 		{
-			Manggarai: "hang",
-			Senses: []entity.SubmissionSenseInput{
-				{Indonesian: "makan", PartOfSpeech: ptr("verba"), Notes: ptr("Verba dasar yang digunakan dalam percakapan sehari-hari")},
-				{Indonesian: "makanan", PartOfSpeech: ptr("nomina"), Notes: ptr("Hasil atau sesuatu yang dimakan")},
+			SourceLang:   entity.LangManggarai,
+			Headword:     "hang",
+			PartOfSpeech: ptr("verba"),
+			Translations: []entity.SubmissionTranslationInput{
+				{Lemma: "makan", PartOfSpeech: ptr("verba"), Notes: ptr("Verba dasar yang digunakan dalam percakapan sehari-hari")},
+				{Lemma: "makanan", PartOfSpeech: ptr("nomina"), Notes: ptr("Hasil atau sesuatu yang dimakan")},
 			},
 			Derived: []entity.SubmissionDerivedInput{
 				{Word: "hang nggula", Translation: "sarapan (makan pagi)"},
@@ -99,41 +101,49 @@ func seedEntries(ctx context.Context, uc *usecase.EntryUseCase, adminID uuid.UUI
 			},
 		},
 		{
-			Manggarai: "wae",
-			Senses: []entity.SubmissionSenseInput{
-				{Indonesian: "air", PartOfSpeech: ptr("nomina"), Notes: ptr("Kata benda untuk air")},
+			SourceLang:   entity.LangManggarai,
+			Headword:     "wae",
+			PartOfSpeech: ptr("nomina"),
+			Translations: []entity.SubmissionTranslationInput{
+				{Lemma: "air", PartOfSpeech: ptr("nomina"), Notes: ptr("Kata benda untuk air")},
 			},
 			Derived: []entity.SubmissionDerivedInput{
 				{Word: "wae teku", Translation: "air minum"},
 			},
 		},
 		{
-			Manggarai: "tabe",
-			Senses: []entity.SubmissionSenseInput{
-				{Indonesian: "salam", PartOfSpeech: ptr("interjeksi"), Notes: ptr("Ungkapan salam atau hormat")},
+			SourceLang:   entity.LangManggarai,
+			Headword:     "tabe",
+			PartOfSpeech: ptr("interjeksi"),
+			Translations: []entity.SubmissionTranslationInput{
+				{Lemma: "salam", PartOfSpeech: ptr("interjeksi"), Notes: ptr("Ungkapan salam atau hormat")},
 			},
 		},
 		{
-			Manggarai: "mbaru",
-			Senses: []entity.SubmissionSenseInput{
-				{Indonesian: "rumah", PartOfSpeech: ptr("nomina")},
+			SourceLang:   entity.LangManggarai,
+			Headword:     "mbaru",
+			PartOfSpeech: ptr("nomina"),
+			Translations: []entity.SubmissionTranslationInput{
+				{Lemma: "rumah", PartOfSpeech: ptr("nomina")},
 			},
 		},
 		{
-			Manggarai: "ngo",
-			Senses: []entity.SubmissionSenseInput{
-				{Indonesian: "pergi", PartOfSpeech: ptr("verba")},
+			SourceLang:   entity.LangManggarai,
+			Headword:     "ngo",
+			PartOfSpeech: ptr("verba"),
+			Translations: []entity.SubmissionTranslationInput{
+				{Lemma: "pergi", PartOfSpeech: ptr("verba")},
 			},
 		},
 	}
 
 	for _, s := range samples {
-		entry, err := uc.CreateEntry(ctx, s, &adminID)
+		word, err := uc.CreateWord(ctx, s, &adminID)
 		if err != nil {
-			fmt.Printf("skip seed entry %q: %v\n", s.Manggarai, err)
+			fmt.Printf("skip seed entry %q: %v\n", s.Headword, err)
 			continue
 		}
-		fmt.Printf("seeded entry: %s (slug=%s)\n", entry.Manggarai, entry.Slug)
+		fmt.Printf("seeded word: %s (slug=%s)\n", word.Lemma, word.Slug)
 	}
 }
 

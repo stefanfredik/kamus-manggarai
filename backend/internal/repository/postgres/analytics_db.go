@@ -20,7 +20,7 @@ func (a *analyticsDB) LoadAnalytics(ctx context.Context) (*usecase.Analytics, er
 		SubmissionsByStatus: map[string]int64{},
 	}
 
-	if err := a.db.QueryRow(ctx, `SELECT COUNT(*) FROM entries WHERE status = 'published'`).Scan(&out.TotalEntries); err != nil {
+	if err := a.db.QueryRow(ctx, `SELECT COUNT(*) FROM words WHERE status = 'published'`).Scan(&out.TotalEntries); err != nil {
 		return nil, err
 	}
 
@@ -40,9 +40,9 @@ func (a *analyticsDB) LoadAnalytics(ctx context.Context) (*usecase.Analytics, er
 	statusRows.Close()
 
 	contribRows, err := a.db.Query(ctx, `
-		SELECT u.id, u.name, COUNT(e.id) AS total
+		SELECT u.id, u.name, COUNT(w.id) AS total
 		FROM users u
-		JOIN entries e ON e.created_by = u.id AND e.status = 'published'
+		JOIN words w ON w.created_by = u.id AND w.status = 'published'
 		GROUP BY u.id, u.name
 		ORDER BY total DESC
 		LIMIT 10`)
@@ -61,7 +61,7 @@ func (a *analyticsDB) LoadAnalytics(ctx context.Context) (*usecase.Analytics, er
 
 	growthRows, err := a.db.Query(ctx, `
 		SELECT TO_CHAR(date_trunc('month', created_at), 'YYYY-MM') AS month, COUNT(*) AS total
-		FROM entries
+		FROM words
 		WHERE status = 'published' AND created_at >= NOW() - INTERVAL '12 months'
 		GROUP BY month
 		ORDER BY month ASC`)

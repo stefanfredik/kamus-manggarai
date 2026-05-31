@@ -1,62 +1,78 @@
+import { Link } from 'react-router-dom';
 import type { EntryDetail } from '../types/dictionary.types';
 import { ReportButton } from './ReportButton';
 
+const LANG_LABEL: Record<string, string> = {
+  id: 'Bahasa Indonesia',
+  mgr: 'Bahasa Manggarai',
+};
+
 export function EntryDetailView({ entry }: { entry: EntryDetail }) {
-  const primary = entry.senses[0];
+  const counterpartLang = entry.language === 'id' ? 'mgr' : 'id';
 
   return (
     <div className="space-y-6">
       <header className="card">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold text-primary-700 dark:text-primary-300">
-              {entry.manggarai}
-            </h1>
-            {primary && (
-              <p className="mt-1 text-lg text-slate-800 dark:text-slate-100">{primary.indonesian}</p>
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-primary-700 dark:text-primary-300">
+                {entry.lemma}
+              </h1>
+              <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                {LANG_LABEL[entry.language] ?? entry.language}
+              </span>
+            </div>
+            {entry.part_of_speech && (
+              <span className="mt-1 inline-block text-sm italic text-slate-500 dark:text-slate-400">
+                {entry.part_of_speech}
+              </span>
             )}
           </div>
           <ReportButton slug={entry.slug} />
         </div>
-
-        {entry.source && (
-          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Sumber: {entry.source}</p>
-        )}
       </header>
 
       <section className="card">
         <h2 className="mb-3 text-lg font-semibold">
-          {entry.senses.length > 1 ? 'Arti & Terjemahan' : 'Terjemahan'}
+          Terjemahan ({LANG_LABEL[counterpartLang] ?? counterpartLang})
         </h2>
-        <ol className="space-y-3">
-          {entry.senses.map((sense, idx) => (
-            <li
-              key={sense.id}
-              className="rounded-lg bg-slate-50 p-3 dark:bg-slate-700/40"
-            >
-              <div className="flex items-baseline gap-2">
-                {entry.senses.length > 1 && (
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-100 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-200">
-                    {idx + 1}
-                  </span>
+        {entry.translations.length === 0 ? (
+          <p className="text-sm text-slate-500 dark:text-slate-400">Belum ada terjemahan.</p>
+        ) : (
+          <ol className="space-y-3">
+            {entry.translations.map((t, idx) => (
+              <li key={t.translation_id} className="rounded-lg bg-slate-50 p-3 dark:bg-slate-700/40">
+                <div className="flex items-baseline gap-2">
+                  {entry.translations.length > 1 && (
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-100 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-200">
+                      {idx + 1}
+                    </span>
+                  )}
+                  <Link
+                    to={`/kata/${t.slug}`}
+                    className="text-base font-semibold text-primary-700 hover:underline dark:text-primary-300"
+                  >
+                    {t.lemma}
+                  </Link>
+                  {t.part_of_speech && (
+                    <span className="text-xs italic text-slate-500 dark:text-slate-400">
+                      {t.part_of_speech}
+                    </span>
+                  )}
+                </div>
+                {t.notes && (
+                  <p className="mt-1.5 border-l-2 border-primary-200 pl-3 text-sm text-slate-600 dark:border-primary-700 dark:text-slate-300">
+                    {t.notes}
+                  </p>
                 )}
-                <span className="text-base font-semibold text-slate-800 dark:text-slate-100">
-                  {sense.indonesian}
-                </span>
-                {sense.part_of_speech && (
-                  <span className="text-xs italic text-slate-500 dark:text-slate-400">
-                    {sense.part_of_speech}
-                  </span>
+                {t.source && (
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sumber: {t.source}</p>
                 )}
-              </div>
-              {sense.notes && (
-                <p className="mt-1.5 border-l-2 border-primary-200 pl-3 text-sm text-slate-600 dark:border-primary-700 dark:text-slate-300">
-                  {sense.notes}
-                </p>
-              )}
-            </li>
-          ))}
-        </ol>
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
 
       {entry.derived_words && entry.derived_words.length > 0 && (

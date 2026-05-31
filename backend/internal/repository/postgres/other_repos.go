@@ -39,9 +39,9 @@ func (r *reportRepo) Create(ctx context.Context, rep *entity.Report) error {
 func (r *reportRepo) ListOpen(ctx context.Context, page, limit int) ([]*entity.Report, int64, error) {
 	offset := (page - 1) * limit
 	rows, err := r.db.Query(ctx, `
-		SELECT r.id, r.entry_id, COALESCE(e.base_form, ''), r.reported_by, r.reason, r.description, r.status, r.resolved_by, r.resolved_at, r.created_at
+		SELECT r.id, r.entry_id, COALESCE(w.lemma, ''), r.reported_by, r.reason, r.description, r.status, r.resolved_by, r.resolved_at, r.created_at
 		FROM reports r
-		LEFT JOIN entries e ON e.id = r.entry_id
+		LEFT JOIN words w ON w.id = r.entry_id
 		WHERE r.status = 'open'
 		ORDER BY r.created_at DESC
 		LIMIT $1 OFFSET $2`, limit, offset)
