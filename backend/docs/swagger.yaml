@@ -1,0 +1,393 @@
+openapi: 3.0.3
+info:
+  title: Kamus Manggarai API
+  version: 1.0.0
+  description: API untuk platform Kamus Digital Bahasa Manggarai – Bahasa Indonesia
+servers:
+  - url: http://localhost/api/v1
+    description: Local development
+  - url: https://api.kamus-manggarai.id/api/v1
+    description: Production
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data: { type: object }
+        meta:
+          type: object
+          properties:
+            page: { type: integer }
+            limit: { type: integer }
+            total: { type: integer }
+    ErrorResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+    EntrySummary:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        base_form: { type: string }
+        slug: { type: string }
+        part_of_speech: { type: string }
+        dialects:
+          type: array
+          items: { type: string }
+        brief_meaning: { type: string }
+    EntryDetail:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        base_form: { type: string }
+        slug: { type: string }
+        part_of_speech: { type: string }
+        dialects: { type: array, items: { type: object } }
+        related_entries: { type: array, items: { type: object } }
+    SubmissionPayload:
+      type: object
+      properties:
+        base_form: { type: string }
+        part_of_speech: { type: string }
+        notes: { type: string }
+        dialects:
+          type: array
+          items:
+            type: object
+            properties:
+              dialect_id: { type: string, format: uuid }
+              local_spelling: { type: string }
+              is_available: { type: boolean }
+              definitions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    meaning: { type: string }
+                    context_notes: { type: string }
+                    sentences:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          sentence_source: { type: string }
+                          sentence_translation: { type: string }
+
+paths:
+  /auth/google:
+    get:
+      summary: Redirect ke Google OAuth
+      tags: [Auth]
+      responses:
+        '302': { description: Redirect ke Google }
+  /auth/google/callback:
+    get:
+      summary: Callback OAuth
+      tags: [Auth]
+      parameters:
+        - name: code
+          in: query
+          schema: { type: string }
+      responses:
+        '302': { description: Redirect ke frontend }
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      tags: [Auth]
+      responses:
+        '200': { description: OK }
+  /auth/logout:
+    post:
+      summary: Logout
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: OK }
+  /auth/me:
+    get:
+      summary: Current user info
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: OK }
+
+  /entries:
+    get:
+      summary: List published entries
+      tags: [Dictionary]
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 1 }
+        - name: limit
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: dialect_ids
+          in: query
+          schema: { type: string }
+          description: comma-separated UUIDs
+      responses:
+        '200': { description: OK }
+  /entries/{slug}:
+    get:
+      summary: Detail entry
+      tags: [Dictionary]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not found }
+  /entries/{slug}/reports:
+    post:
+      summary: Laporkan kosakata
+      tags: [Dictionary]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+                description: { type: string }
+      responses:
+        '201': { description: Created }
+  /search:
+    get:
+      summary: Pencarian kosakata
+      tags: [Dictionary]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string }
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [manggarai_to_indonesia, indonesia_to_manggarai]
+        - name: dialect_ids
+          in: query
+          schema: { type: string }
+        - name: page
+          in: query
+          schema: { type: integer }
+        - name: limit
+          in: query
+          schema: { type: integer }
+      responses:
+        '200': { description: OK }
+  /dialects:
+    get:
+      summary: List dialek aktif
+      tags: [Dictionary]
+      responses:
+        '200': { description: OK }
+
+  /submissions:
+    post:
+      summary: Submit kosakata baru
+      tags: [Submission]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SubmissionPayload' }
+      responses:
+        '201': { description: Created }
+    get:
+      summary: List submission milik sendiri
+      tags: [Submission]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: OK }
+  /submissions/{id}:
+    get:
+      summary: Detail submission
+      tags: [Submission]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+    put:
+      summary: Edit submission pending
+      tags: [Submission]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /notifications:
+    get:
+      summary: List notifikasi
+      tags: [Notification]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: OK }
+  /notifications/{id}/read:
+    patch:
+      summary: Tandai notifikasi dibaca
+      tags: [Notification]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: No content }
+
+  /review/queue:
+    get:
+      summary: Antrian review (Validator+)
+      tags: [Review]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: OK }
+  /review/queue/{id}/approve:
+    post:
+      summary: Approve submission
+      tags: [Review]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /review/queue/{id}/reject:
+    post:
+      summary: Reject submission
+      tags: [Review]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes: { type: string }
+      responses:
+        '200': { description: OK }
+  /review/queue/{id}/revise:
+    put:
+      summary: Revisi dan publish submission
+      tags: [Review]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+
+  /admin/users:
+    get:
+      summary: List users
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200': { description: OK }
+  /admin/users/{id}/toggle-validator:
+    patch:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses: { '200': { description: OK } }
+  /admin/users/{id}/toggle-suspend:
+    patch:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses: { '200': { description: OK } }
+  /admin/dialects:
+    get:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      responses: { '200': { description: OK } }
+    post:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      responses: { '201': { description: Created } }
+  /admin/dialects/{id}:
+    put:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses: { '200': { description: OK } }
+  /admin/dialects/{id}/toggle-active:
+    patch:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses: { '200': { description: OK } }
+  /admin/reports:
+    get:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      responses: { '200': { description: OK } }
+  /admin/reports/{id}:
+    patch:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses: { '200': { description: OK } }
+  /admin/analytics:
+    get:
+      tags: [Admin]
+      security: [{ BearerAuth: [] }]
+      responses: { '200': { description: OK } }

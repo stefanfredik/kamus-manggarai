@@ -1,0 +1,38 @@
+# Environment
+.env
+.env.local
+*.env
+
+# Backend (Go)
+backend/bin/
+backend/tmp/
+backend/*.exe
+backend/coverage.out
+backend/vendor/
+
+# Frontend (Node)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+frontend/coverage/
+frontend/*.log
+frontend/.eslintcache
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+
+# Backup
+*.bak
+*.backup
