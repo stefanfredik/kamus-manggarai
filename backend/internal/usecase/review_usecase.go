@@ -55,12 +55,13 @@ func (u *ReviewUseCase) ApproveSubmission(ctx context.Context, submissionID uuid
 	}
 
 	entry, err := u.entryUseCase.CreateEntry(ctx, CreateEntryInput{
-		BaseForm:     submission.Payload.BaseForm,
+		Indonesian:   submission.Payload.Indonesian,
+		Manggarai:    submission.Payload.Manggarai,
 		PartOfSpeech: submission.Payload.PartOfSpeech,
 		Notes:        submission.Payload.Notes,
-		Dialects:     submission.Payload.Dialects,
-		Relations:    submission.Payload.Relations,
-	}, submission.SubmittedBy)
+		Source:       submission.Payload.Source,
+		Derived:      submission.Payload.Derived,
+	}, &submission.SubmittedBy)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +70,7 @@ func (u *ReviewUseCase) ApproveSubmission(ctx context.Context, submissionID uuid
 		return nil, err
 	}
 
-	_ = u.notifUC.NotifySubmissionApproved(ctx, submission.SubmittedBy, submissionID, submission.Payload.BaseForm, entry.Slug)
+	_ = u.notifUC.NotifySubmissionApproved(ctx, submission.SubmittedBy, submissionID, submission.Payload.Indonesian, entry.Slug)
 
 	return u.submissionRepo.FindByID(ctx, submissionID)
 }
@@ -98,7 +99,7 @@ func (u *ReviewUseCase) RejectSubmission(ctx context.Context, submissionID uuid.
 		return nil, err
 	}
 
-	_ = u.notifUC.NotifySubmissionRejected(ctx, submission.SubmittedBy, submissionID, submission.Payload.BaseForm, notes)
+	_ = u.notifUC.NotifySubmissionRejected(ctx, submission.SubmittedBy, submissionID, submission.Payload.Indonesian, notes)
 
 	return u.submissionRepo.FindByID(ctx, submissionID)
 }
@@ -128,12 +129,13 @@ func (u *ReviewUseCase) ReviseAndPublish(ctx context.Context, submissionID uuid.
 	}
 
 	entry, err := u.entryUseCase.CreateEntry(ctx, CreateEntryInput{
-		BaseForm:     payload.BaseForm,
+		Indonesian:   payload.Indonesian,
+		Manggarai:    payload.Manggarai,
 		PartOfSpeech: payload.PartOfSpeech,
 		Notes:        payload.Notes,
-		Dialects:     payload.Dialects,
-		Relations:    payload.Relations,
-	}, submission.SubmittedBy)
+		Source:       payload.Source,
+		Derived:      payload.Derived,
+	}, &submission.SubmittedBy)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +144,7 @@ func (u *ReviewUseCase) ReviseAndPublish(ctx context.Context, submissionID uuid.
 		return nil, err
 	}
 
-	_ = u.notifUC.NotifySubmissionEditedPublished(ctx, submission.SubmittedBy, submissionID, payload.BaseForm, entry.Slug)
+	_ = u.notifUC.NotifySubmissionEditedPublished(ctx, submission.SubmittedBy, submissionID, payload.Indonesian, entry.Slug)
 
 	return u.submissionRepo.FindByID(ctx, submissionID)
 }

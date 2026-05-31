@@ -19,7 +19,7 @@ type Handlers struct {
 
 func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cache repository.CacheRepository, cfg *config.Config) {
 	app.Get("/health", func(c fiber.Ctx) error {
-		return c.JSON(fiber.Map{"status": "ok"})
+		return c.JSON(fiber.Map{"status": "ok", "service": "kamus-manggarai"})
 	})
 
 	api := app.Group("/api/v1")
@@ -53,7 +53,6 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	publicGroup.Get("/entries/:slug", h.Dictionary.GetEntryDetail)
 	publicGroup.Post("/entries/:slug/reports", h.Dictionary.ReportEntry)
 	publicGroup.Get("/search", h.Dictionary.Search)
-	publicGroup.Get("/dialects", h.Dictionary.ListDialects)
 
 	contributor := api.Group("", middleware.AuthRequired(authUC), middleware.RequireContributor())
 	contributor.Post("/submissions", h.Submission.Submit)
@@ -75,10 +74,6 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	admin.Get("/users", h.Admin.ListUsers)
 	admin.Patch("/users/:id/toggle-validator", h.Admin.ToggleValidator)
 	admin.Patch("/users/:id/toggle-suspend", h.Admin.ToggleSuspend)
-	admin.Get("/dialects", h.Admin.ListDialects)
-	admin.Post("/dialects", h.Admin.CreateDialect)
-	admin.Put("/dialects/:id", h.Admin.UpdateDialect)
-	admin.Patch("/dialects/:id/toggle-active", h.Admin.ToggleDialectActive)
 	admin.Get("/reports", h.Admin.ListReports)
 	admin.Patch("/reports/:id", h.Admin.HandleReport)
 	admin.Get("/analytics", h.Admin.Analytics)

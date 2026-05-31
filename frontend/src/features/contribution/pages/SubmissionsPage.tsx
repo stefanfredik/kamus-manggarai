@@ -6,10 +6,10 @@ import { Pagination } from '@/shared/components/Pagination';
 import { EmptyState } from '@/shared/components/EmptyState';
 import { formatRelative } from '@/shared/utils/formatters';
 
-const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Menunggu', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-200' },
-  approved: { label: 'Disetujui', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200' },
-  rejected: { label: 'Ditolak', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-200' },
+const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
+  pending: { label: 'Menunggu', cls: 'badge-warning' },
+  approved: { label: 'Disetujui', cls: 'badge-success' },
+  rejected: { label: 'Ditolak', cls: 'badge-danger' },
 };
 
 export function SubmissionsPage() {
@@ -41,10 +41,12 @@ export function SubmissionsPage() {
               <div key={s.id} className="card">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-semibold">{s.payload.base_form}</h3>
+                    <h3 className="font-semibold">
+                      {s.payload.manggarai} <span className="text-slate-400">→</span> {s.payload.indonesian}
+                    </h3>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                      <span className={`badge ${status.color}`}>{status.label}</span>
-                      {s.was_edited && <span className="badge bg-blue-100 text-blue-700">Direvisi</span>}
+                      <span className={status.cls}>{status.label}</span>
+                      {s.was_edited && <span className="badge-primary">Direvisi</span>}
                       <span>Dikirim {formatRelative(s.created_at)}</span>
                     </div>
                     {s.review_notes && (

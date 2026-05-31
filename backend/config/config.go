@@ -32,6 +32,11 @@ type DBConfig struct {
 }
 
 func (d DBConfig) DSN() string {
+	return "postgres://" + d.User + ":" + d.Password + "@" + d.Host + ":" + d.Port + "/" + d.Name + "?sslmode=disable"
+}
+
+// RedactedDSN returns a DSN safe for logging (password masked).
+func (d DBConfig) RedactedDSN() string {
 	return "postgres://" + d.User + ":***@" + d.Host + ":" + d.Port + "/" + d.Name + "?sslmode=disable"
 }
 

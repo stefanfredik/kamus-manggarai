@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Flag } from 'lucide-react';
 import { dictionaryApi } from '../api/dictionaryApi';
 import type { ReportPayload } from '../types/dictionary.types';
 import { extractError } from '@/lib/axios';
@@ -40,8 +41,8 @@ export function ReportButton({ slug }: { slug: string }) {
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className="btn-outline text-xs">
-        🚩 Laporkan
+      <button onClick={() => setOpen(true)} className="btn-outline btn-sm">
+        <Flag size={14} /> Laporkan
       </button>
 
       {open && (

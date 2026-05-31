@@ -4,7 +4,7 @@ import { PageLayout } from '@/shared/components/layout/PageLayout';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
 import { HomePage } from '@/features/dictionary/pages/HomePage';
 import { EntryDetailPage } from '@/features/dictionary/pages/EntryDetailPage';
-import { DialectBrowsePage } from '@/features/dictionary/pages/DialectBrowsePage';
+import { BrowsePage } from '@/features/dictionary/pages/BrowsePage';
 import { AuthCallback } from '@/features/auth/components/AuthCallback';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { RegisterPage } from '@/features/auth/pages/RegisterPage';
@@ -41,8 +41,8 @@ function withLayout(node: React.ReactNode) {
 export const router = createBrowserRouter([
   { path: '/', element: withLayout(<HomePage />) },
   { path: '/kata/:slug', element: withLayout(<EntryDetailPage />) },
-  { path: '/dialek', element: withLayout(<DialectBrowsePage />) },
-  { path: '/dialek/:dialect', element: withLayout(<DialectBrowsePage />) },
+  { path: '/jelajah', element: withLayout(<BrowsePage />) },
+  { path: '/jelajah/:letter', element: withLayout(<BrowsePage />) },
   { path: '/auth/callback', element: <AuthCallback /> },
   { path: '/masuk', element: withLayout(<LoginPage />) },
   { path: '/daftar', element: withLayout(<RegisterPage />) },
@@ -102,14 +102,6 @@ export const router = createBrowserRouter([
     element: withLayout(
       <ProtectedRoute roles={['admin']}>
         <AdminDashboardPage initialTab="users" />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/admin/dialects',
-    element: withLayout(
-      <ProtectedRoute roles={['admin']}>
-        <AdminDashboardPage initialTab="dialects" />
       </ProtectedRoute>,
     ),
   },

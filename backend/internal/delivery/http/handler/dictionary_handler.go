@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/kamus-manggarai/backend/internal/delivery/http/middleware"
 	"github.com/kamus-manggarai/backend/internal/domain/repository"
-	"github.com/kamus-manggarai/backend/internal/domain/service"
 	"github.com/kamus-manggarai/backend/internal/usecase"
 	"github.com/kamus-manggarai/backend/pkg/apperror"
 	"github.com/kamus-manggarai/backend/pkg/pagination"
@@ -15,34 +14,30 @@ import (
 )
 
 type DictionaryHandler struct {
-	entryUC   *usecase.EntryUseCase
-	searchUC  *usecase.SearchUseCase
-	dialectUC *usecase.DialectUseCase
-	reportUC  *usecase.ReportUseCase
+	entryUC  *usecase.EntryUseCase
+	searchUC *usecase.SearchUseCase
+	reportUC *usecase.ReportUseCase
 }
 
 func NewDictionaryHandler(
 	entryUC *usecase.EntryUseCase,
 	searchUC *usecase.SearchUseCase,
-	dialectUC *usecase.DialectUseCase,
 	reportUC *usecase.ReportUseCase,
 ) *DictionaryHandler {
 	return &DictionaryHandler{
-		entryUC:   entryUC,
-		searchUC:  searchUC,
-		dialectUC: dialectUC,
-		reportUC:  reportUC,
+		entryUC:  entryUC,
+		searchUC: searchUC,
+		reportUC: reportUC,
 	}
 }
 
 func (h *DictionaryHandler) ListEntries(c fiber.Ctx) error {
 	p := pagination.FromQuery(c)
-	dialectIDs := parseDialectIDs(c.Query("dialect_ids"))
 
 	items, total, err := h.entryUC.ListEntries(c.Context(), repository.EntryFilter{
-		DialectIDs: dialectIDs,
-		Page:       p.Page,
-		Limit:      p.Limit,
+		Letter: strings.TrimSpace(c.Query("letter")),
+		Page:   p.Page,
+		Limit:  p.Limit,
 	})
 	if err != nil {
 		return response.Error(c, err)
@@ -64,28 +59,18 @@ func (h *DictionaryHandler) GetEntryDetail(c fiber.Ctx) error {
 
 func (h *DictionaryHandler) Search(c fiber.Ctx) error {
 	p := pagination.FromQuery(c)
-	dialectIDs := parseDialectIDs(c.Query("dialect_ids"))
 
-	input := service.SearchInput{
-		Query:      strings.TrimSpace(c.Query("q")),
-		Direction:  c.Query("direction", service.DirectionManggaraiToIndonesia),
-		DialectIDs: dialectIDs,
-		Page:       p.Page,
-		Limit:      p.Limit,
+	input := usecase.SearchInput{
+		Query:     strings.TrimSpace(c.Query("q")),
+		Direction: c.Query("direction", usecase.DirectionManggaraiToIndonesia),
+		Page:      p.Page,
+		Limit:     p.Limit,
 	}
 	result, err := h.searchUC.Search(c.Context(), input)
 	if err != nil {
 		return response.Error(c, err)
 	}
 	return response.Success(c, result)
-}
-
-func (h *DictionaryHandler) ListDialects(c fiber.Ctx) error {
-	dialects, err := h.dialectUC.ListActive(c.Context())
-	if err != nil {
-		return response.Error(c, err)
-	}
-	return response.Success(c, dialects)
 }
 
 type reportEntryRequest struct {
@@ -116,22 +101,4 @@ func (h *DictionaryHandler) ReportEntry(c fiber.Ctx) error {
 		return response.Error(c, err)
 	}
 	return response.Created(c, report)
-}
-
-func parseDialectIDs(raw string) []uuid.UUID {
-	if raw == "" {
-		return nil
-	}
-	parts := strings.Split(raw, ",")
-	ids := make([]uuid.UUID, 0, len(parts))
-	for _, p := range parts {
-		p = strings.TrimSpace(p)
-		if p == "" {
-			continue
-		}
-		if id, err := uuid.Parse(p); err == nil {
-			ids = append(ids, id)
-		}
-	}
-	return ids
 }

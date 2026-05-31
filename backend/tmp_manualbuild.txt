@@ -1,0 +1,5 @@
+EXIT=0
+total 19336
+drwxr-xr-x    2 root     root          4096 May 31 16:49 .
+drwxrwxr-x   10 1000     1000          4096 May 31 16:49 ..
+-rwxr-xr-x    1 root     root      19789023 May 31 16:49 api

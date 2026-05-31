@@ -1,0 +1,12 @@
+  / /_  / / __ \/ _ \/ ___/
+ / __/ / / /_/ /  __/ /    
+/_/   /_/_.___/\___/_/          [91mv3.0.0-beta.4[0m
+--------------------------------------------------
+[92mINFO[0m Server started on: 	[94mhttp://127.0.0.1:8080[0m (bound on host 0.0.0.0 and port 8080)
+[92mINFO[0m Application name: 		[94mKamus Manggarai API[0m
+[92mINFO[0m Total handlers count: 	[94m42[0m
+[92mINFO[0m Prefork: 			[91mDisabled[0m
+[92mINFO[0m PID: 			[94m113[0m
+[92mINFO[0m Total process count: 	[94m1[0m
+
+[0m{"level":"info","method":"GET","path":"/health","status":200,"duration":0.099583,"time":"2026-05-31T16:50:07.398093675Z","message":"request"}

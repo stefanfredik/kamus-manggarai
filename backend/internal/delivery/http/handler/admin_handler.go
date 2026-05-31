@@ -52,54 +52,6 @@ func (h *AdminHandler) ToggleSuspend(c fiber.Ctx) error {
 	return response.Success(c, user)
 }
 
-func (h *AdminHandler) ListDialects(c fiber.Ctx) error {
-	dialects, err := h.uc.ListAllDialects(c.Context())
-	if err != nil {
-		return response.Error(c, err)
-	}
-	return response.Success(c, dialects)
-}
-
-func (h *AdminHandler) CreateDialect(c fiber.Ctx) error {
-	var input usecase.DialectInput
-	if err := c.Bind().Body(&input); err != nil {
-		return response.Error(c, apperror.ErrBadRequest.WithCause(err))
-	}
-	d, err := h.uc.CreateDialect(c.Context(), input)
-	if err != nil {
-		return response.Error(c, err)
-	}
-	return response.Created(c, d)
-}
-
-func (h *AdminHandler) UpdateDialect(c fiber.Ctx) error {
-	id, err := uuid.Parse(c.Params("id"))
-	if err != nil {
-		return response.Error(c, apperror.ErrBadRequest)
-	}
-	var input usecase.DialectInput
-	if err := c.Bind().Body(&input); err != nil {
-		return response.Error(c, apperror.ErrBadRequest.WithCause(err))
-	}
-	d, err := h.uc.UpdateDialect(c.Context(), id, input)
-	if err != nil {
-		return response.Error(c, err)
-	}
-	return response.Success(c, d)
-}
-
-func (h *AdminHandler) ToggleDialectActive(c fiber.Ctx) error {
-	id, err := uuid.Parse(c.Params("id"))
-	if err != nil {
-		return response.Error(c, apperror.ErrBadRequest)
-	}
-	d, err := h.uc.ToggleDialectActive(c.Context(), id)
-	if err != nil {
-		return response.Error(c, err)
-	}
-	return response.Success(c, d)
-}
-
 func (h *AdminHandler) ListReports(c fiber.Ctx) error {
 	p := pagination.FromQuery(c)
 	reports, total, err := h.uc.ListReports(c.Context(), p.Page, p.Limit)

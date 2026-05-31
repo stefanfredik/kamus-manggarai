@@ -1,0 +1,1 @@
+{"service":"kamus-manggarai","status":"ok"}

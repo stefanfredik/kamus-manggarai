@@ -10,10 +10,10 @@ export function useEntryDetail(slug: string | undefined) {
   });
 }
 
-export function useEntryList(page: number, limit: number, dialectIds: string[]) {
+export function useEntryList(page: number, limit: number, letter?: string) {
   return useQuery({
-    queryKey: ['entries', page, limit, [...dialectIds].sort()],
-    queryFn: () => dictionaryApi.listEntries(page, limit, dialectIds),
+    queryKey: ['entries', page, limit, letter ?? ''],
+    queryFn: () => dictionaryApi.listEntries(page, limit, letter),
     placeholderData: (prev) => prev,
   });
 }

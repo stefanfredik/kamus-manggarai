@@ -1,35 +1,18 @@
 import { api } from '@/lib/axios';
 import type { ApiResponse, PaginationMeta } from '@/types/api.types';
 
+export interface SubmissionDerivedInput {
+  word: string;
+  translation: string;
+}
+
 export interface SubmissionPayload {
-  base_form: string;
+  indonesian: string;
+  manggarai: string;
   part_of_speech?: string;
   notes?: string;
-  dialects: SubmissionDialectInput[];
-  relations?: SubmissionRelationInput[];
-}
-
-export interface SubmissionDialectInput {
-  dialect_id: string;
-  local_spelling?: string;
-  is_available: boolean;
-  definitions: SubmissionDefinitionInput[];
-}
-
-export interface SubmissionDefinitionInput {
-  meaning: string;
-  context_notes?: string;
-  sentences?: SubmissionSentenceInput[];
-}
-
-export interface SubmissionSentenceInput {
-  sentence_source: string;
-  sentence_translation: string;
-}
-
-export interface SubmissionRelationInput {
-  to_entry_id: string;
-  relation_type: 'sinonim' | 'antonim' | 'turunan' | 'berkaitan';
+  source?: string;
+  derived?: SubmissionDerivedInput[];
 }
 
 export interface Submission {

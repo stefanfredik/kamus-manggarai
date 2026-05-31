@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { PenLine, ClipboardList } from 'lucide-react';
 import { contributionApi } from '../api/contributionApi';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
@@ -35,14 +36,18 @@ export function DashboardPage() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Link to="/dashboard/submit" className="card transition-shadow hover:shadow-md">
-          <div className="text-2xl">➕</div>
-          <h2 className="mt-2 font-semibold">Submit Kosakata Baru</h2>
+        <Link to="/dashboard/submit" className="card transition-all hover:-translate-y-0.5 hover:shadow-card">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300">
+            <PenLine size={20} />
+          </div>
+          <h2 className="mt-3 font-semibold">Submit Kosakata Baru</h2>
           <p className="mt-1 text-sm text-slate-500">Tambahkan kata Manggarai dengan arti dan contoh kalimat.</p>
         </Link>
-        <Link to="/dashboard/submissions" className="card transition-shadow hover:shadow-md">
-          <div className="text-2xl">📋</div>
-          <h2 className="mt-2 font-semibold">Riwayat Submission</h2>
+        <Link to="/dashboard/submissions" className="card transition-all hover:-translate-y-0.5 hover:shadow-card">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300">
+            <ClipboardList size={20} />
+          </div>
+          <h2 className="mt-3 font-semibold">Riwayat Submission</h2>
           <p className="mt-1 text-sm text-slate-500">Lihat status submission yang pernah Anda kirim.</p>
         </Link>
       </div>

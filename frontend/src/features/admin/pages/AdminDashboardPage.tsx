@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adminApi, type AnalyticsData, type DialectInput } from '../api/adminApi';
-import { extractError } from '@/lib/axios';
+import { adminApi, type AnalyticsData } from '../api/adminApi';
 
-type Tab = 'analytics' | 'users' | 'dialects' | 'reports';
+type Tab = 'analytics' | 'users' | 'reports';
 
 interface Props {
   initialTab?: Tab;
@@ -17,7 +16,7 @@ export function AdminDashboardPage({ initialTab = 'analytics' }: Props) {
       <h1 className="mb-4 text-2xl font-bold">Admin Dashboard</h1>
 
       <div className="mb-6 flex gap-1 overflow-x-auto border-b border-slate-200 dark:border-slate-700">
-        {(['analytics', 'users', 'dialects', 'reports'] as Tab[]).map((t) => (
+        {(['analytics', 'users', 'reports'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -34,7 +33,6 @@ export function AdminDashboardPage({ initialTab = 'analytics' }: Props) {
 
       {tab === 'analytics' && <AnalyticsTab />}
       {tab === 'users' && <UsersTab />}
-      {tab === 'dialects' && <DialectsTab />}
       {tab === 'reports' && <ReportsTab />}
     </div>
   );
@@ -44,7 +42,6 @@ function labelFor(t: Tab) {
   return ({
     analytics: 'Analytics',
     users: 'Pengguna',
-    dialects: 'Dialek',
     reports: 'Laporan',
   } as Record<Tab, string>)[t];
 }
@@ -65,18 +62,6 @@ function AnalyticsTab() {
         <Stat label="Total kata published" value={a.total_entries} />
         <Stat label="Pending review" value={a.submissions_by_status?.pending ?? 0} />
         <Stat label="Approved" value={a.submissions_by_status?.approved ?? 0} />
-      </div>
-
-      <div className="card">
-        <h3 className="mb-3 font-semibold">Kosakata per dialek</h3>
-        <div className="space-y-2">
-          {a.entries_per_dialect.map((d) => (
-            <div key={d.dialect_name} className="flex items-center justify-between text-sm">
-              <span>{d.dialect_name}</span>
-              <span className="font-semibold">{d.total}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
@@ -159,9 +144,9 @@ function UsersTab() {
               </td>
               <td className="py-2">
                 {u.is_suspended ? (
-                  <span className="badge bg-rose-100 text-rose-700">Suspended</span>
+                  <span className="badge-danger">Suspended</span>
                 ) : (
-                  <span className="badge bg-emerald-100 text-emerald-700">Aktif</span>
+                  <span className="badge-success">Aktif</span>
                 )}
               </td>
               <td className="py-2 text-right">
@@ -188,130 +173,6 @@ function UsersTab() {
           ))}
         </tbody>
       </table>
-    </div>
-  );
-}
-
-function DialectsTab() {
-  const qc = useQueryClient();
-  const q = useQuery({ queryKey: ['admin', 'dialects'], queryFn: adminApi.listDialects });
-  const [editing, setEditing] = useState<{ id?: string; data: DialectInput } | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const create = useMutation({
-    mutationFn: adminApi.createDialect,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin', 'dialects'] }); setEditing(null); },
-    onError: (e) => setError(extractError(e)),
-  });
-  const update = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: DialectInput }) => adminApi.updateDialect(id, data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin', 'dialects'] }); setEditing(null); },
-    onError: (e) => setError(extractError(e)),
-  });
-  const toggle = useMutation({
-    mutationFn: adminApi.toggleDialectActive,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'dialects'] }),
-  });
-
-  return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-        <button
-          onClick={() => setEditing({ data: { name: '', sort_order: 0 } })}
-          className="btn-primary"
-        >
-          + Tambah Dialek
-        </button>
-      </div>
-
-      <div className="card overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500 dark:border-slate-700">
-              <th className="pb-2">Nama</th>
-              <th className="pb-2">Region</th>
-              <th className="pb-2">Status</th>
-              <th className="pb-2 text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {q.data?.map((d) => (
-              <tr key={d.id} className="border-b border-slate-100 dark:border-slate-700/60">
-                <td className="py-2">{d.name}</td>
-                <td className="py-2 text-slate-500">{d.region ?? '—'}</td>
-                <td className="py-2">
-                  <span className={`badge ${d.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'}`}>
-                    {d.is_active ? 'Aktif' : 'Nonaktif'}
-                  </span>
-                </td>
-                <td className="py-2 text-right">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => setEditing({ id: d.id, data: { name: d.name, description: d.description, region: d.region, sort_order: d.sort_order } })}
-                      className="text-xs text-primary-600 hover:underline"
-                    >
-                      Edit
-                    </button>
-                    <button onClick={() => toggle.mutate(d.id)} className="text-xs text-slate-600 hover:underline">
-                      {d.is_active ? 'Nonaktifkan' : 'Aktifkan'}
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {editing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={() => setEditing(null)}>
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 dark:bg-slate-800" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-3 text-lg font-semibold">{editing.id ? 'Edit Dialek' : 'Tambah Dialek'}</h2>
-            <div className="space-y-3">
-              <input
-                value={editing.data.name}
-                onChange={(e) => setEditing({ ...editing, data: { ...editing.data, name: e.target.value } })}
-                className="input"
-                placeholder="Nama dialek"
-              />
-              <input
-                value={editing.data.region ?? ''}
-                onChange={(e) => setEditing({ ...editing, data: { ...editing.data, region: e.target.value || undefined } })}
-                className="input"
-                placeholder="Region (opsional)"
-              />
-              <textarea
-                value={editing.data.description ?? ''}
-                onChange={(e) => setEditing({ ...editing, data: { ...editing.data, description: e.target.value || undefined } })}
-                className="input"
-                rows={2}
-                placeholder="Deskripsi (opsional)"
-              />
-              <input
-                type="number"
-                value={editing.data.sort_order}
-                onChange={(e) => setEditing({ ...editing, data: { ...editing.data, sort_order: Number(e.target.value) } })}
-                className="input"
-                placeholder="Urutan"
-              />
-              {error && <div className="text-sm text-red-600">{error}</div>}
-            </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <button onClick={() => setEditing(null)} className="btn-outline">Batal</button>
-              <button
-                onClick={() => {
-                  if (editing.id) update.mutate({ id: editing.id, data: editing.data });
-                  else create.mutate(editing.data);
-                }}
-                disabled={!editing.data.name.trim() || create.isPending || update.isPending}
-                className="btn-primary"
-              >
-                Simpan
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

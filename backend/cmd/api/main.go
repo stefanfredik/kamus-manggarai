@@ -18,7 +18,6 @@ import (
 	"github.com/kamus-manggarai/backend/internal/delivery/http/handler"
 	"github.com/kamus-manggarai/backend/internal/infrastructure/database"
 	"github.com/kamus-manggarai/backend/internal/infrastructure/oauth"
-	"github.com/kamus-manggarai/backend/internal/infrastructure/search"
 	"github.com/kamus-manggarai/backend/internal/repository/postgres"
 	redisrepo "github.com/kamus-manggarai/backend/internal/repository/redis"
 	"github.com/kamus-manggarai/backend/internal/usecase"
@@ -75,15 +74,9 @@ func main() {
 	}
 	defer redisClient.Close()
 
-	searchSvc := search.New(cfg.Meili)
-	if err := searchSvc.EnsureIndex(ctx); err != nil {
-		logger.Error().Err(err).Msg("failed to ensure meilisearch index — continuing")
-	}
-
 	oauthSvc := oauth.New(cfg.Google)
 
 	userRepo := postgres.NewUserRepo(pgPool)
-	dialectRepo := postgres.NewDialectRepo(pgPool)
 	entryRepo := postgres.NewEntryRepo(pgPool)
 	submissionRepo := postgres.NewSubmissionRepo(pgPool)
 	reportRepo := postgres.NewReportRepo(pgPool)
@@ -94,18 +87,17 @@ func main() {
 
 	authUC := usecase.NewAuthUseCase(cfg.JWT, cfg.App.FrontendURL, userRepo, tokenRepo, oauthSvc)
 	notifUC := usecase.NewNotificationUseCase(notifRepo)
-	entryUC := usecase.NewEntryUseCase(entryRepo, cacheRepo, searchSvc)
-	searchUC := usecase.NewSearchUseCase(searchSvc, cacheRepo, dialectRepo)
-	dialectUC := usecase.NewDialectUseCase(dialectRepo, cacheRepo)
+	entryUC := usecase.NewEntryUseCase(entryRepo, cacheRepo)
+	searchUC := usecase.NewSearchUseCase(entryRepo, cacheRepo)
 	reportUC := usecase.NewReportUseCase(reportRepo, entryRepo)
 	submissionUC := usecase.NewSubmissionUseCase(submissionRepo, userRepo, entryUC, notifUC)
 	reviewUC := usecase.NewReviewUseCase(submissionRepo, userRepo, entryUC, notifUC)
-	adminUC := usecase.NewAdminUseCase(userRepo, dialectRepo, reportRepo, submissionRepo, entryRepo)
+	adminUC := usecase.NewAdminUseCase(userRepo, reportRepo, submissionRepo, entryRepo)
 
 	cookieSecure := cfg.App.Env == "production"
 	handlers := httpdelivery.Handlers{
 		Auth:       handler.NewAuthHandler(authUC, cfg.App.FrontendURL, cookieSecure),
-		Dictionary: handler.NewDictionaryHandler(entryUC, searchUC, dialectUC, reportUC),
+		Dictionary: handler.NewDictionaryHandler(entryUC, searchUC, reportUC),
 		Submission: handler.NewSubmissionHandler(submissionUC, notifUC),
 		Review:     handler.NewReviewHandler(reviewUC),
 		Admin:      handler.NewAdminHandler(adminUC, analyticsDB),

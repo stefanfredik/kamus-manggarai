@@ -6,7 +6,6 @@ import { useDebounce } from '@/shared/hooks/useDebounce';
 export function useSearch(params: {
   q: string;
   direction: SearchDirection;
-  dialectIds: string[];
   page: number;
   limit: number;
 }) {
@@ -14,24 +13,15 @@ export function useSearch(params: {
   const enabled = debouncedQ.trim().length > 0;
 
   return useQuery({
-    queryKey: ['search', debouncedQ, params.direction, [...params.dialectIds].sort(), params.page, params.limit],
+    queryKey: ['search', debouncedQ, params.direction, params.page, params.limit],
     queryFn: () =>
       dictionaryApi.search({
         q: debouncedQ,
         direction: params.direction,
-        dialect_ids: params.dialectIds,
         page: params.page,
         limit: params.limit,
       }),
     enabled,
     placeholderData: (prev) => prev,
-  });
-}
-
-export function useDialects() {
-  return useQuery({
-    queryKey: ['dialects'],
-    queryFn: dictionaryApi.listDialects,
-    staleTime: 5 * 60_000,
   });
 }

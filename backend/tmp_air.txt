@@ -1,0 +1,5 @@
+total 8
+drwxr-xr-x    2 root     root          4096 May 31 16:46 .
+drwxrwxr-x   10 1000     1000          4096 May 31 16:48 ..
+---build-errors---
+cat: can't open '/app/build-errors.log': No such file or directory

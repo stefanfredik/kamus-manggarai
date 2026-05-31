@@ -1,0 +1,23 @@
+# Development image with hot reload via Air.
+FROM golang:1.23-alpine
+
+WORKDIR /app
+
+# git is needed for go mod, wget for healthcheck
+RUN apk add --no-cache git ca-certificates tzdata wget
+
+# Install Air (hot reload). Pinned version compatible with Go 1.23.
+RUN go install github.com/air-verse/air@v1.52.3
+
+# Pre-cache dependencies (layer cached unless go.mod/go.sum change).
+COPY go.mod go.sum* ./
+RUN go mod download || true
+
+# Source is bind-mounted at runtime; this COPY is only a fallback for
+# building the image standalone.
+COPY . .
+
+EXPOSE 8080
+
+# Air rebuilds and restarts the binary on source changes.
+CMD ["air", "-c", ".air.toml"]

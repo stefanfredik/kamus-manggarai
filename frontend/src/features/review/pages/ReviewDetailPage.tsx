@@ -56,7 +56,10 @@ export function ReviewDetailPage() {
       </Link>
 
       <div className="card">
-        <h1 className="text-2xl font-bold">{sub.payload.base_form}</h1>
+        <h1 className="text-2xl font-bold text-primary-700 dark:text-primary-300">
+          {sub.payload.manggarai}
+        </h1>
+        <p className="mt-1 text-lg text-slate-800 dark:text-slate-100">{sub.payload.indonesian}</p>
         {sub.payload.part_of_speech && (
           <p className="text-sm italic text-slate-500">{sub.payload.part_of_speech}</p>
         )}
@@ -66,37 +69,27 @@ export function ReviewDetailPage() {
         {sub.payload.notes && (
           <p className="mt-3 rounded bg-slate-50 p-3 text-sm dark:bg-slate-700/40">{sub.payload.notes}</p>
         )}
+        {sub.payload.source && (
+          <p className="mt-2 text-xs text-slate-400">Sumber: {sub.payload.source}</p>
+        )}
       </div>
 
-      <section className="mt-4 space-y-3">
-        <h2 className="text-lg font-semibold">Konten Submission</h2>
-        {sub.payload.dialects.map((dl, idx) => (
-          <div key={idx} className="card">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="badge">Dialek #{idx + 1}</span>
-              <span className="text-xs text-slate-500">
-                {dl.is_available ? 'Tersedia' : 'Tidak tersedia'}
-              </span>
-            </div>
-            {dl.local_spelling && (
-              <p className="text-sm">Ejaan lokal: <em>{dl.local_spelling}</em></p>
-            )}
-            <ol className="mt-2 space-y-2">
-              {dl.definitions.map((def, defIdx) => (
-                <li key={defIdx} className="border-l-2 border-primary-200 pl-3 text-sm">
-                  <strong>{defIdx + 1}.</strong> {def.meaning}
-                  {def.context_notes && <div className="text-xs italic text-slate-500">{def.context_notes}</div>}
-                  {def.sentences?.map((s, sIdx) => (
-                    <div key={sIdx} className="mt-1 rounded bg-slate-50 p-2 text-xs dark:bg-slate-700/40">
-                      "{s.sentence_source}" → {s.sentence_translation}
-                    </div>
-                  ))}
+      {sub.payload.derived && sub.payload.derived.length > 0 && (
+        <section className="mt-4">
+          <h2 className="mb-2 text-lg font-semibold">Kata Turunan</h2>
+          <div className="card">
+            <ul className="space-y-2">
+              {sub.payload.derived.map((d, idx) => (
+                <li key={idx} className="flex flex-wrap items-baseline gap-2 text-sm">
+                  <span className="font-medium text-primary-700 dark:text-primary-300">{d.word}</span>
+                  <span className="text-slate-400">—</span>
+                  <span className="text-slate-700 dark:text-slate-200">{d.translation}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
           </div>
-        ))}
-      </section>
+        </section>
+      )}
 
       {error && (
         <div className="mt-4 rounded bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">

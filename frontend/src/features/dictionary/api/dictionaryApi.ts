@@ -1,7 +1,6 @@
 import { api } from '@/lib/axios';
 import type { ApiResponse, PaginationMeta } from '@/types/api.types';
 import type {
-  Dialect,
   EntryDetail,
   EntrySummary,
   ReportPayload,
@@ -10,14 +9,13 @@ import type {
 } from '../types/dictionary.types';
 
 export const dictionaryApi = {
-  async listDialects(): Promise<Dialect[]> {
-    const resp = await api.get<ApiResponse<Dialect[]>>('/dialects');
-    return resp.data.data;
-  },
-
-  async listEntries(page = 1, limit = 20, dialectIds?: string[]): Promise<{ items: EntrySummary[]; meta: PaginationMeta }> {
+  async listEntries(
+    page = 1,
+    limit = 20,
+    letter?: string,
+  ): Promise<{ items: EntrySummary[]; meta: PaginationMeta }> {
     const params: Record<string, string | number> = { page, limit };
-    if (dialectIds?.length) params.dialect_ids = dialectIds.join(',');
+    if (letter) params.letter = letter;
     const resp = await api.get<ApiResponse<EntrySummary[]>>('/entries', { params });
     return {
       items: resp.data.data,
@@ -37,7 +35,6 @@ export const dictionaryApi = {
       page: params.page ?? 1,
       limit: params.limit ?? 20,
     };
-    if (params.dialect_ids?.length) queryParams.dialect_ids = params.dialect_ids.join(',');
     const resp = await api.get<ApiResponse<SearchResult>>('/search', { params: queryParams });
     return resp.data.data;
   },

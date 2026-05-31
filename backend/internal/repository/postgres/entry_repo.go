@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -21,17 +22,15 @@ func NewEntryRepo(db *pgxpool.Pool) repository.EntryRepository {
 	return &entryRepo{db: db}
 }
 
+const entryColumns = `id, indonesian, manggarai, slug, homonym_number, part_of_speech, notes, source, status, created_by, created_at, updated_at`
+
 func (r *entryRepo) FindByID(ctx context.Context, id uuid.UUID) (*entity.Entry, error) {
-	row := r.db.QueryRow(ctx, `
-		SELECT id, base_form, slug, part_of_speech, notes, status, created_by, created_at, updated_at
-		FROM entries WHERE id = $1`, id)
+	row := r.db.QueryRow(ctx, `SELECT `+entryColumns+` FROM entries WHERE id = $1`, id)
 	return scanEntry(row)
 }
 
 func (r *entryRepo) FindBySlug(ctx context.Context, slug string) (*entity.Entry, error) {
-	row := r.db.QueryRow(ctx, `
-		SELECT id, base_form, slug, part_of_speech, notes, status, created_by, created_at, updated_at
-		FROM entries WHERE slug = $1`, slug)
+	row := r.db.QueryRow(ctx, `SELECT `+entryColumns+` FROM entries WHERE slug = $1`, slug)
 	return scanEntry(row)
 }
 
@@ -49,142 +48,71 @@ func (r *entryRepo) FindDetailBySlug(ctx context.Context, slug string) (*entity.
 
 	detail := &entity.EntryDetail{Entry: *entry}
 
-	var creatorName string
-	_ = r.db.QueryRow(ctx, `SELECT name FROM users WHERE id = $1`, entry.CreatedBy).Scan(&creatorName)
-	detail.CreatedByName = creatorName
+	if entry.CreatedBy != nil {
+		var creatorName string
+		_ = r.db.QueryRow(ctx, `SELECT name FROM users WHERE id = $1`, *entry.CreatedBy).Scan(&creatorName)
+		detail.CreatedByName = creatorName
+	}
 
-	dialectRows, err := r.db.Query(ctx, `
-		SELECT ed.id, ed.entry_id, ed.dialect_id, d.name, d.slug, ed.local_spelling, ed.is_available
-		FROM entry_dialects ed
-		JOIN dialects d ON d.id = ed.dialect_id
-		WHERE ed.entry_id = $1
-		ORDER BY d.sort_order ASC, d.name ASC`, entry.ID)
+	derived, err := r.findDerivedByEntryID(ctx, entry.ID)
 	if err != nil {
 		return nil, err
 	}
-	defer dialectRows.Close()
-
-	dialects := make([]entity.EntryDialect, 0)
-	for dialectRows.Next() {
-		ed := entity.EntryDialect{}
-		if err := dialectRows.Scan(&ed.ID, &ed.EntryID, &ed.DialectID, &ed.DialectName, &ed.DialectSlug, &ed.LocalSpelling, &ed.IsAvailable); err != nil {
-			return nil, err
-		}
-		dialects = append(dialects, ed)
-	}
-
-	for i := range dialects {
-		defs, err := r.findDefinitionsByEntryDialectID(ctx, dialects[i].ID)
-		if err != nil {
-			return nil, err
-		}
-		dialects[i].Definitions = defs
-	}
-	detail.Dialects = dialects
-
-	relatedRows, err := r.db.Query(ctx, `
-		SELECT e.id, e.base_form, e.slug, wr.relation_type
-		FROM word_relations wr
-		JOIN entries e ON e.id = wr.to_entry_id
-		WHERE wr.from_entry_id = $1 AND e.status = 'published'`, entry.ID)
-	if err != nil {
-		return nil, err
-	}
-	defer relatedRows.Close()
-
-	related := make([]entity.RelatedEntry, 0)
-	for relatedRows.Next() {
-		re := entity.RelatedEntry{}
-		if err := relatedRows.Scan(&re.ID, &re.BaseForm, &re.Slug, &re.RelationType); err != nil {
-			return nil, err
-		}
-		related = append(related, re)
-	}
-	detail.RelatedEntries = related
+	detail.DerivedWords = derived
 
 	return detail, nil
 }
 
-func (r *entryRepo) findDefinitionsByEntryDialectID(ctx context.Context, entryDialectID uuid.UUID) ([]entity.DefinitionWithSentences, error) {
+func (r *entryRepo) findDerivedByEntryID(ctx context.Context, entryID uuid.UUID) ([]entity.DerivedWord, error) {
 	rows, err := r.db.Query(ctx, `
-		SELECT id, entry_dialect_id, meaning, context_notes, sort_order, created_at, updated_at
-		FROM definitions WHERE entry_dialect_id = $1 ORDER BY sort_order ASC, created_at ASC`, entryDialectID)
+		SELECT id, entry_id, word, translation, sort_order, created_at
+		FROM derived_words WHERE entry_id = $1
+		ORDER BY sort_order ASC, created_at ASC`, entryID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	defs := make([]entity.DefinitionWithSentences, 0)
+	out := make([]entity.DerivedWord, 0)
 	for rows.Next() {
-		d := entity.DefinitionWithSentences{}
-		if err := rows.Scan(&d.ID, &d.EntryDialectID, &d.Meaning, &d.ContextNotes, &d.SortOrder, &d.CreatedAt, &d.UpdatedAt); err != nil {
+		d := entity.DerivedWord{}
+		if err := rows.Scan(&d.ID, &d.EntryID, &d.Word, &d.Translation, &d.SortOrder, &d.CreatedAt); err != nil {
 			return nil, err
 		}
-		defs = append(defs, d)
+		out = append(out, d)
 	}
-
-	for i := range defs {
-		sentences, err := r.findSentencesByDefinitionID(ctx, defs[i].ID)
-		if err != nil {
-			return nil, err
-		}
-		defs[i].Sentences = sentences
-	}
-	return defs, nil
-}
-
-func (r *entryRepo) findSentencesByDefinitionID(ctx context.Context, defID uuid.UUID) ([]entity.ExampleSentence, error) {
-	rows, err := r.db.Query(ctx, `
-		SELECT id, definition_id, sentence_source, sentence_translation, created_at, updated_at
-		FROM example_sentences WHERE definition_id = $1 ORDER BY created_at ASC`, defID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	res := make([]entity.ExampleSentence, 0)
-	for rows.Next() {
-		s := entity.ExampleSentence{}
-		if err := rows.Scan(&s.ID, &s.DefinitionID, &s.SentenceSource, &s.SentenceTranslation, &s.CreatedAt, &s.UpdatedAt); err != nil {
-			return nil, err
-		}
-		res = append(res, s)
-	}
-	return res, nil
+	return out, rows.Err()
 }
 
 func (r *entryRepo) FindPublished(ctx context.Context, filter repository.EntryFilter) ([]*entity.EntrySummary, int64, error) {
+	where := []string{`status = 'published'`}
 	args := []interface{}{}
-	whereParts := []string{`e.status = 'published'`}
-	argIdx := 1
+	idx := 1
 
-	joinDialect := ""
-	if len(filter.DialectIDs) > 0 {
-		joinDialect = `JOIN entry_dialects ed ON ed.entry_id = e.id AND ed.is_available = TRUE`
-		dialectPlaceholders := make([]string, 0, len(filter.DialectIDs))
-		for _, did := range filter.DialectIDs {
-			dialectPlaceholders = append(dialectPlaceholders, fmt.Sprintf("$%d", argIdx))
-			args = append(args, did)
-			argIdx++
-		}
-		whereParts = append(whereParts, fmt.Sprintf("ed.dialect_id IN (%s)", joinComma(dialectPlaceholders)))
+	if letter := strings.TrimSpace(filter.Letter); letter != "" {
+		where = append(where, fmt.Sprintf(`LOWER(indonesian) LIKE $%d`, idx))
+		args = append(args, strings.ToLower(letter[:1])+"%")
+		idx++
 	}
 
-	whereClause := joinAnd(whereParts)
+	whereClause := strings.Join(where, " AND ")
 
-	limitIdx := argIdx
-	offsetIdx := argIdx + 1
-	args = append(args, filter.Limit, (filter.Page-1)*filter.Limit)
+	if filter.Page < 1 {
+		filter.Page = 1
+	}
+	if filter.Limit < 1 {
+		filter.Limit = 20
+	}
 
 	listQ := fmt.Sprintf(`
-		SELECT DISTINCT e.id, e.base_form, e.slug, e.part_of_speech
-		FROM entries e
-		%s
+		SELECT id, indonesian, manggarai, slug, homonym_number, part_of_speech
+		FROM entries
 		WHERE %s
-		ORDER BY e.base_form ASC
-		LIMIT $%d OFFSET $%d`, joinDialect, whereClause, limitIdx, offsetIdx)
+		ORDER BY LOWER(indonesian) ASC
+		LIMIT $%d OFFSET $%d`, whereClause, idx, idx+1)
+	listArgs := append(append([]interface{}{}, args...), filter.Limit, (filter.Page-1)*filter.Limit)
 
-	rows, err := r.db.Query(ctx, listQ, args...)
+	rows, err := r.db.Query(ctx, listQ, listArgs...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -193,60 +121,119 @@ func (r *entryRepo) FindPublished(ctx context.Context, filter repository.EntryFi
 	items := make([]*entity.EntrySummary, 0)
 	for rows.Next() {
 		s := &entity.EntrySummary{}
-		if err := rows.Scan(&s.ID, &s.BaseForm, &s.Slug, &s.PartOfSpeech); err != nil {
+		if err := rows.Scan(&s.ID, &s.Indonesian, &s.Manggarai, &s.Slug, &s.HomonymNumber, &s.PartOfSpeech); err != nil {
 			return nil, 0, err
 		}
 		items = append(items, s)
 	}
-
-	for _, it := range items {
-		dialects, brief, err := r.fetchEntryDialectsAndBrief(ctx, it.ID)
-		if err != nil {
-			return nil, 0, err
-		}
-		it.Dialects = dialects
-		it.BriefMeaning = brief
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
 	}
 
-	countArgs := args[:argIdx-1]
-	countQ := fmt.Sprintf(`SELECT COUNT(DISTINCT e.id) FROM entries e %s WHERE %s`, joinDialect, whereClause)
+	countQ := fmt.Sprintf(`SELECT COUNT(*) FROM entries WHERE %s`, whereClause)
 	var total int64
-	if err := r.db.QueryRow(ctx, countQ, countArgs...).Scan(&total); err != nil {
+	if err := r.db.QueryRow(ctx, countQ, args...).Scan(&total); err != nil {
 		return nil, 0, err
 	}
 
 	return items, total, nil
 }
 
-func (r *entryRepo) fetchEntryDialectsAndBrief(ctx context.Context, entryID uuid.UUID) ([]string, string, error) {
-	rows, err := r.db.Query(ctx, `
-		SELECT d.name FROM entry_dialects ed
-		JOIN dialects d ON d.id = ed.dialect_id
-		WHERE ed.entry_id = $1 AND ed.is_available = TRUE
-		ORDER BY d.sort_order ASC`, entryID)
+func (r *entryRepo) Search(ctx context.Context, filter repository.SearchFilter) ([]*entity.EntrySummary, int64, error) {
+	if filter.Page < 1 {
+		filter.Page = 1
+	}
+	if filter.Limit < 1 {
+		filter.Limit = 20
+	}
+
+	// Choose the column to match against based on search direction.
+	// manggarai_to_indonesia: user types Manggarai, match the manggarai column.
+	// indonesia_to_manggarai: user types Indonesian, match the indonesian column.
+	col := "manggarai"
+	if filter.Direction == "indonesia_to_manggarai" {
+		col = "indonesian"
+	}
+
+	// Accent-insensitive, typo-tolerant match via pg_trgm similarity, with an
+	// exact/prefix boost so the best matches surface first.
+	matchExpr := fmt.Sprintf("immutable_unaccent(lower(%s))", col)
+
+	listQ := fmt.Sprintf(`
+		SELECT id, indonesian, manggarai, slug, homonym_number, part_of_speech
+		FROM entries
+		WHERE status = 'published'
+		  AND (%s %% immutable_unaccent(lower($1))
+		       OR %s LIKE immutable_unaccent(lower($1)) || '%%')
+		ORDER BY
+			(%s = immutable_unaccent(lower($1))) DESC,
+			similarity(%s, immutable_unaccent(lower($1))) DESC,
+			LOWER(%s) ASC
+		LIMIT $2 OFFSET $3`, matchExpr, matchExpr, matchExpr, matchExpr, col)
+
+	rows, err := r.db.Query(ctx, listQ, filter.Query, filter.Limit, (filter.Page-1)*filter.Limit)
 	if err != nil {
-		return nil, "", err
+		return nil, 0, err
 	}
 	defer rows.Close()
-	dialects := make([]string, 0)
+
+	items := make([]*entity.EntrySummary, 0)
 	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
-			return nil, "", err
+		s := &entity.EntrySummary{}
+		if err := rows.Scan(&s.ID, &s.Indonesian, &s.Manggarai, &s.Slug, &s.HomonymNumber, &s.PartOfSpeech); err != nil {
+			return nil, 0, err
 		}
-		dialects = append(dialects, name)
+		items = append(items, s)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
 	}
 
-	var brief string
-	_ = r.db.QueryRow(ctx, `
-		SELECT def.meaning
-		FROM definitions def
-		JOIN entry_dialects ed ON ed.id = def.entry_dialect_id
-		WHERE ed.entry_id = $1
-		ORDER BY def.sort_order ASC, def.created_at ASC
-		LIMIT 1`, entryID).Scan(&brief)
+	countQ := fmt.Sprintf(`
+		SELECT COUNT(*) FROM entries
+		WHERE status = 'published'
+		  AND (%s %% immutable_unaccent(lower($1))
+		       OR %s LIKE immutable_unaccent(lower($1)) || '%%')`, matchExpr, matchExpr)
+	var total int64
+	if err := r.db.QueryRow(ctx, countQ, filter.Query).Scan(&total); err != nil {
+		return nil, 0, err
+	}
 
-	return dialects, brief, nil
+	return items, total, nil
+}
+
+func (r *entryRepo) Suggest(ctx context.Context, query, direction string, limit int) ([]string, error) {
+	if limit < 1 {
+		limit = 5
+	}
+	col := "manggarai"
+	if direction == "indonesia_to_manggarai" {
+		col = "indonesian"
+	}
+	matchExpr := fmt.Sprintf("immutable_unaccent(lower(%s))", col)
+
+	q := fmt.Sprintf(`
+		SELECT %s
+		FROM entries
+		WHERE status = 'published'
+		ORDER BY similarity(%s, immutable_unaccent(lower($1))) DESC
+		LIMIT $2`, col, matchExpr)
+
+	rows, err := r.db.Query(ctx, q, query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	out := make([]string, 0, limit)
+	for rows.Next() {
+		var s string
+		if err := rows.Scan(&s); err != nil {
+			return nil, err
+		}
+		out = append(out, s)
+	}
+	return out, rows.Err()
 }
 
 func (r *entryRepo) Create(ctx context.Context, p repository.CreateEntryParams) (*entity.Entry, error) {
@@ -257,70 +244,41 @@ func (r *entryRepo) Create(ctx context.Context, p repository.CreateEntryParams) 
 	defer tx.Rollback(ctx)
 
 	entry := &entity.Entry{
-		ID:           uuid.New(),
-		BaseForm:     p.BaseForm,
-		Slug:         p.Slug,
-		PartOfSpeech: p.PartOfSpeech,
-		Notes:        p.Notes,
-		Status:       p.Status,
-		CreatedBy:    p.CreatedBy,
+		ID:            uuid.New(),
+		Indonesian:    p.Indonesian,
+		Manggarai:     p.Manggarai,
+		Slug:          p.Slug,
+		HomonymNumber: p.HomonymNumber,
+		PartOfSpeech:  p.PartOfSpeech,
+		Notes:         p.Notes,
+		Source:        p.Source,
+		Status:        p.Status,
+		CreatedBy:     p.CreatedBy,
 	}
 	if entry.Status == "" {
 		entry.Status = entity.StatusPublished
 	}
 
 	row := tx.QueryRow(ctx, `
-		INSERT INTO entries (id, base_form, slug, part_of_speech, notes, status, created_by)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		INSERT INTO entries (id, indonesian, manggarai, slug, homonym_number, part_of_speech, notes, source, status, created_by)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 		RETURNING created_at, updated_at`,
-		entry.ID, entry.BaseForm, entry.Slug, entry.PartOfSpeech, entry.Notes, entry.Status, entry.CreatedBy)
+		entry.ID, entry.Indonesian, entry.Manggarai, entry.Slug, entry.HomonymNumber,
+		entry.PartOfSpeech, entry.Notes, entry.Source, entry.Status, entry.CreatedBy)
 	if err := row.Scan(&entry.CreatedAt, &entry.UpdatedAt); err != nil {
 		return nil, err
 	}
 
-	for _, dlInput := range p.Dialects {
-		edID := uuid.New()
-		_, err := tx.Exec(ctx, `
-			INSERT INTO entry_dialects (id, entry_id, dialect_id, local_spelling, is_available)
-			VALUES ($1, $2, $3, $4, $5)`,
-			edID, entry.ID, dlInput.DialectID, dlInput.LocalSpelling, dlInput.IsAvailable)
-		if err != nil {
-			return nil, fmt.Errorf("insert entry_dialect: %w", err)
-		}
-
-		for sortIdx, defInput := range dlInput.Definitions {
-			defID := uuid.New()
-			_, err := tx.Exec(ctx, `
-				INSERT INTO definitions (id, entry_dialect_id, meaning, context_notes, sort_order)
-				VALUES ($1, $2, $3, $4, $5)`,
-				defID, edID, defInput.Meaning, defInput.ContextNotes, sortIdx)
-			if err != nil {
-				return nil, fmt.Errorf("insert definition: %w", err)
-			}
-
-			for _, sInput := range defInput.Sentences {
-				_, err := tx.Exec(ctx, `
-					INSERT INTO example_sentences (definition_id, sentence_source, sentence_translation)
-					VALUES ($1, $2, $3)`,
-					defID, sInput.SentenceSource, sInput.SentenceTranslation)
-				if err != nil {
-					return nil, fmt.Errorf("insert example_sentence: %w", err)
-				}
-			}
-		}
-	}
-
-	for _, rel := range p.Relations {
-		if rel.ToEntryID == entry.ID {
+	for i, d := range p.Derived {
+		if strings.TrimSpace(d.Word) == "" {
 			continue
 		}
 		_, err := tx.Exec(ctx, `
-			INSERT INTO word_relations (from_entry_id, to_entry_id, relation_type, created_by)
-			VALUES ($1, $2, $3, $4)
-			ON CONFLICT DO NOTHING`,
-			entry.ID, rel.ToEntryID, rel.RelationType, p.CreatedBy)
+			INSERT INTO derived_words (entry_id, word, translation, sort_order)
+			VALUES ($1, $2, $3, $4)`,
+			entry.ID, d.Word, d.Translation, i)
 		if err != nil {
-			return nil, fmt.Errorf("insert word_relation: %w", err)
+			return nil, fmt.Errorf("insert derived_word: %w", err)
 		}
 	}
 
@@ -332,9 +290,10 @@ func (r *entryRepo) Create(ctx context.Context, p repository.CreateEntryParams) 
 
 func (r *entryRepo) Update(ctx context.Context, e *entity.Entry) error {
 	tag, err := r.db.Exec(ctx, `
-		UPDATE entries SET base_form = $1, part_of_speech = $2, notes = $3, status = $4, updated_at = NOW()
-		WHERE id = $5`,
-		e.BaseForm, e.PartOfSpeech, e.Notes, e.Status, e.ID)
+		UPDATE entries
+		SET indonesian = $1, manggarai = $2, part_of_speech = $3, notes = $4, source = $5, status = $6, updated_at = NOW()
+		WHERE id = $7`,
+		e.Indonesian, e.Manggarai, e.PartOfSpeech, e.Notes, e.Source, e.Status, e.ID)
 	if err != nil {
 		return err
 	}
@@ -355,9 +314,18 @@ func (r *entryRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	return nil
 }
 
+func (r *entryRepo) CountPublished(ctx context.Context) (int64, error) {
+	var total int64
+	err := r.db.QueryRow(ctx, `SELECT COUNT(*) FROM entries WHERE status = 'published'`).Scan(&total)
+	return total, err
+}
+
 func scanEntry(row rowScanner) (*entity.Entry, error) {
 	e := &entity.Entry{}
-	err := row.Scan(&e.ID, &e.BaseForm, &e.Slug, &e.PartOfSpeech, &e.Notes, &e.Status, &e.CreatedBy, &e.CreatedAt, &e.UpdatedAt)
+	err := row.Scan(
+		&e.ID, &e.Indonesian, &e.Manggarai, &e.Slug, &e.HomonymNumber,
+		&e.PartOfSpeech, &e.Notes, &e.Source, &e.Status, &e.CreatedBy, &e.CreatedAt, &e.UpdatedAt,
+	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, apperror.ErrNotFound
@@ -365,26 +333,4 @@ func scanEntry(row rowScanner) (*entity.Entry, error) {
 		return nil, err
 	}
 	return e, nil
-}
-
-func joinComma(parts []string) string {
-	out := ""
-	for i, p := range parts {
-		if i > 0 {
-			out += ", "
-		}
-		out += p
-	}
-	return out
-}
-
-func joinAnd(parts []string) string {
-	out := ""
-	for i, p := range parts {
-		if i > 0 {
-			out += " AND "
-		}
-		out += p
-	}
-	return out
 }

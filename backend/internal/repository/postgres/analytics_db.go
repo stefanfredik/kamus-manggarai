@@ -24,26 +24,6 @@ func (a *analyticsDB) LoadAnalytics(ctx context.Context) (*usecase.Analytics, er
 		return nil, err
 	}
 
-	rows, err := a.db.Query(ctx, `
-		SELECT d.name, COUNT(DISTINCT ed.entry_id)
-		FROM dialects d
-		LEFT JOIN entry_dialects ed ON ed.dialect_id = d.id AND ed.is_available = TRUE
-		LEFT JOIN entries e ON e.id = ed.entry_id AND e.status = 'published'
-		GROUP BY d.id, d.name, d.sort_order
-		ORDER BY d.sort_order ASC, d.name ASC`)
-	if err != nil {
-		return nil, err
-	}
-	for rows.Next() {
-		dc := usecase.DialectCount{}
-		if err := rows.Scan(&dc.DialectName, &dc.Total); err != nil {
-			rows.Close()
-			return nil, err
-		}
-		out.EntriesPerDialect = append(out.EntriesPerDialect, dc)
-	}
-	rows.Close()
-
 	statusRows, err := a.db.Query(ctx, `SELECT status, COUNT(*) FROM submissions GROUP BY status`)
 	if err != nil {
 		return nil, err

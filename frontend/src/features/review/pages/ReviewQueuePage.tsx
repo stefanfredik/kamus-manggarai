@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { ChevronRight } from 'lucide-react';
 import { reviewApi } from '../api/reviewApi';
 import { Pagination } from '@/shared/components/Pagination';
 import { EmptyState } from '@/shared/components/EmptyState';
@@ -27,14 +28,19 @@ export function ReviewQueuePage() {
       ) : query.data && query.data.items.length > 0 ? (
         <div className="space-y-2">
           {query.data.items.map((s) => (
-            <Link key={s.id} to={`/validator/${s.id}`} className="card flex items-center justify-between gap-3 transition-shadow hover:shadow-md">
+            <Link key={s.id} to={`/validator/${s.id}`} className="group card flex items-center justify-between gap-3 transition-all hover:-translate-y-0.5 hover:shadow-card">
               <div className="min-w-0 flex-1">
-                <h3 className="font-semibold">{s.payload.base_form}</h3>
+                <h3 className="font-semibold">
+                  {s.payload.manggarai} <span className="text-slate-400">→</span> {s.payload.indonesian}
+                </h3>
                 <p className="mt-0.5 text-xs text-slate-500">
                   oleh {s.submitter_name} • {formatRelative(s.created_at)}
                 </p>
               </div>
-              <span className="text-sm text-primary-600">Review →</span>
+              <span className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary-600">
+                Review
+                <ChevronRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+              </span>
             </Link>
           ))}
           <Pagination

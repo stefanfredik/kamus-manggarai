@@ -1,0 +1,7 @@
+tmp/
+bin/
+*.exe
+coverage.out
+vendor/
+.git/
+build-errors.log

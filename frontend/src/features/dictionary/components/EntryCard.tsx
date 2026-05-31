@@ -1,45 +1,30 @@
 import { Link } from 'react-router-dom';
-import type { SearchHit, EntrySummary } from '../types/dictionary.types';
-import { DialectBadge } from './DialectBadge';
+import { ArrowRight } from 'lucide-react';
+import type { EntrySummary } from '../types/dictionary.types';
 
-type CardItem = SearchHit | EntrySummary;
-
-function isHit(item: CardItem): item is SearchHit {
-  return 'meanings' in item;
-}
-
-export function EntryCard({ item }: { item: CardItem }) {
-  const meanings = isHit(item) ? item.meanings : [item.brief_meaning].filter(Boolean);
+export function EntryCard({ item }: { item: EntrySummary }) {
   return (
     <Link
       to={`/kata/${item.slug}`}
-      className="card block transition-shadow hover:shadow-md"
+      className="group flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-card dark:border-slate-800 dark:bg-slate-900 dark:hover:border-primary-800"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-2">
           <h3 className="truncate text-lg font-semibold text-slate-900 dark:text-slate-100">
-            {item.base_form}
+            {item.manggarai}
           </h3>
           {item.part_of_speech && (
-            <span className="mt-0.5 inline-block text-xs italic text-slate-500">
-              {item.part_of_speech}
-            </span>
-          )}
-          {meanings.length > 0 && (
-            <p className="mt-2 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">
-              {meanings.slice(0, 2).join(' • ')}
-            </p>
+            <span className="shrink-0 text-xs italic text-slate-400">{item.part_of_speech}</span>
           )}
         </div>
+        <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">
+          {item.indonesian}
+        </p>
       </div>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {item.dialects.slice(0, 4).map((d) => (
-          <DialectBadge key={d} name={d} />
-        ))}
-        {item.dialects.length > 4 && (
-          <span className="text-xs text-slate-500">+{item.dialects.length - 4}</span>
-        )}
-      </div>
+      <ArrowRight
+        size={18}
+        className="shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-primary-500 dark:text-slate-600"
+      />
     </Link>
   );
 }
