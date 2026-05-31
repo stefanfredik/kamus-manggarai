@@ -24,28 +24,33 @@ export function Modal({
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
+  // Focus into the dialog and lock body scroll only when the open state
+  // changes — not on every render — so typing doesn't keep stealing focus.
   useEffect(() => {
     if (!open) return;
 
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape' && dismissible) onClose();
-    }
-    document.addEventListener('keydown', onKeyDown);
-
-    // Lock body scroll.
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    // Move focus into the dialog.
     const toFocus = dialogRef.current?.querySelector<HTMLElement>(
       'input, textarea, select, button, [href], [tabindex]:not([tabindex="-1"])',
     );
     toFocus?.focus();
 
     return () => {
-      document.removeEventListener('keydown', onKeyDown);
       document.body.style.overflow = prevOverflow;
     };
+  }, [open]);
+
+  // Escape-to-close handler is kept separate so it can track the latest
+  // onClose/dismissible without re-running the focus effect above.
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape' && dismissible) onClose();
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [open, dismissible, onClose]);
 
   if (!open) return null;

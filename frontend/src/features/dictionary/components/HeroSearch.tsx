@@ -6,10 +6,12 @@ interface HeroSearchProps {
   query: string;
   onQueryChange: (q: string) => void;
   direction: SearchDirection;
-  onDirectionChange: (d: SearchDirection) => void;
+  onDirectionChange?: (d: SearchDirection) => void;
   isLoading?: boolean;
   autoFocus?: boolean;
   placeholder?: string;
+  /** Show the MGR↔ID direction toggle. Defaults to true. */
+  showDirectionToggle?: boolean;
 }
 
 export function HeroSearch({
@@ -20,6 +22,7 @@ export function HeroSearch({
   isLoading,
   autoFocus = true,
   placeholder,
+  showDirectionToggle = true,
 }: HeroSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -66,9 +69,11 @@ export function HeroSearch({
           </button>
         )}
 
-        <div className="shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700">
-          <DirectionToggle value={direction} onChange={onDirectionChange} />
-        </div>
+        {showDirectionToggle && onDirectionChange && (
+          <div className="shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700">
+            <DirectionToggle value={direction} onChange={onDirectionChange} />
+          </div>
+        )}
       </div>
     </div>
   );
