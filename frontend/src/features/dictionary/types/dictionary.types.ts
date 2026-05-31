@@ -1,10 +1,21 @@
-// Simplified bidirectional model: Indonesian <-> Manggarai with derived words.
+// Bidirectional model: Indonesian <-> Manggarai. A Manggarai headword (entry)
+// can have multiple senses (Indonesian translations) plus derived words.
 
 export interface DerivedWord {
   id: string;
   entry_id: string;
   word: string;
   translation: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface Sense {
+  id: string;
+  entry_id: string;
+  indonesian: string;
+  part_of_speech?: string;
+  notes?: string;
   sort_order: number;
   created_at: string;
 }
@@ -16,21 +27,20 @@ export interface EntrySummary {
   slug: string;
   homonym_number?: number;
   part_of_speech?: string;
+  translations?: string[];
 }
 
 export interface EntryDetail {
   id: string;
-  indonesian: string;
   manggarai: string;
   slug: string;
   homonym_number?: number;
-  part_of_speech?: string;
-  notes?: string;
   source?: string;
   status: 'published' | 'archived';
   created_at: string;
   updated_at: string;
   created_by_name?: string;
+  senses: Sense[];
   derived_words: DerivedWord[];
 }
 

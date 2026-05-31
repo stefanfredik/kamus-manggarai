@@ -1,18 +1,30 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useEntryDetail } from '../hooks/useEntryDetail';
 import { EntryDetailView } from '../components/EntryDetailView';
 import { extractError } from '@/lib/axios';
 
 export function EntryDetailPage() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const query = useEntryDetail(slug);
+
+  function goBack() {
+    // Prefer going back to wherever the user came from (search or browse);
+    // fall back to the home page if there's no history to return to.
+    if (window.history.length > 1) navigate(-1);
+    else navigate('/');
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <nav className="mb-4 flex items-center gap-2 text-sm text-slate-500">
-        <Link to="/" className="hover:text-primary-600">
-          ← Kembali ke pencarian
-        </Link>
+      <nav className="mb-4 text-sm">
+        <button
+          onClick={goBack}
+          className="inline-flex items-center gap-1.5 text-slate-500 hover:text-primary-600"
+        >
+          <ArrowLeft size={16} /> Kembali
+        </button>
       </nav>
 
       {query.isLoading ? (

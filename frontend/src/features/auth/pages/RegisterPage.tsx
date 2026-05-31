@@ -148,7 +148,7 @@ export function RegisterPage() {
 
           <div className="my-6 flex items-center gap-3">
             <div className="divider" />
-            <span className="text-xs text-slate-400">atau</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">atau</span>
             <div className="divider" />
           </div>
 

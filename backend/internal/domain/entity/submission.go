@@ -17,14 +17,30 @@ type SubmissionDerivedInput struct {
 	Translation string `json:"translation"`
 }
 
-// SubmissionPayload is what a contributor submits: a bidirectional pair.
+// SubmissionSenseInput is one proposed meaning: an Indonesian translation with
+// its own part of speech and notes.
+type SubmissionSenseInput struct {
+	Indonesian   string  `json:"indonesian"`
+	PartOfSpeech *string `json:"part_of_speech,omitempty"`
+	Notes        *string `json:"notes,omitempty"`
+}
+
+// SubmissionPayload is what a contributor submits: one Manggarai headword with
+// one or more senses (Indonesian translations) and optional derived words.
 type SubmissionPayload struct {
-	Indonesian   string                   `json:"indonesian"`
-	Manggarai    string                   `json:"manggarai"`
-	PartOfSpeech *string                  `json:"part_of_speech,omitempty"`
-	Notes        *string                  `json:"notes,omitempty"`
-	Source       *string                  `json:"source,omitempty"`
-	Derived      []SubmissionDerivedInput `json:"derived,omitempty"`
+	Manggarai string                   `json:"manggarai"`
+	Senses    []SubmissionSenseInput   `json:"senses"`
+	Source    *string                  `json:"source,omitempty"`
+	Derived   []SubmissionDerivedInput `json:"derived,omitempty"`
+}
+
+// PrimaryIndonesian returns the first sense's Indonesian translation, used for
+// notifications and display fallbacks.
+func (p SubmissionPayload) PrimaryIndonesian() string {
+	if len(p.Senses) > 0 {
+		return p.Senses[0].Indonesian
+	}
+	return ""
 }
 
 type Submission struct {

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { contributionApi } from '../api/contributionApi';
+import { SubmissionFormModal } from '../components/SubmissionFormModal';
 import { Pagination } from '@/shared/components/Pagination';
 import { EmptyState } from '@/shared/components/EmptyState';
-import { formatRelative } from '@/shared/utils/formatters';
+import { formatRelative, formatTranslations } from '@/shared/utils/formatters';
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   pending: { label: 'Menunggu', cls: 'badge-warning' },
@@ -14,6 +15,7 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
 
 export function SubmissionsPage() {
   const [page, setPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
   const limit = 20;
   const query = useQuery({
     queryKey: ['submissions', 'mine', page, limit],
@@ -24,7 +26,9 @@ export function SubmissionsPage() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Submission Saya</h1>
-        <Link to="/dashboard/submit" className="btn-primary">+ Submit Baru</Link>
+        <button onClick={() => setModalOpen(true)} className="btn-primary">
+          <Plus size={16} /> Submit Baru
+        </button>
       </div>
 
       {query.isLoading ? (
@@ -42,7 +46,7 @@ export function SubmissionsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <h3 className="font-semibold">
-                      {s.payload.manggarai} <span className="text-slate-400">→</span> {s.payload.indonesian}
+                      {s.payload.manggarai} <span className="text-slate-400">→</span> {formatTranslations(s.payload.senses)}
                     </h3>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                       <span className={status.cls}>{status.label}</span>
@@ -72,9 +76,15 @@ export function SubmissionsPage() {
         <EmptyState
           title="Belum ada submission"
           description="Mulai berkontribusi dengan menambahkan kosakata baru."
-          action={<Link to="/dashboard/submit" className="btn-primary">Submit pertama</Link>}
+          action={
+            <button onClick={() => setModalOpen(true)} className="btn-primary">
+              <Plus size={16} /> Submit pertama
+            </button>
+          }
         />
       )}
+
+      <SubmissionFormModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 }

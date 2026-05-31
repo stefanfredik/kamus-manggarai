@@ -1,11 +1,26 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState, type RefObject } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 
-export function PageLayout({ children }: { children: ReactNode }) {
+const COLLAPSE_KEY = 'kamus-sidebar-collapsed';
+
+export function PageLayout({
+  children,
+  mainRef,
+}: {
+  children: ReactNode;
+  mainRef?: RefObject<HTMLElement>;
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.localStorage.getItem(COLLAPSE_KEY) === '1';
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(COLLAPSE_KEY, collapsed ? '1' : '0');
+  }, [collapsed]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-white dark:bg-slate-950">
@@ -34,7 +49,9 @@ export function PageLayout({ children }: { children: ReactNode }) {
           </Link>
         </div>
 
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main ref={mainRef} className="flex-1 overflow-y-auto">
+          {children}
+        </main>
       </div>
     </div>
   );

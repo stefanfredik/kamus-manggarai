@@ -54,11 +54,11 @@ export function SearchResultList({ data, isLoading, isFetching, query, hasQuery 
   return (
     <div className="animate-fade-in">
       <div className="mb-3 flex items-center justify-between px-1">
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           {data.total} hasil
         </p>
         {isFetching && (
-          <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary-200 border-t-primary-600" />
             <span>Memperbarui…</span>
           </div>

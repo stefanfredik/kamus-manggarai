@@ -1,4 +1,5 @@
 import { Search, X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import type { SearchDirection } from '../types/dictionary.types';
 
 interface HeroSearchProps {
@@ -7,10 +8,9 @@ interface HeroSearchProps {
   direction: SearchDirection;
   onDirectionChange: (d: SearchDirection) => void;
   isLoading?: boolean;
-  centered?: boolean;
+  autoFocus?: boolean;
+  placeholder?: string;
 }
-
-const SUGGESTIONS = ['hang', 'wae', 'mbaru', 'tabe', 'ngo'];
 
 export function HeroSearch({
   query,
@@ -18,23 +18,37 @@ export function HeroSearch({
   direction,
   onDirectionChange,
   isLoading,
-  centered,
+  autoFocus = true,
+  placeholder,
 }: HeroSearchProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Autofocus only on devices with a fine pointer (mouse) to avoid popping up
+  // the on-screen keyboard on touch devices.
+  useEffect(() => {
+    if (!autoFocus) return;
+    if (typeof window === 'undefined') return;
+    if (window.matchMedia('(pointer: fine)').matches) {
+      inputRef.current?.focus();
+    }
+  }, [autoFocus]);
+
   return (
     <div className="w-full">
       <div className="group flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-soft transition-shadow focus-within:border-primary-300 focus-within:shadow-md focus-within:ring-4 focus-within:ring-primary-100 dark:border-slate-700 dark:bg-slate-900 dark:focus-within:ring-primary-900/40">
         <Search className="ml-1 shrink-0 text-slate-400" size={20} />
 
         <input
+          ref={inputRef}
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           type="search"
-          autoFocus
           enterKeyHint="search"
           placeholder={
-            direction === 'manggarai_to_indonesia'
+            placeholder ??
+            (direction === 'manggarai_to_indonesia'
               ? 'Cari kata Manggarai…'
-              : 'Cari kata Indonesia…'
+              : 'Cari kata Indonesia…')
           }
           className="flex-1 bg-transparent py-2 text-base outline-none placeholder:text-slate-400 [&::-webkit-search-cancel-button]:hidden"
         />
@@ -56,21 +70,6 @@ export function HeroSearch({
           <DirectionToggle value={direction} onChange={onDirectionChange} />
         </div>
       </div>
-
-      {centered && (
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-          <span className="text-xs text-slate-400">Coba:</span>
-          {SUGGESTIONS.map((s) => (
-            <button
-              key={s}
-              onClick={() => onQueryChange(s)}
-              className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-600 transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-primary-900/20"
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

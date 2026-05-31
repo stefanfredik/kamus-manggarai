@@ -11,20 +11,30 @@ const (
 	StatusArchived  = "archived"
 )
 
-// Entry is a bidirectional Indonesian <-> Manggarai dictionary pair.
+// Entry is a Manggarai headword. Its Indonesian translations live in Senses,
+// so a single headword can carry multiple meanings (polysemy).
 type Entry struct {
-	ID            uuid.UUID `json:"id"`
-	Indonesian    string    `json:"indonesian"`
-	Manggarai     string    `json:"manggarai"`
-	Slug          string    `json:"slug"`
-	HomonymNumber *int      `json:"homonym_number,omitempty"`
-	PartOfSpeech  *string   `json:"part_of_speech,omitempty"`
-	Notes         *string   `json:"notes,omitempty"`
-	Source        *string   `json:"source,omitempty"`
-	Status        string    `json:"status"`
+	ID            uuid.UUID  `json:"id"`
+	Manggarai     string     `json:"manggarai"`
+	Slug          string     `json:"slug"`
+	HomonymNumber *int       `json:"homonym_number,omitempty"`
+	Source        *string    `json:"source,omitempty"`
+	Status        string     `json:"status"`
 	CreatedBy     *uuid.UUID `json:"created_by,omitempty"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+}
+
+// Sense is one meaning of an entry: an Indonesian translation with its own
+// part of speech and usage notes.
+type Sense struct {
+	ID           uuid.UUID `json:"id"`
+	EntryID      uuid.UUID `json:"entry_id"`
+	Indonesian   string    `json:"indonesian"`
+	PartOfSpeech *string   `json:"part_of_speech,omitempty"`
+	Notes        *string   `json:"notes,omitempty"`
+	SortOrder    int       `json:"sort_order"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 // DerivedWord is a "kata turunan" attached to an entry.
@@ -39,18 +49,24 @@ type DerivedWord struct {
 
 type EntryDetail struct {
 	Entry
+	Senses        []Sense        `json:"senses"`
 	DerivedWords  []DerivedWord  `json:"derived_words"`
 	RelatedByWord []EntrySummary `json:"related_by_word,omitempty"`
 	CreatedByName string         `json:"created_by_name,omitempty"`
 }
 
+// EntrySummary is a compact representation for lists and search results. It
+// carries the headword plus a flattened view of its translations.
 type EntrySummary struct {
 	ID            uuid.UUID `json:"id"`
-	Indonesian    string    `json:"indonesian"`
 	Manggarai     string    `json:"manggarai"`
 	Slug          string    `json:"slug"`
 	HomonymNumber *int      `json:"homonym_number,omitempty"`
-	PartOfSpeech  *string   `json:"part_of_speech,omitempty"`
+	// Indonesian is the primary (first) translation, kept for convenience.
+	Indonesian string `json:"indonesian"`
+	// Translations lists all Indonesian meanings of this headword.
+	Translations []string `json:"translations,omitempty"`
+	PartOfSpeech *string  `json:"part_of_speech,omitempty"`
 }
 
 type PaginatedEntries struct {

@@ -18,3 +18,11 @@ export function formatRelative(input: string | Date): string {
   if (diffSec < 86400 * 30) return `${Math.floor(diffSec / 86400)} hari lalu`;
   return formatDate(date);
 }
+
+/** Join a submission payload's senses into a readable translation string. */
+export function formatTranslations(
+  senses: Array<{ indonesian: string }> | undefined,
+): string {
+  if (!senses || senses.length === 0) return '';
+  return senses.map((s) => s.indonesian).filter(Boolean).join('; ');
+}

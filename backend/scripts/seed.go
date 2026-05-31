@@ -88,49 +88,52 @@ func seedAdminUser(ctx context.Context, repo interface {
 func seedEntries(ctx context.Context, uc *usecase.EntryUseCase, adminID uuid.UUID) {
 	samples := []usecase.CreateEntryInput{
 		{
-			Indonesian:   "makan",
-			Manggarai:    "hang",
-			PartOfSpeech: ptr("verba"),
-			Notes:        ptr("Verba dasar yang digunakan dalam percakapan sehari-hari"),
+			Manggarai: "hang",
+			Senses: []entity.SubmissionSenseInput{
+				{Indonesian: "makan", PartOfSpeech: ptr("verba"), Notes: ptr("Verba dasar yang digunakan dalam percakapan sehari-hari")},
+				{Indonesian: "makanan", PartOfSpeech: ptr("nomina"), Notes: ptr("Hasil atau sesuatu yang dimakan")},
+			},
 			Derived: []entity.SubmissionDerivedInput{
 				{Word: "hang nggula", Translation: "sarapan (makan pagi)"},
 				{Word: "hang leso", Translation: "makan siang"},
 			},
 		},
 		{
-			Indonesian:   "air",
-			Manggarai:    "wae",
-			PartOfSpeech: ptr("nomina"),
-			Notes:        ptr("Kata benda untuk air"),
+			Manggarai: "wae",
+			Senses: []entity.SubmissionSenseInput{
+				{Indonesian: "air", PartOfSpeech: ptr("nomina"), Notes: ptr("Kata benda untuk air")},
+			},
 			Derived: []entity.SubmissionDerivedInput{
 				{Word: "wae teku", Translation: "air minum"},
 			},
 		},
 		{
-			Indonesian:   "salam",
-			Manggarai:    "tabe",
-			PartOfSpeech: ptr("interjeksi"),
-			Notes:        ptr("Ungkapan salam atau hormat"),
+			Manggarai: "tabe",
+			Senses: []entity.SubmissionSenseInput{
+				{Indonesian: "salam", PartOfSpeech: ptr("interjeksi"), Notes: ptr("Ungkapan salam atau hormat")},
+			},
 		},
 		{
-			Indonesian:   "rumah",
-			Manggarai:    "mbaru",
-			PartOfSpeech: ptr("nomina"),
+			Manggarai: "mbaru",
+			Senses: []entity.SubmissionSenseInput{
+				{Indonesian: "rumah", PartOfSpeech: ptr("nomina")},
+			},
 		},
 		{
-			Indonesian:   "pergi",
-			Manggarai:    "ngo",
-			PartOfSpeech: ptr("verba"),
+			Manggarai: "ngo",
+			Senses: []entity.SubmissionSenseInput{
+				{Indonesian: "pergi", PartOfSpeech: ptr("verba")},
+			},
 		},
 	}
 
 	for _, s := range samples {
 		entry, err := uc.CreateEntry(ctx, s, &adminID)
 		if err != nil {
-			fmt.Printf("skip seed entry %q: %v\n", s.Indonesian, err)
+			fmt.Printf("skip seed entry %q: %v\n", s.Manggarai, err)
 			continue
 		}
-		fmt.Printf("seeded entry: %s = %s (slug=%s)\n", entry.Indonesian, entry.Manggarai, entry.Slug)
+		fmt.Printf("seeded entry: %s (slug=%s)\n", entry.Manggarai, entry.Slug)
 	}
 }
 

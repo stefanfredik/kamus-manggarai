@@ -6,11 +6,15 @@ export interface SubmissionDerivedInput {
   translation: string;
 }
 
-export interface SubmissionPayload {
+export interface SubmissionSenseInput {
   indonesian: string;
-  manggarai: string;
   part_of_speech?: string;
   notes?: string;
+}
+
+export interface SubmissionPayload {
+  manggarai: string;
+  senses: SubmissionSenseInput[];
   source?: string;
   derived?: SubmissionDerivedInput[];
 }

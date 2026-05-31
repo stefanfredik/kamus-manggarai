@@ -23,16 +23,14 @@ type SearchFilter struct {
 }
 
 type CreateEntryParams struct {
-	Indonesian   string
-	Manggarai    string
-	Slug         string
+	Manggarai     string
+	Slug          string
 	HomonymNumber *int
-	PartOfSpeech *string
-	Notes        *string
-	Source       *string
-	Status       string
-	CreatedBy    *uuid.UUID
-	Derived      []entity.SubmissionDerivedInput
+	Source        *string
+	Status        string
+	CreatedBy     *uuid.UUID
+	Senses        []entity.SubmissionSenseInput
+	Derived       []entity.SubmissionDerivedInput
 }
 
 type EntryRepository interface {

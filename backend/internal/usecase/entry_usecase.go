@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/kamus-manggarai/backend/internal/domain/entity"
@@ -65,13 +66,13 @@ func (u *EntryUseCase) CountPublished(ctx context.Context) (int64, error) {
 	return u.entryRepo.CountPublished(ctx)
 }
 
+type CreateEntrySenseInput = entity.SubmissionSenseInput
+
 type CreateEntryInput struct {
-	Indonesian   string                          `json:"indonesian" validate:"required,min=1,max=255"`
-	Manggarai    string                          `json:"manggarai" validate:"required,min=1"`
-	PartOfSpeech *string                         `json:"part_of_speech,omitempty"`
-	Notes        *string                         `json:"notes,omitempty"`
-	Source       *string                         `json:"source,omitempty"`
-	Derived      []entity.SubmissionDerivedInput `json:"derived,omitempty"`
+	Manggarai string                          `json:"manggarai" validate:"required,min=1"`
+	Senses    []entity.SubmissionSenseInput   `json:"senses" validate:"required,min=1,dive"`
+	Source    *string                         `json:"source,omitempty"`
+	Derived   []entity.SubmissionDerivedInput `json:"derived,omitempty"`
 }
 
 func (u *EntryUseCase) CreateEntry(ctx context.Context, input CreateEntryInput, creatorID *uuid.UUID) (*entity.Entry, error) {
@@ -79,7 +80,19 @@ func (u *EntryUseCase) CreateEntry(ctx context.Context, input CreateEntryInput, 
 		return nil, apperror.ErrValidation.WithMessage(errs.Error())
 	}
 
-	slug := validator.Slugify(input.Indonesian)
+	// At least one sense with a non-empty Indonesian translation is required.
+	primary := ""
+	for _, s := range input.Senses {
+		if strings.TrimSpace(s.Indonesian) != "" {
+			primary = s.Indonesian
+			break
+		}
+	}
+	if primary == "" {
+		return nil, apperror.ErrValidation.WithMessage("minimal satu terjemahan Bahasa Indonesia wajib diisi")
+	}
+
+	slug := validator.Slugify(primary)
 	if slug == "" {
 		slug = "entri"
 	}
@@ -100,15 +113,13 @@ func (u *EntryUseCase) CreateEntry(ctx context.Context, input CreateEntryInput, 
 	}
 
 	entry, err := u.entryRepo.Create(ctx, repository.CreateEntryParams{
-		Indonesian:   input.Indonesian,
-		Manggarai:    input.Manggarai,
-		Slug:         candidate,
-		PartOfSpeech: input.PartOfSpeech,
-		Notes:        input.Notes,
-		Source:       input.Source,
-		Status:       entity.StatusPublished,
-		CreatedBy:    creatorID,
-		Derived:      input.Derived,
+		Manggarai: input.Manggarai,
+		Slug:      candidate,
+		Source:    input.Source,
+		Status:    entity.StatusPublished,
+		CreatedBy: creatorID,
+		Senses:    input.Senses,
+		Derived:   input.Derived,
 	})
 	if err != nil {
 		return nil, err

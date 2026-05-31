@@ -14,11 +14,13 @@ export function EntryCard({ item }: { item: EntrySummary }) {
             {item.manggarai}
           </h3>
           {item.part_of_speech && (
-            <span className="shrink-0 text-xs italic text-slate-400">{item.part_of_speech}</span>
+            <span className="shrink-0 text-xs italic text-slate-500 dark:text-slate-400">{item.part_of_speech}</span>
           )}
         </div>
         <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">
-          {item.indonesian}
+          {item.translations && item.translations.length > 0
+            ? item.translations.join('; ')
+            : item.indonesian}
         </p>
       </div>
       <ArrowRight

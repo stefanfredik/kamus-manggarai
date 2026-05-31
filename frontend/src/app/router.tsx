@@ -1,5 +1,10 @@
-import { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useRef } from 'react';
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  useLocation,
+} from 'react-router-dom';
 import { PageLayout } from '@/shared/components/layout/PageLayout';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
 import { HomePage } from '@/features/dictionary/pages/HomePage';
@@ -11,9 +16,6 @@ import { RegisterPage } from '@/features/auth/pages/RegisterPage';
 
 const DashboardPage = lazy(() =>
   import('@/features/contribution/pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
-);
-const SubmitPage = lazy(() =>
-  import('@/features/contribution/pages/SubmitPage').then((m) => ({ default: m.SubmitPage })),
 );
 const SubmissionsPage = lazy(() =>
   import('@/features/contribution/pages/SubmissionsPage').then((m) => ({ default: m.SubmissionsPage })),
@@ -28,101 +30,123 @@ const AdminDashboardPage = lazy(() =>
   import('@/features/admin/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })),
 );
 
-function withLayout(node: React.ReactNode) {
+function SuspenseFallback() {
   return (
-    <PageLayout>
-      <Suspense fallback={<div className="py-20 text-center text-slate-500">Memuat…</div>}>
-        {node}
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <div className="space-y-3">
+        <div className="skeleton h-8 w-1/3" />
+        <div className="card h-24 animate-pulse" />
+        <div className="card h-24 animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Persistent shell: PageLayout (and the Sidebar with its collapse state) stays
+ * mounted across navigations. Resets the main scroll position on route change.
+ */
+function RootLayout() {
+  const location = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 });
+  }, [location.pathname]);
+
+  return (
+    <PageLayout mainRef={mainRef}>
+      <Suspense fallback={<SuspenseFallback />}>
+        <Outlet />
       </Suspense>
     </PageLayout>
   );
 }
 
 export const router = createBrowserRouter([
-  { path: '/', element: withLayout(<HomePage />) },
-  { path: '/kata/:slug', element: withLayout(<EntryDetailPage />) },
-  { path: '/jelajah', element: withLayout(<BrowsePage />) },
-  { path: '/jelajah/:letter', element: withLayout(<BrowsePage />) },
+  // Auth callback runs outside the layout shell.
   { path: '/auth/callback', element: <AuthCallback /> },
-  { path: '/masuk', element: withLayout(<LoginPage />) },
-  { path: '/daftar', element: withLayout(<RegisterPage />) },
 
   {
-    path: '/dashboard',
-    element: withLayout(
-      <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
-        <DashboardPage />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/dashboard/submit',
-    element: withLayout(
-      <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
-        <SubmitPage />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/dashboard/submissions',
-    element: withLayout(
-      <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
-        <SubmissionsPage />
-      </ProtectedRoute>,
-    ),
-  },
+    element: <RootLayout />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/kata/:slug', element: <EntryDetailPage /> },
+      { path: '/jelajah', element: <BrowsePage /> },
+      { path: '/jelajah/:letter', element: <BrowsePage /> },
+      { path: '/masuk', element: <LoginPage /> },
+      { path: '/daftar', element: <RegisterPage /> },
 
-  {
-    path: '/validator',
-    element: withLayout(
-      <ProtectedRoute roles={['validator', 'admin']}>
-        <ReviewQueuePage />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/validator/:id',
-    element: withLayout(
-      <ProtectedRoute roles={['validator', 'admin']}>
-        <ReviewDetailPage />
-      </ProtectedRoute>,
-    ),
-  },
+      {
+        path: '/dashboard',
+        element: (
+          <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
+            <DashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/dashboard/submissions',
+        element: (
+          <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
+            <SubmissionsPage />
+          </ProtectedRoute>
+        ),
+      },
 
-  {
-    path: '/admin',
-    element: withLayout(
-      <ProtectedRoute roles={['admin']}>
-        <AdminDashboardPage />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/admin/users',
-    element: withLayout(
-      <ProtectedRoute roles={['admin']}>
-        <AdminDashboardPage initialTab="users" />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/admin/reports',
-    element: withLayout(
-      <ProtectedRoute roles={['admin']}>
-        <AdminDashboardPage initialTab="reports" />
-      </ProtectedRoute>,
-    ),
-  },
-  {
-    path: '/admin/analytics',
-    element: withLayout(
-      <ProtectedRoute roles={['admin']}>
-        <AdminDashboardPage initialTab="analytics" />
-      </ProtectedRoute>,
-    ),
-  },
+      {
+        path: '/validator',
+        element: (
+          <ProtectedRoute roles={['validator', 'admin']}>
+            <ReviewQueuePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/validator/:id',
+        element: (
+          <ProtectedRoute roles={['validator', 'admin']}>
+            <ReviewDetailPage />
+          </ProtectedRoute>
+        ),
+      },
 
-  { path: '*', element: withLayout(<NotFound />) },
+      {
+        path: '/admin',
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <AdminDashboardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin/users',
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <AdminDashboardPage initialTab="users" />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin/reports',
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <AdminDashboardPage initialTab="reports" />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin/analytics',
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <AdminDashboardPage initialTab="analytics" />
+          </ProtectedRoute>
+        ),
+      },
+
+      { path: '*', element: <NotFound /> },
+    ],
+  },
 ]);
 
 function NotFound() {

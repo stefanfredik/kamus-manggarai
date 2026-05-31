@@ -32,11 +32,18 @@ func NewSubmissionUseCase(
 }
 
 func (u *SubmissionUseCase) Submit(ctx context.Context, payload entity.SubmissionPayload, userID uuid.UUID) (*entity.Submission, error) {
-	if strings.TrimSpace(payload.Indonesian) == "" {
-		return nil, apperror.ErrValidation.WithMessage("kata Bahasa Indonesia wajib diisi")
-	}
 	if strings.TrimSpace(payload.Manggarai) == "" {
 		return nil, apperror.ErrValidation.WithMessage("kata Bahasa Manggarai wajib diisi")
+	}
+	hasSense := false
+	for _, s := range payload.Senses {
+		if strings.TrimSpace(s.Indonesian) != "" {
+			hasSense = true
+			break
+		}
+	}
+	if !hasSense {
+		return nil, apperror.ErrValidation.WithMessage("minimal satu terjemahan Bahasa Indonesia wajib diisi")
 	}
 	for _, d := range payload.Derived {
 		if strings.TrimSpace(d.Word) != "" && strings.TrimSpace(d.Translation) == "" {
@@ -60,12 +67,10 @@ func (u *SubmissionUseCase) Submit(ctx context.Context, payload entity.Submissio
 
 	if user.CanAutoPublish() {
 		entry, err := u.entryUseCase.CreateEntry(ctx, CreateEntryInput{
-			Indonesian:   payload.Indonesian,
-			Manggarai:    payload.Manggarai,
-			PartOfSpeech: payload.PartOfSpeech,
-			Notes:        payload.Notes,
-			Source:       payload.Source,
-			Derived:      payload.Derived,
+			Manggarai: payload.Manggarai,
+			Senses:    payload.Senses,
+			Source:    payload.Source,
+			Derived:   payload.Derived,
 		}, &userID)
 		if err != nil {
 			return nil, err

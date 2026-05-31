@@ -50,9 +50,6 @@ export function HomePage() {
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-50">
             Apa kata yang ingin kamu cari?
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-slate-500 dark:text-slate-400">
-            Kamus dua arah Bahasa Manggarai ↔ Indonesia. Ketik untuk mencari secara instan.
-          </p>
 
           <div className="mt-8">
             <HeroSearch
@@ -60,7 +57,6 @@ export function HomePage() {
               onQueryChange={handleQueryChange}
               direction={direction}
               onDirectionChange={handleDirection}
-              centered
             />
           </div>
         </div>
