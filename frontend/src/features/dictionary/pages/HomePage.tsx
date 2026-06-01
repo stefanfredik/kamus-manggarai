@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search } from 'lucide-react';
 import { HeroSearch } from '../components/HeroSearch';
 import { SearchResultList } from '../components/SearchResultList';
 import { useSearch } from '../hooks/useSearch';
@@ -44,9 +43,6 @@ export function HomePage() {
       <div className="relative flex min-h-full flex-col items-center justify-center px-4 py-16">
         <div className="hero-glow pointer-events-none absolute inset-x-0 top-0 h-72" />
         <div className="relative z-10 w-full max-w-2xl animate-rise text-center">
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-600 text-white shadow-pop shadow-primary-600/20">
-            <Search size={26} />
-          </div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-50">
             Apa kata yang ingin kamu cari?
           </h1>

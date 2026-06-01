@@ -79,6 +79,41 @@ func (r *userRepo) UpdateSuspendStatus(ctx context.Context, id uuid.UUID, suspen
 	return nil
 }
 
+func (r *userRepo) UpdateProfile(ctx context.Context, id uuid.UUID, name, email, role string) error {
+	tag, err := r.db.Exec(ctx, `
+		UPDATE users SET name = $1, email = $2, role = $3, updated_at = NOW()
+		WHERE id = $4`, name, email, role, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return apperror.ErrNotFound
+	}
+	return nil
+}
+
+func (r *userRepo) UpdatePassword(ctx context.Context, id uuid.UUID, passwordHash string) error {
+	tag, err := r.db.Exec(ctx, `UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`, passwordHash, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return apperror.ErrNotFound
+	}
+	return nil
+}
+
+func (r *userRepo) Delete(ctx context.Context, id uuid.UUID) error {
+	tag, err := r.db.Exec(ctx, `DELETE FROM users WHERE id = $1`, id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return apperror.ErrNotFound
+	}
+	return nil
+}
+
 func (r *userRepo) ListAll(ctx context.Context, page, limit int) ([]*entity.User, int64, error) {
 	offset := (page - 1) * limit
 	rows, err := r.db.Query(ctx, `

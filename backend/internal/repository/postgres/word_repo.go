@@ -105,6 +105,38 @@ func (r *wordRepo) findTranslations(ctx context.Context, wordID uuid.UUID, langu
 		}
 		out = append(out, l)
 	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	for i := range out {
+		examples, err := r.findExamplesByTranslationID(ctx, out[i].TranslationID)
+		if err != nil {
+			return nil, err
+		}
+		out[i].Examples = examples
+	}
+	return out, nil
+}
+
+func (r *wordRepo) findExamplesByTranslationID(ctx context.Context, translationID uuid.UUID) ([]entity.TranslationExample, error) {
+	rows, err := r.db.Query(ctx, `
+		SELECT id, manggarai, indonesian, sort_order
+		FROM translation_examples WHERE translation_id = $1
+		ORDER BY sort_order ASC, created_at ASC`, translationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	out := make([]entity.TranslationExample, 0)
+	for rows.Next() {
+		ex := entity.TranslationExample{}
+		if err := rows.Scan(&ex.ID, &ex.Manggarai, &ex.Indonesian, &ex.SortOrder); err != nil {
+			return nil, err
+		}
+		out = append(out, ex)
+	}
 	return out, rows.Err()
 }
 
@@ -363,13 +395,19 @@ func (r *wordRepo) CreateWord(ctx context.Context, p repository.CreateWordParams
 			idWordID, mgrWordID = counterpartID, head.ID
 		}
 
-		_, err = tx.Exec(ctx, `
+		var translationID uuid.UUID
+		err = tx.QueryRow(ctx, `
 			INSERT INTO translations (id_word_id, mgr_word_id, notes, source, created_by)
 			VALUES ($1, $2, $3, $4, $5)
-			ON CONFLICT (id_word_id, mgr_word_id) DO NOTHING`,
-			idWordID, mgrWordID, t.Notes, p.Source, p.CreatedBy)
+			ON CONFLICT (id_word_id, mgr_word_id)
+			DO UPDATE SET notes = EXCLUDED.notes, source = EXCLUDED.source
+			RETURNING id`,
+			idWordID, mgrWordID, t.Notes, p.Source, p.CreatedBy).Scan(&translationID)
 		if err != nil {
 			return nil, fmt.Errorf("insert translation: %w", err)
+		}
+		if err := insertExamplesTx(ctx, tx, translationID, t.Examples); err != nil {
+			return nil, err
 		}
 	}
 
@@ -420,6 +458,27 @@ func (r *wordRepo) upsertWordTx(ctx context.Context, tx pgx.Tx, language string,
 	return id, nil
 }
 
+// insertExamplesTx writes the bilingual example sentences for a translation,
+// skipping pairs where both sides are blank. Order is preserved via sort_order.
+func insertExamplesTx(ctx context.Context, tx pgx.Tx, translationID uuid.UUID, examples []entity.TranslationExample) error {
+	sort := 0
+	for _, ex := range examples {
+		mgr, id := strings.TrimSpace(ex.Manggarai), strings.TrimSpace(ex.Indonesian)
+		if mgr == "" && id == "" {
+			continue
+		}
+		_, err := tx.Exec(ctx, `
+			INSERT INTO translation_examples (translation_id, manggarai, indonesian, sort_order)
+			VALUES ($1, $2, $3, $4)`,
+			translationID, mgr, id, sort)
+		if err != nil {
+			return fmt.Errorf("insert translation_example: %w", err)
+		}
+		sort++
+	}
+	return nil
+}
+
 func uniqueSlugTx(ctx context.Context, tx pgx.Tx, base string) (string, error) {
 	if base == "" {
 		base = "kata"
@@ -447,6 +506,99 @@ func (r *wordRepo) Delete(ctx context.Context, id uuid.UUID) error {
 		return apperror.ErrNotFound
 	}
 	return nil
+}
+
+// UpdateWord rewrites a headword's editable fields and rebuilds its translation
+// links and derived words inside a single transaction. The word's language is
+// read from the row and never changed; counterpart words are reused by lemma
+// (via upsertWordTx) just like on create. Old links/derived rows are deleted
+// and re-inserted so the edit is a full replace, not a merge.
+func (r *wordRepo) UpdateWord(ctx context.Context, p repository.UpdateWordParams) (*entity.Word, error) {
+	tx, err := r.db.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx)
+
+	head := &entity.Word{}
+	row := tx.QueryRow(ctx, `
+		UPDATE words
+		SET lemma = $2, part_of_speech = $3, updated_at = NOW()
+		WHERE id = $1
+		RETURNING `+wordColumns,
+		p.ID, p.Headword, p.PartOfSpeech)
+	head, err = scanWord(row)
+	if err != nil {
+		return nil, err
+	}
+
+	targetLang := entity.LangIndonesian
+	if head.Language == entity.LangIndonesian {
+		targetLang = entity.LangManggarai
+	}
+
+	// Drop the headword's existing links and derived words, then rebuild from
+	// the incoming payload. Counterpart words themselves are left in place
+	// (other headwords may still link to them).
+	if head.Language == entity.LangIndonesian {
+		_, err = tx.Exec(ctx, `DELETE FROM translations WHERE id_word_id = $1`, head.ID)
+	} else {
+		_, err = tx.Exec(ctx, `DELETE FROM translations WHERE mgr_word_id = $1`, head.ID)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("clear translations: %w", err)
+	}
+	if _, err = tx.Exec(ctx, `DELETE FROM derived_words WHERE word_id = $1`, head.ID); err != nil {
+		return nil, fmt.Errorf("clear derived_words: %w", err)
+	}
+
+	for _, t := range p.Translations {
+		if strings.TrimSpace(t.Lemma) == "" {
+			continue
+		}
+		counterpartID, err := r.upsertWordTx(ctx, tx, targetLang, t, head.Status, head.CreatedBy)
+		if err != nil {
+			return nil, err
+		}
+
+		idWordID, mgrWordID := head.ID, counterpartID
+		if head.Language == entity.LangManggarai {
+			idWordID, mgrWordID = counterpartID, head.ID
+		}
+
+		var translationID uuid.UUID
+		err = tx.QueryRow(ctx, `
+			INSERT INTO translations (id_word_id, mgr_word_id, notes, source, created_by)
+			VALUES ($1, $2, $3, $4, $5)
+			ON CONFLICT (id_word_id, mgr_word_id)
+			DO UPDATE SET notes = EXCLUDED.notes, source = EXCLUDED.source
+			RETURNING id`,
+			idWordID, mgrWordID, t.Notes, p.Source, head.CreatedBy).Scan(&translationID)
+		if err != nil {
+			return nil, fmt.Errorf("insert translation: %w", err)
+		}
+		if err := insertExamplesTx(ctx, tx, translationID, t.Examples); err != nil {
+			return nil, err
+		}
+	}
+
+	for i, d := range p.Derived {
+		if strings.TrimSpace(d.Word) == "" {
+			continue
+		}
+		_, err := tx.Exec(ctx, `
+			INSERT INTO derived_words (word_id, word, translation, sort_order)
+			VALUES ($1, $2, $3, $4)`,
+			head.ID, d.Word, d.Translation, i)
+		if err != nil {
+			return nil, fmt.Errorf("insert derived_word: %w", err)
+		}
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, err
+	}
+	return head, nil
 }
 
 func (r *wordRepo) CountPublished(ctx context.Context) (int64, error) {

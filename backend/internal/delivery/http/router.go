@@ -15,6 +15,7 @@ type Handlers struct {
 	Submission *handler.SubmissionHandler
 	Review     *handler.ReviewHandler
 	Admin      *handler.AdminHandler
+	Goet       *handler.GoetHandler
 }
 
 func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cache repository.CacheRepository, cfg *config.Config) {
@@ -53,6 +54,8 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	publicGroup.Get("/entries/:slug", h.Dictionary.GetEntryDetail)
 	publicGroup.Post("/entries/:slug/reports", h.Dictionary.ReportEntry)
 	publicGroup.Get("/search", h.Dictionary.Search)
+	publicGroup.Get("/goet", h.Goet.List)
+	publicGroup.Get("/goet/:id", h.Goet.GetByID)
 
 	contributor := api.Group("", middleware.AuthRequired(authUC), middleware.RequireContributor())
 	contributor.Post("/submissions", h.Submission.Submit)
@@ -72,9 +75,18 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 
 	admin := api.Group("/admin", middleware.AuthRequired(authUC), middleware.RequireAdmin())
 	admin.Get("/users", h.Admin.ListUsers)
+	admin.Post("/users", h.Admin.CreateUser)
+	admin.Put("/users/:id", h.Admin.UpdateUser)
+	admin.Patch("/users/:id/password", h.Admin.ResetPassword)
+	admin.Delete("/users/:id", h.Admin.DeleteUser)
 	admin.Patch("/users/:id/toggle-validator", h.Admin.ToggleValidator)
 	admin.Patch("/users/:id/toggle-suspend", h.Admin.ToggleSuspend)
 	admin.Get("/reports", h.Admin.ListReports)
 	admin.Patch("/reports/:id", h.Admin.HandleReport)
 	admin.Get("/analytics", h.Admin.Analytics)
+	admin.Put("/words/:id", h.Admin.UpdateWord)
+	admin.Delete("/words/:id", h.Admin.DeleteWord)
+	admin.Post("/goet", h.Goet.Create)
+	admin.Put("/goet/:id", h.Goet.Update)
+	admin.Delete("/goet/:id", h.Goet.Delete)
 }

@@ -17,12 +17,19 @@ type SubmissionDerivedInput struct {
 	Translation string `json:"translation"`
 }
 
+// SubmissionExampleInput is one bilingual example sentence for a translation.
+type SubmissionExampleInput struct {
+	Manggarai  string `json:"manggarai"`
+	Indonesian string `json:"indonesian"`
+}
+
 // SubmissionTranslationInput is one counterpart lemma proposed for the
-// headword, with its own part of speech and notes.
+// headword, with its own part of speech, notes, and example sentences.
 type SubmissionTranslationInput struct {
-	Lemma        string  `json:"lemma"`
-	PartOfSpeech *string `json:"part_of_speech,omitempty"`
-	Notes        *string `json:"notes,omitempty"`
+	Lemma        string                   `json:"lemma"`
+	PartOfSpeech *string                  `json:"part_of_speech,omitempty"`
+	Notes        *string                  `json:"notes,omitempty"`
+	Examples     []SubmissionExampleInput `json:"examples,omitempty"`
 }
 
 // SubmissionPayload is what a contributor submits: a headword in a chosen

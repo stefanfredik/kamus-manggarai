@@ -61,6 +61,7 @@ export function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarP
   const mainNav: NavItem[] = [
     { to: '/', label: 'Cari Kata', icon: Search, end: true },
     { to: '/jelajah', label: 'Jelajah', icon: BookOpen },
+    { to: '/goet', label: 'Goet', icon: ClipboardList },
   ];
 
   const userNav: NavItem[] = [];

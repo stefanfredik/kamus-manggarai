@@ -12,6 +12,13 @@ export interface DerivedWord {
   created_at: string;
 }
 
+export interface TranslationExample {
+  id: string;
+  manggarai: string;
+  indonesian: string;
+  sort_order: number;
+}
+
 export interface TranslationLink {
   translation_id: string;
   word_id: string;
@@ -20,6 +27,7 @@ export interface TranslationLink {
   part_of_speech?: string;
   notes?: string;
   source?: string;
+  examples?: TranslationExample[];
 }
 
 export interface EntrySummary {

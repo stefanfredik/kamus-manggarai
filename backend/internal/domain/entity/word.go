@@ -29,15 +29,24 @@ type Word struct {
 	UpdatedAt     time.Time  `json:"updated_at"`
 }
 
+// TranslationExample is a bilingual example sentence attached to a translation.
+type TranslationExample struct {
+	ID         uuid.UUID `json:"id"`
+	Manggarai  string    `json:"manggarai"`
+	Indonesian string    `json:"indonesian"`
+	SortOrder  int       `json:"sort_order"`
+}
+
 // TranslationLink is a counterpart word plus the metadata of the relationship.
 type TranslationLink struct {
-	TranslationID uuid.UUID `json:"translation_id"`
-	WordID        uuid.UUID `json:"word_id"`
-	Lemma         string    `json:"lemma"`
-	Slug          string    `json:"slug"`
-	PartOfSpeech  *string   `json:"part_of_speech,omitempty"`
-	Notes         *string   `json:"notes,omitempty"`
-	Source        *string   `json:"source,omitempty"`
+	TranslationID uuid.UUID            `json:"translation_id"`
+	WordID        uuid.UUID            `json:"word_id"`
+	Lemma         string               `json:"lemma"`
+	Slug          string               `json:"slug"`
+	PartOfSpeech  *string              `json:"part_of_speech,omitempty"`
+	Notes         *string              `json:"notes,omitempty"`
+	Source        *string              `json:"source,omitempty"`
+	Examples      []TranslationExample `json:"examples,omitempty"`
 }
 
 // DerivedWord is a "kata turunan" attached to a word.

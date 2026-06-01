@@ -10,6 +10,7 @@ import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
 import { HomePage } from '@/features/dictionary/pages/HomePage';
 import { EntryDetailPage } from '@/features/dictionary/pages/EntryDetailPage';
 import { BrowsePage } from '@/features/dictionary/pages/BrowsePage';
+import { GoetPage } from '@/features/goet/pages/GoetPage';
 import { AuthCallback } from '@/features/auth/components/AuthCallback';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { RegisterPage } from '@/features/auth/pages/RegisterPage';
@@ -74,6 +75,7 @@ export const router = createBrowserRouter([
       { path: '/kata/:slug', element: <EntryDetailPage /> },
       { path: '/jelajah', element: <BrowsePage /> },
       { path: '/jelajah/:letter', element: <BrowsePage /> },
+      { path: '/goet', element: <GoetPage /> },
       { path: '/masuk', element: <LoginPage /> },
       { path: '/daftar', element: <RegisterPage /> },
 
@@ -124,6 +126,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute roles={['admin']}>
             <AdminDashboardPage initialTab="users" />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin/kosakata',
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <AdminDashboardPage initialTab="kosakata" />
           </ProtectedRoute>
         ),
       },

@@ -14,5 +14,10 @@ type UserRepository interface {
 	Create(ctx context.Context, user *entity.User) error
 	UpdateRole(ctx context.Context, id uuid.UUID, role string) error
 	UpdateSuspendStatus(ctx context.Context, id uuid.UUID, suspended bool) error
+	// UpdateProfile changes a user's editable identity fields (name, email, role).
+	UpdateProfile(ctx context.Context, id uuid.UUID, name, email, role string) error
+	// UpdatePassword sets a new bcrypt password hash.
+	UpdatePassword(ctx context.Context, id uuid.UUID, passwordHash string) error
+	Delete(ctx context.Context, id uuid.UUID) error
 	ListAll(ctx context.Context, page, limit int) ([]*entity.User, int64, error)
 }

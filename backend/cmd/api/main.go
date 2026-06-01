@@ -84,6 +84,7 @@ func main() {
 	tokenRepo := postgres.NewTokenRepo(pgPool)
 	cacheRepo := redisrepo.NewCacheRepo(redisClient)
 	analyticsDB := postgres.NewAnalyticsDB(pgPool)
+	goetRepo := postgres.NewGoetRepo(pgPool)
 
 	authUC := usecase.NewAuthUseCase(cfg.JWT, cfg.App.FrontendURL, userRepo, tokenRepo, oauthSvc)
 	notifUC := usecase.NewNotificationUseCase(notifRepo)
@@ -93,6 +94,7 @@ func main() {
 	submissionUC := usecase.NewSubmissionUseCase(submissionRepo, userRepo, wordUC, notifUC)
 	reviewUC := usecase.NewReviewUseCase(submissionRepo, userRepo, wordUC, notifUC)
 	adminUC := usecase.NewAdminUseCase(userRepo, reportRepo, submissionRepo, wordRepo)
+	goetUC := usecase.NewGoetUseCase(goetRepo)
 
 	cookieSecure := cfg.App.Env == "production"
 	handlers := httpdelivery.Handlers{
@@ -100,7 +102,8 @@ func main() {
 		Dictionary: handler.NewDictionaryHandler(wordUC, searchUC, reportUC),
 		Submission: handler.NewSubmissionHandler(submissionUC, notifUC),
 		Review:     handler.NewReviewHandler(reviewUC),
-		Admin:      handler.NewAdminHandler(adminUC, analyticsDB),
+		Admin:      handler.NewAdminHandler(adminUC, wordUC, analyticsDB),
+		Goet:       handler.NewGoetHandler(goetUC),
 	}
 
 	app := fiber.New(fiber.Config{

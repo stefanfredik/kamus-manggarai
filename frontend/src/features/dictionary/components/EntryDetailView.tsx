@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { PenLine, Trash2 } from 'lucide-react';
 import type { EntryDetail } from '../types/dictionary.types';
 import { ReportButton } from './ReportButton';
 
@@ -7,7 +8,14 @@ const LANG_LABEL: Record<string, string> = {
   mgr: 'Bahasa Manggarai',
 };
 
-export function EntryDetailView({ entry }: { entry: EntryDetail }) {
+interface EntryDetailViewProps {
+  entry: EntryDetail;
+  // When provided (admin only), render inline edit/delete controls in the header.
+  onEdit?: () => void;
+  onDelete?: () => void;
+}
+
+export function EntryDetailView({ entry, onEdit, onDelete }: EntryDetailViewProps) {
   const counterpartLang = entry.language === 'id' ? 'mgr' : 'id';
 
   return (
@@ -29,7 +37,25 @@ export function EntryDetailView({ entry }: { entry: EntryDetail }) {
               </span>
             )}
           </div>
-          <ReportButton slug={entry.slug} />
+          <div className="flex items-center gap-2">
+            {onEdit && (
+              <button
+                onClick={onEdit}
+                className="inline-flex items-center gap-1 text-sm text-primary-600 hover:underline"
+              >
+                <PenLine size={15} /> Edit
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={onDelete}
+                className="inline-flex items-center gap-1 text-sm text-rose-600 hover:underline"
+              >
+                <Trash2 size={15} /> Hapus
+              </button>
+            )}
+            <ReportButton slug={entry.slug} />
+          </div>
         </div>
       </header>
 
@@ -65,6 +91,22 @@ export function EntryDetailView({ entry }: { entry: EntryDetail }) {
                   <p className="mt-1.5 border-l-2 border-primary-200 pl-3 text-sm text-slate-600 dark:border-primary-700 dark:text-slate-300">
                     {t.notes}
                   </p>
+                )}
+                {t.examples && t.examples.length > 0 && (
+                  <ul className="mt-2 space-y-1.5">
+                    {t.examples.map((ex) => (
+                      <li
+                        key={ex.id}
+                        className="rounded-md bg-white/60 px-3 py-1.5 text-sm dark:bg-slate-800/40"
+                      >
+                        <span className="italic text-slate-700 dark:text-slate-200">
+                          {ex.manggarai}
+                        </span>
+                        <span className="mx-1.5 text-slate-400">—</span>
+                        <span className="text-slate-600 dark:text-slate-300">{ex.indonesian}</span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
                 {t.source && (
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Sumber: {t.source}</p>

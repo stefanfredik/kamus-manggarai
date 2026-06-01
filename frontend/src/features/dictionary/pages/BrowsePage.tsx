@@ -26,7 +26,7 @@ export function BrowsePage() {
   const { letter: letterParam } = useParams<{ letter?: string }>();
   const activeLetter = letterParam?.toUpperCase();
   const [page, setPage] = useState(1);
-  const limit = 24;
+  const limit = 50;
 
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
@@ -163,19 +163,21 @@ export function BrowsePage() {
             )}
           </>
         ) : list.isLoading ? (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="card animate-pulse">
-                <div className="h-5 w-1/3 rounded bg-slate-200 dark:bg-slate-700" />
-                <div className="mt-2 h-4 w-1/2 rounded bg-slate-200 dark:bg-slate-700" />
+          <div className="space-y-2">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} className="flex animate-pulse items-center justify-between rounded-xl border border-slate-200 px-3.5 py-2.5 dark:border-slate-800">
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-4 w-1/3 rounded bg-slate-200 dark:bg-slate-700" />
+                  <div className="h-3 w-1/2 rounded bg-slate-200 dark:bg-slate-700" />
+                </div>
               </div>
             ))}
           </div>
         ) : list.data && list.data.items.length > 0 ? (
           <>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-2">
               {list.data.items.map((item) => (
-                <EntryCard key={item.id} item={item} />
+                <EntryCard key={item.id} item={item} dense />
               ))}
             </div>
             <Pagination

@@ -30,6 +30,7 @@ type CreateTranslationParams struct {
 	Slug         string
 	PartOfSpeech *string
 	Notes        *string
+	Examples     []entity.TranslationExample
 }
 
 // CreateWordParams creates a headword in SourceLang plus its counterpart words
@@ -47,6 +48,18 @@ type CreateWordParams struct {
 	Derived       []entity.SubmissionDerivedInput
 }
 
+// UpdateWordParams replaces the editable fields of an existing headword and
+// rebuilds its translation links and derived words. The word's language and
+// slug are immutable (changing them would re-key the entry and break links).
+type UpdateWordParams struct {
+	ID           uuid.UUID
+	Headword     string
+	PartOfSpeech *string
+	Source       *string
+	Translations []CreateTranslationParams
+	Derived      []entity.SubmissionDerivedInput
+}
+
 type WordRepository interface {
 	FindByID(ctx context.Context, id uuid.UUID) (*entity.Word, error)
 	FindBySlug(ctx context.Context, slug string) (*entity.Word, error)
@@ -59,6 +72,7 @@ type WordRepository interface {
 	// (case-insensitive), used to reuse words when linking translations.
 	FindWordByLemma(ctx context.Context, language, lemma string) (*entity.Word, error)
 	CreateWord(ctx context.Context, params CreateWordParams) (*entity.Word, error)
+	UpdateWord(ctx context.Context, params UpdateWordParams) (*entity.Word, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 	CountPublished(ctx context.Context) (int64, error)
 }

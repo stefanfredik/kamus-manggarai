@@ -8,10 +8,16 @@ export interface SubmissionDerivedInput {
 
 export type Language = 'id' | 'mgr';
 
+export interface SubmissionExampleInput {
+  manggarai: string;
+  indonesian: string;
+}
+
 export interface SubmissionTranslationInput {
   lemma: string;
   part_of_speech?: string;
   notes?: string;
+  examples?: SubmissionExampleInput[];
 }
 
 export interface SubmissionPayload {

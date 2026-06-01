@@ -95,6 +95,7 @@ func (u *WordUseCase) CreateWord(ctx context.Context, input CreateWordInput, cre
 			Slug:         slugFor(t.Lemma),
 			PartOfSpeech: t.PartOfSpeech,
 			Notes:        t.Notes,
+			Examples:     mapExamples(t.Examples),
 		})
 	}
 	if len(translations) == 0 {
@@ -126,12 +127,98 @@ func (u *WordUseCase) CreateWord(ctx context.Context, input CreateWordInput, cre
 	return word, nil
 }
 
+// UpdateWordInput is the editable shape of an existing headword.
+type UpdateWordInput struct {
+	Headword     string                              `json:"headword" validate:"required,min=1"`
+	PartOfSpeech *string                             `json:"part_of_speech,omitempty"`
+	Source       *string                             `json:"source,omitempty"`
+	Translations []entity.SubmissionTranslationInput `json:"translations" validate:"required,min=1,dive"`
+	Derived      []entity.SubmissionDerivedInput     `json:"derived,omitempty"`
+}
+
+// UpdateWord edits an existing headword: its lemma, part of speech, source, and
+// the full set of translation links and derived words. Language and slug are
+// immutable. Caches are busted broadly since edits can touch counterpart words.
+func (u *WordUseCase) UpdateWord(ctx context.Context, id uuid.UUID, input UpdateWordInput) (*entity.Word, error) {
+	if errs := validator.Validate(&input); len(errs) > 0 {
+		return nil, apperror.ErrValidation.WithMessage(errs.Error())
+	}
+
+	translations := make([]repository.CreateTranslationParams, 0, len(input.Translations))
+	for _, t := range input.Translations {
+		if strings.TrimSpace(t.Lemma) == "" {
+			continue
+		}
+		translations = append(translations, repository.CreateTranslationParams{
+			Lemma:        strings.TrimSpace(t.Lemma),
+			Slug:         slugFor(t.Lemma),
+			PartOfSpeech: t.PartOfSpeech,
+			Notes:        t.Notes,
+			Examples:     mapExamples(t.Examples),
+		})
+	}
+	if len(translations) == 0 {
+		return nil, apperror.ErrValidation.WithMessage("minimal satu terjemahan wajib diisi")
+	}
+
+	word, err := u.wordRepo.UpdateWord(ctx, repository.UpdateWordParams{
+		ID:           id,
+		Headword:     strings.TrimSpace(input.Headword),
+		PartOfSpeech: input.PartOfSpeech,
+		Source:       input.Source,
+		Translations: translations,
+		Derived:      input.Derived,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	u.bustWordCaches(word.Slug)
+	return word, nil
+}
+
+// DeleteWord removes a headword. Its translation links, derived words, and any
+// reports cascade away via foreign keys; counterpart words remain.
+func (u *WordUseCase) DeleteWord(ctx context.Context, id uuid.UUID) error {
+	word, err := u.wordRepo.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	if err := u.wordRepo.Delete(ctx, id); err != nil {
+		return err
+	}
+	u.bustWordCaches(word.Slug)
+	return nil
+}
+
+func (u *WordUseCase) bustWordCaches(slug string) {
+	_ = u.cache.Delete(context.Background(), "word:detail:"+slug)
+	_ = u.cache.DeletePattern(context.Background(), "word:list:*")
+	_ = u.cache.DeletePattern(context.Background(), "search:*")
+}
+
 func slugFor(lemma string) string {
 	s := validator.Slugify(lemma)
 	if s == "" {
 		s = "kata"
 	}
 	return s
+}
+
+// mapExamples converts submission example inputs into entity examples, dropping
+// pairs where both sides are blank.
+func mapExamples(in []entity.SubmissionExampleInput) []entity.TranslationExample {
+	out := make([]entity.TranslationExample, 0, len(in))
+	for _, ex := range in {
+		if strings.TrimSpace(ex.Manggarai) == "" && strings.TrimSpace(ex.Indonesian) == "" {
+			continue
+		}
+		out = append(out, entity.TranslationExample{
+			Manggarai:  strings.TrimSpace(ex.Manggarai),
+			Indonesian: strings.TrimSpace(ex.Indonesian),
+		})
+	}
+	return out
 }
 
 func (u *WordUseCase) uniqueSlug(ctx context.Context, base string) (string, error) {

@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  contributionApi,
-  type Language,
-  type SubmissionPayload,
-  type SubmissionDerivedInput,
-  type SubmissionExampleInput,
-  type SubmissionTranslationInput,
-} from '../api/contributionApi';
+import { adminApi, type WordUpdatePayload } from '../api/adminApi';
+import type {
+  SubmissionDerivedInput,
+  SubmissionExampleInput,
+  SubmissionTranslationInput,
+} from '@/features/contribution/api/contributionApi';
+import type { EntryDetail, Language } from '@/features/dictionary/types/dictionary.types';
 import { extractError } from '@/lib/axios';
 import { Modal } from '@/shared/components/Modal';
 import { useToast } from '@/shared/components/Toast';
@@ -54,53 +53,67 @@ function cleanExamples(
   return cleaned.length > 0 ? cleaned : undefined;
 }
 
-interface SubmissionFormModalProps {
+interface WordEditModalProps {
   open: boolean;
   onClose: () => void;
+  entry: EntryDetail;
 }
 
-export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps) {
+export function WordEditModal({ open, onClose, entry }: WordEditModalProps) {
   const toast = useToast();
   const qc = useQueryClient();
 
-  const [sourceLang, setSourceLang] = useState<Language>('mgr');
-  const [headword, setHeadword] = useState('');
-  const [partOfSpeech, setPartOfSpeech] = useState('');
+  // Language and direction are immutable for an existing word; only the source
+  // word maps to a single source, so we read it from the first translation link.
+  const sourceLang = entry.language as Language;
+  const targetLang: Language = sourceLang === 'mgr' ? 'id' : 'mgr';
+
+  const [headword, setHeadword] = useState(entry.lemma);
+  const [partOfSpeech, setPartOfSpeech] = useState(entry.part_of_speech ?? '');
   const [source, setSource] = useState('');
   const [translations, setTranslations] = useState<TranslationDraft[]>([emptyTranslation()]);
   const [derived, setDerived] = useState<SubmissionDerivedInput[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const targetLang: Language = sourceLang === 'mgr' ? 'id' : 'mgr';
-
-  function reset() {
-    setSourceLang('mgr');
-    setHeadword('');
-    setPartOfSpeech('');
-    setSource('');
-    setTranslations([emptyTranslation()]);
-    setDerived([]);
+  // Re-seed the form whenever a different entry is opened.
+  useEffect(() => {
+    if (!open) return;
+    setHeadword(entry.lemma);
+    setPartOfSpeech(entry.part_of_speech ?? '');
+    setSource(entry.translations.find((t) => t.source)?.source ?? '');
+    setTranslations(
+      entry.translations.length > 0
+        ? entry.translations.map((t) => ({
+            lemma: t.lemma,
+            part_of_speech: t.part_of_speech ?? '',
+            notes: t.notes ?? '',
+            examples: (t.examples ?? []).map((ex) => ({
+              manggarai: ex.manggarai,
+              indonesian: ex.indonesian,
+            })),
+          }))
+        : [emptyTranslation()],
+    );
+    setDerived(
+      entry.derived_words.map((d) => ({ word: d.word, translation: d.translation })),
+    );
     setError(null);
-  }
+  }, [open, entry]);
 
-  const submitMutation = useMutation({
-    mutationFn: (payload: SubmissionPayload) => contributionApi.submit(payload),
-    onSuccess: (sub) => {
-      const msg =
-        sub.status === 'approved'
-          ? 'Kata berhasil dipublikasikan.'
-          : 'Submission masuk antrian review. Anda akan diberi notifikasi setelah diproses.';
-      toast.success(msg);
-      qc.invalidateQueries({ queryKey: ['submissions', 'mine'] });
-      reset();
+  const updateMutation = useMutation({
+    mutationFn: (payload: WordUpdatePayload) => adminApi.updateWord(entry.id, payload),
+    onSuccess: () => {
+      toast.success('Kosakata berhasil diperbarui.');
+      qc.invalidateQueries({ queryKey: ['entry', entry.slug] });
+      qc.invalidateQueries({ queryKey: ['admin', 'words'] });
+      qc.invalidateQueries({ queryKey: ['entries'] });
       onClose();
     },
     onError: (err) => setError(extractError(err)),
   });
 
   function close() {
-    if (submitMutation.isPending) return;
-    reset();
+    if (updateMutation.isPending) return;
     onClose();
   }
 
@@ -182,8 +195,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
       return;
     }
 
-    submitMutation.mutate({
-      source_lang: sourceLang,
+    updateMutation.mutate({
       headword: headword.trim(),
       part_of_speech: partOfSpeech || undefined,
       source: source || undefined,
@@ -196,48 +208,19 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
     <Modal
       open={open}
       onClose={close}
-      dismissible={!submitMutation.isPending}
-      labelledBy="submit-modal-title"
+      dismissible={!updateMutation.isPending}
+      labelledBy="edit-word-title"
       className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-pop dark:bg-slate-800"
     >
-      <h2 id="submit-modal-title" className="text-xl font-bold">
-        Submit Kosakata Baru
+      <h2 id="edit-word-title" className="text-xl font-bold">
+        Edit Kosakata
       </h2>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-        Pilih arah, isi kata utama, lalu tambahkan satu atau lebih terjemahan. Kata turunan
-        bersifat opsional.
+        Mengubah kata utama Bahasa {LANG_LABEL[sourceLang]} beserta terjemahan dan kata turunannya.
+        Arah bahasa tidak dapat diubah.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-        {/* Direction selector */}
-        <div>
-          <span className="mb-1 block text-sm font-medium">Arah</span>
-          <div className="inline-flex rounded-xl bg-slate-100 p-0.5 text-sm dark:bg-slate-700/40">
-            <button
-              type="button"
-              onClick={() => setSourceLang('mgr')}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
-                sourceLang === 'mgr'
-                  ? 'bg-white text-primary-700 shadow-sm dark:bg-slate-700 dark:text-primary-200'
-                  : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
-              }`}
-            >
-              Manggarai → Indonesia
-            </button>
-            <button
-              type="button"
-              onClick={() => setSourceLang('id')}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
-                sourceLang === 'id'
-                  ? 'bg-white text-primary-700 shadow-sm dark:bg-slate-700 dark:text-primary-200'
-                  : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
-              }`}
-            >
-              Indonesia → Manggarai
-            </button>
-          </div>
-        </div>
-
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label className="mb-1 block text-sm font-medium">
@@ -248,7 +231,6 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
               onChange={(e) => setHeadword(e.target.value)}
               className="input"
               required
-              placeholder={sourceLang === 'mgr' ? 'Contoh: hang' : 'Contoh: makan'}
             />
           </div>
           <div>
@@ -443,11 +425,11 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
         )}
 
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={close} disabled={submitMutation.isPending} className="btn-outline">
+          <button type="button" onClick={close} disabled={updateMutation.isPending} className="btn-outline">
             Batal
           </button>
-          <button type="submit" disabled={submitMutation.isPending} className="btn-primary">
-            {submitMutation.isPending ? 'Mengirim…' : 'Kirim Submission'}
+          <button type="submit" disabled={updateMutation.isPending} className="btn-primary">
+            {updateMutation.isPending ? 'Menyimpan…' : 'Simpan Perubahan'}
           </button>
         </div>
       </form>
