@@ -385,3 +385,10 @@ func (u *AuthUseCase) UpdateProfile(ctx context.Context, userID uuid.UUID, name,
 
 	return u.userRepo.UpdateProfile(ctx, userID, name, email, user.Role)
 }
+
+func (u *AuthUseCase) GetLeaderboard(ctx context.Context, limit int) ([]*entity.LeaderboardRow, error) {
+	if limit <= 0 || limit > 100 {
+		limit = 50
+	}
+	return u.userRepo.GetLeaderboard(ctx, limit)
+}

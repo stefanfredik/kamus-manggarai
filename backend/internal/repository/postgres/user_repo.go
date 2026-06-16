@@ -163,3 +163,28 @@ func scanUser(row rowScanner) (*entity.User, error) {
 	u.IsGoogleUser = u.GoogleID != nil
 	return u, nil
 }
+
+func (r *userRepo) GetLeaderboard(ctx context.Context, limit int) ([]*entity.LeaderboardRow, error) {
+	rows, err := r.db.Query(ctx, `
+		SELECT u.id, u.name, u.avatar_url, COUNT(s.id) AS approved_count
+		FROM users u
+		JOIN submissions s ON s.submitted_by = u.id
+		WHERE s.status = 'approved' AND u.is_suspended = false
+		GROUP BY u.id, u.name, u.avatar_url
+		ORDER BY approved_count DESC, u.name ASC
+		LIMIT $1`, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	leaderboard := make([]*entity.LeaderboardRow, 0)
+	for rows.Next() {
+		row := &entity.LeaderboardRow{}
+		if err := rows.Scan(&row.UserID, &row.Name, &row.AvatarURL, &row.ApprovedCount); err != nil {
+			return nil, err
+		}
+		leaderboard = append(leaderboard, row)
+	}
+	return leaderboard, nil
+}

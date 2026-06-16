@@ -37,3 +37,10 @@ func (u *User) CanReview() bool {
 func (u *User) CanAutoPublish() bool {
 	return u.IsAdmin() || u.IsValidator()
 }
+
+type LeaderboardRow struct {
+	UserID        uuid.UUID `json:"user_id"`
+	Name          string    `json:"name"`
+	AvatarURL     *string   `json:"avatar_url,omitempty"`
+	ApprovedCount int64     `json:"approved_count"`
+}

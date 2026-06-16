@@ -60,6 +60,7 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	publicGroup.Get("/entries/:slug", h.Dictionary.GetEntryDetail)
 	publicGroup.Post("/entries/:slug/reports", h.Dictionary.ReportEntry)
 	publicGroup.Get("/search", h.Dictionary.Search)
+	publicGroup.Get("/contributors/leaderboard", h.Auth.GetLeaderboard)
 	publicGroup.Get("/goet", h.Goet.List)
 	publicGroup.Get("/goet/:id", h.Goet.GetByID)
 	publicGroup.Get("/dialects", h.Dialect.FindAll)

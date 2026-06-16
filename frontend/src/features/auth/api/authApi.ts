@@ -1,5 +1,5 @@
 import { api } from '@/lib/axios';
-import type { ApiResponse, User } from '@/types/api.types';
+import type { ApiResponse, User, LeaderboardRow } from '@/types/api.types';
 
 export interface AuthResult {
   access_token: string;
@@ -33,5 +33,11 @@ export const authApi = {
   },
   async updateProfile(input: { name: string; email: string }): Promise<void> {
     await api.put('/auth/profile', input);
+  },
+  async getLeaderboard(limit?: number): Promise<LeaderboardRow[]> {
+    const resp = await api.get<ApiResponse<LeaderboardRow[]>>('/contributors/leaderboard', {
+      params: { limit },
+    });
+    return resp.data.data;
   },
 };

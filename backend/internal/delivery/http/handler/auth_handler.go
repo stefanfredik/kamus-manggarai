@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -233,5 +234,19 @@ func (h *AuthHandler) UpdateProfile(c fiber.Ctx) error {
 		return response.Error(c, err)
 	}
 	return response.Success(c, fiber.Map{"message": "profil berhasil diperbarui"})
+}
+
+func (h *AuthHandler) GetLeaderboard(c fiber.Ctx) error {
+	limit := 50
+	if l := c.Query("limit"); l != "" {
+		if parsed, err := strconv.Atoi(l); err == nil && parsed > 0 {
+			limit = parsed
+		}
+	}
+	leaderboard, err := h.authUC.GetLeaderboard(c.Context(), limit)
+	if err != nil {
+		return response.Error(c, err)
+	}
+	return response.Success(c, leaderboard)
 }
 

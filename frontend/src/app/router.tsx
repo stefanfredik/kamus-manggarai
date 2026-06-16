@@ -36,6 +36,9 @@ const AdminDashboardPage = lazy(() =>
 const ProfilePage = lazy(() =>
   import('@/features/auth/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
 );
+const LeaderboardPage = lazy(() =>
+  import('@/features/auth/pages/LeaderboardPage').then((m) => ({ default: m.LeaderboardPage })),
+);
 
 function SuspenseFallback() {
   return (
@@ -82,6 +85,7 @@ export const router = createBrowserRouter([
       { path: '/jelajah', element: <BrowsePage /> },
       { path: '/jelajah/:letter', element: <BrowsePage /> },
       { path: '/goet', element: <GoetPage /> },
+      { path: '/pahlawan', element: <LeaderboardPage /> },
       { path: '/masuk', element: <LoginPage /> },
       { path: '/daftar', element: <RegisterPage /> },
 

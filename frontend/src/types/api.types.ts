@@ -30,3 +30,10 @@ export interface User {
   updated_at: string;
   is_google_user: boolean;
 }
+
+export interface LeaderboardRow {
+  user_id: string;
+  name: string;
+  avatar_url?: string;
+  approved_count: number;
+}

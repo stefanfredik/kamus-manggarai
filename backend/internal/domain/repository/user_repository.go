@@ -20,4 +20,5 @@ type UserRepository interface {
 	UpdatePassword(ctx context.Context, id uuid.UUID, passwordHash string) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	ListAll(ctx context.Context, page, limit int) ([]*entity.User, int64, error)
+	GetLeaderboard(ctx context.Context, limit int) ([]*entity.LeaderboardRow, error)
 }

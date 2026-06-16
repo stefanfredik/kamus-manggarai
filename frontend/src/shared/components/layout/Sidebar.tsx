@@ -15,6 +15,7 @@ import {
   LogOut,
   ArrowRight,
   User as UserIcon,
+  Trophy,
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTheme } from '@/shared/theme';
@@ -64,6 +65,7 @@ export function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarP
     { to: '/', label: 'Cari Kata', icon: Search, end: true },
     { to: '/jelajah', label: 'Jelajah', icon: BookOpen },
     { to: '/goet', label: 'Goet', icon: ClipboardList },
+    { to: '/pahlawan', label: 'Pahlawan Bahasa', icon: Trophy },
   ];
 
   const userNav: NavItem[] = [];
