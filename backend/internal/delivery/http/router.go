@@ -20,9 +20,11 @@ type Handlers struct {
 }
 
 func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cache repository.CacheRepository, cfg *config.Config) {
-	app.Get("/health", func(c fiber.Ctx) error {
+	healthHandler := func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "ok", "service": "kamus-manggarai"})
-	})
+	}
+	app.Get("/health", healthHandler)
+	app.Head("/health", healthHandler)
 
 	api := app.Group("/api/v1")
 	api.Use(middleware.CORS(cfg.App.FrontendURL))
