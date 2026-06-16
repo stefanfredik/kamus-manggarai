@@ -43,16 +43,16 @@ export function HomePage() {
         @stefanfredik
       </a>
       <a
-        href="https://www.facebook.com/fredikstefan"
+        href="https://www.facebook.com/stefanfredik"
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1.5 font-medium text-slate-600 transition hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400"
-        aria-label="Facebook Fredik Stefan"
+        aria-label="Facebook Stefan Fredik"
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="currentColor">
           <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06C2 17.08 5.66 21.25 10.44 22v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.46h-1.25c-1.24 0-1.63.77-1.63 1.56v1.9h2.77l-.44 2.91h-2.33V22C18.34 21.25 22 17.08 22 12.06Z" />
         </svg>
-        @fredikstefan
+        @stefanfredik
       </a>
     </footer>
   );
