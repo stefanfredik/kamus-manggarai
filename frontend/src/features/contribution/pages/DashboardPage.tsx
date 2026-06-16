@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { PenLine, ClipboardList } from 'lucide-react';
+import { Flag, PenLine, ClipboardList } from 'lucide-react';
 import { contributionApi } from '../api/contributionApi';
 import { SubmissionFormModal } from '../components/SubmissionFormModal';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -38,7 +38,7 @@ export function DashboardPage() {
         <StatCard label="Ditolak" value={stats.rejected} accent="rose" />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-3">
         <button
           onClick={() => setModalOpen(true)}
           className="card text-left transition-all hover:-translate-y-0.5 hover:shadow-card"
@@ -55,6 +55,13 @@ export function DashboardPage() {
           </div>
           <h2 className="mt-3 font-semibold">Riwayat Submission</h2>
           <p className="mt-1 text-sm text-slate-500">Lihat status submission yang pernah Anda kirim.</p>
+        </Link>
+        <Link to="/dashboard/reports" className="card transition-all hover:-translate-y-0.5 hover:shadow-card">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300">
+            <Flag size={20} />
+          </div>
+          <h2 className="mt-3 font-semibold">Laporan Saya</h2>
+          <p className="mt-1 text-sm text-slate-500">Pantau laporan koreksi kosakata yang pernah Anda kirim.</p>
         </Link>
       </div>
 

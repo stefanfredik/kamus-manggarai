@@ -60,6 +60,7 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	contributor := api.Group("", middleware.AuthRequired(authUC), middleware.RequireContributor())
 	contributor.Post("/submissions", h.Submission.Submit)
 	contributor.Get("/submissions", h.Submission.ListMine)
+	contributor.Get("/reports", h.Dictionary.ListMyReports)
 	contributor.Get("/submissions/:id", h.Submission.GetByID)
 	contributor.Put("/submissions/:id", h.Submission.Edit)
 	contributor.Get("/notifications", h.Submission.ListNotifications)

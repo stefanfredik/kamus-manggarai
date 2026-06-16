@@ -28,6 +28,11 @@ export function EntryCard({ item, dense = false }: { item: EntrySummary; dense?:
             }`}
           >
             {item.lemma}
+            {item.homonym_number != null && (
+              <sup className="ml-0.5 text-[0.65em] font-semibold text-slate-400 dark:text-slate-500">
+                {item.homonym_number}
+              </sup>
+            )}
           </h3>
           <span className="shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
             {LANG_LABEL[item.language] ?? item.language}

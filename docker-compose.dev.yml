@@ -40,20 +40,6 @@ services:
     networks:
       - kamus_net
 
-  meilisearch:
-    image: getmeili/meilisearch:v1.7
-    container_name: kamus_meilisearch_dev
-    environment:
-      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-meili_master_key_dev_change_me}
-      MEILI_ENV: development
-    volumes:
-      - meilisearch_data_dev:/meili_data
-    ports:
-      - "7700:7700"
-    restart: unless-stopped
-    networks:
-      - kamus_net
-
   backend:
     build:
       context: ./backend
@@ -69,6 +55,8 @@ services:
     volumes:
       # Bind-mount source for hot reload.
       - ./backend:/app
+      # Read-only dictionary source data for importer scripts.
+      - ./data:/data:ro
       # Keep the build cache / tmp dir inside the container.
       - backend_tmp_dev:/app/tmp
       # Cache Go modules across restarts.
@@ -78,8 +66,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      meilisearch:
-        condition: service_started
     restart: unless-stopped
     networks:
       - kamus_net
@@ -123,7 +109,6 @@ services:
 volumes:
   postgres_data_dev:
   redis_data_dev:
-  meilisearch_data_dev:
   backend_tmp_dev:
   go_mod_cache_dev:
 

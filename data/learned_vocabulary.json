@@ -1,0 +1,2260 @@
+[
+  {
+    "kata_indonesia": "wie",
+    "manggarai": [
+      "wie"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hang wie",
+      "indonesia": "Makan malam"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "malam",
+    "manggarai": [
+      "wie"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ding wie",
+      "indonesia": "Entar malam"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bisa",
+    "manggarai": [
+      "ngance"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku ngance gau",
+      "indonesia": "Saya bisa bekerja"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "membuat",
+    "manggarai": [
+      "pande"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku ngance pande code",
+      "indonesia": "Saya bisa membuat program"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "mencari",
+    "manggarai": [
+      "kawe"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku ngance kawe web",
+      "indonesia": "Saya bisa mencari di web"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "mandi",
+    "manggarai": [
+      "cebong"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku gorin cebong",
+      "indonesia": "Saya akan mandi"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "malas",
+    "manggarai": [
+      "lago"
+    ],
+    "kategori": "kata_sifat",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku lago",
+      "indonesia": "Saya malas"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "hanya sekali",
+    "manggarai": [
+      "ca kali"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ca kali ge",
+      "indonesia": "Hanya sekali saja"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "-nya (posesif/definitif)",
+    "manggarai": [
+      "na"
+    ],
+    "kategori": "partikel",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Mbaru na",
+      "indonesia": "Rumahnya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "saja (penekanan)",
+    "manggarai": [
+      "ge"
+    ],
+    "kategori": "partikel",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ca kali ge",
+      "indonesia": "Hanya sekali saja"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "jika",
+    "manggarai": [
+      "eme"
+    ],
+    "kategori": "konjungsi",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Eme hau mai, ite hang cama",
+      "indonesia": "Jika kamu datang, kita makan bersama"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Maryo",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "nanti / sebentar",
+    "manggarai": [
+      "ding"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ding wie ite hang cama",
+      "indonesia": "Nanti malam kita makan bersama"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Maryo",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "pukul / memukul",
+    "manggarai": [
+      "kakal"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hia kakal asu",
+      "indonesia": "Dia memukul anjing"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Maryo",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "mengajar",
+    "manggarai": [
+      "tuing"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku laing tuing hau belajar bahasa Manggarai",
+      "indonesia": "Saya sedang mengajar kamu belajar bahasa Manggarai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Maryo",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "uang",
+    "manggarai": [
+      "seng"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Manga seng gah?",
+      "indonesia": "Ada uang kah?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Maryo",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "ya (sopan)",
+    "manggarai": [
+      "yo"
+    ],
+    "kategori": "partikel",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Makasih banyak yo",
+      "indonesia": "Terima kasih banyak ya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "ya (tidak sopan)",
+    "manggarai": [
+      "io"
+    ],
+    "kategori": "partikel",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Io",
+      "indonesia": "Ya (kasar)"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "dimana",
+    "manggarai": [
+      "nia",
+      "niawan"
+    ],
+    "kategori": "kata_tanya",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Niawan hau lako gah?",
+      "indonesia": "Kamu pergi ke mana?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "di / di dalam",
+    "manggarai": [
+      "one"
+    ],
+    "kategori": "kata_depan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku ngance kawe kosakata one kamus",
+      "indonesia": "Saya bisa mencari kosakata di kamus"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Apa yang kamu buat?",
+    "manggarai": [
+      "apa pande gau gah"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Apa pande gau gah?",
+      "indonesia": "Apa yang kamu buat?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bosku",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Apa yang sedang kamu buat?",
+    "manggarai": [
+      "Pande apa hau gah?"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pande apa hau gah?",
+      "indonesia": "Apa yang sedang kamu buat?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "tidak ada",
+    "manggarai": [
+      "toe manga"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ata bana toe manga reba ra",
+      "indonesia": "Orang lain tidak ada handsome"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "coba kamu ulangi",
+    "manggarai": [
+      "coba ulang kole lau"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Coba ulang kole lau!",
+      "indonesia": "Coba kamu ulangi!"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "kembali, lagi",
+    "manggarai": [
+      "kole"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ulang kole",
+      "indonesia": "Ulangi lagi"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sudah",
+    "manggarai": [
+      "wale"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Wale pake bahasa manggarai ra",
+      "indonesia": "Sudah pakai bahasa manggarai kan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sudah",
+    "manggarai": [
+      "puli"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku puli hang",
+      "indonesia": "Saya sudah makan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "apa kabar",
+    "manggarai": [
+      "co'o kabar"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Selamat pagi, co'o kabar?",
+      "indonesia": "Selamat pagi, apa kabar?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "selamat pagi",
+    "manggarai": [
+      "selamat pagi"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Selamat pagi, Bosku!",
+      "indonesia": "Selamat pagi, Bosku!"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "belanja",
+    "manggarai": [
+      "belanja"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ngance mo belanja hau ko?",
+      "indonesia": "Bisa pergi belanja kamu kan?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "berapa",
+    "manggarai": [
+      "pisa"
+    ],
+    "kategori": "kata_tanya",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pisa hargana?",
+      "indonesia": "Berapa harganya?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "saya mau pergi beli makanan",
+    "manggarai": [
+      "aku niak mo weli hang"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku niak mo weli hang",
+      "indonesia": "Saya mau pergi beli makanan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "berapa harganya",
+    "manggarai": [
+      "pisa hargana?"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pisa hargana?",
+      "indonesia": "Berapa harganya?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sudah",
+    "manggarai": [
+      "bae"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Bae sembayang hau ko?",
+      "indonesia": "Sudah sembahyang kamu kan?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "belum",
+    "manggarai": [
+      "toé bae"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku toé bae sembayang",
+      "indonesia": "Saya belum sembahyang"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "baru",
+    "manggarai": [
+      "weru"
+    ],
+    "kategori": "kata_sifat",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Bahasa Manggarai ko bahasa weru bagiku",
+      "indonesia": "Bahasa Manggarai adalah bahasa baru bagiku"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "untukku",
+    "manggarai": [
+      "bagiku"
+    ],
+    "kategori": "kata_ganti",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Bahasa weru bagiku",
+      "indonesia": "Bahasa baru untukku"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "harus",
+    "manggarai": [
+      "kudut"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku kudut pulé",
+      "indonesia": "Saya harus belajar"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "untukku",
+    "manggarai": [
+      "latang aku"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Bahasa weru latang aku",
+      "indonesia": "Bahasa baru untukku"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bicara",
+    "manggarai": [
+      "tombo",
+      "jaong"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku ngance tombo bahasa Manggarai",
+      "indonesia": "Saya bisa bicara bahasa Manggarai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "memberi tahu",
+    "manggarai": [
+      "tae"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tae aku",
+      "indonesia": "Beri tahu saya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "dengan/dari",
+    "manggarai": [
+      "agu"
+    ],
+    "kategori": "kata_hubung",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Belajar agu kopi.flores",
+      "indonesia": "Belajar dari kopi.flores"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "simpan",
+    "manggarai": [
+      "simpan"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku poli simpan kosakata",
+      "indonesia": "Saya sudah simpan kosakata"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "pakai",
+    "manggarai": [
+      "pake"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pake bahasa Manggarai",
+      "indonesia": "Pakai bahasa Manggarai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "kepada",
+    "manggarai": [
+      "le"
+    ],
+    "kategori": "kata_hubung",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Makasih le kopi.flores",
+      "indonesia": "Terima kasih kepada kopi.flores"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya sudah makan",
+    "manggarai": [
+      "Aku puli hang"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku puli hang",
+      "indonesia": "Saya sudah makan"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Kamu sudah makan kah?",
+    "manggarai": [
+      "Hau gah puli hang?"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hau gah puli hang?",
+      "indonesia": "Kamu sudah makan kah?"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Kamu sudah makan kan?",
+    "manggarai": [
+      "Hau puli hang ko?"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hau puli hang ko?",
+      "indonesia": "Kamu sudah makan kan?"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya akan makan malam",
+    "manggarai": [
+      "Aku gorin hang wie"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku gorin hang wie",
+      "indonesia": "Saya akan makan malam"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya sedang membuat program",
+    "manggarai": [
+      "Aku laing pande code"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku laing pande code",
+      "indonesia": "Saya sedang membuat program"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya di rumah",
+    "manggarai": [
+      "Aku one mbaru"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku one mbaru",
+      "indonesia": "Saya di rumah"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Kamu di mana?",
+    "manggarai": [
+      "Niawan hau?"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Niawan hau?",
+      "indonesia": "Kamu di mana?"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya bisa membuat",
+    "manggarai": [
+      "Aku ngance pande"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku ngance pande",
+      "indonesia": "Saya bisa membuat"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya mau makan",
+    "manggarai": [
+      "Aku niak hang"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku niak hang",
+      "indonesia": "Saya mau makan"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya tidak bisa membuat",
+    "manggarai": [
+      "Aku toé ngance pande"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku toé ngance pande",
+      "indonesia": "Saya tidak bisa membuat"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya lagi santai ya",
+    "manggarai": [
+      "Aku laing sante ra"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku laing sante ra",
+      "indonesia": "Saya lagi santai ya"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Berapa harganya?",
+    "manggarai": [
+      "Pisa hargana?"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pisa hargana?",
+      "indonesia": "Berapa harganya?"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Jika kamu datang, kita makan bersama",
+    "manggarai": [
+      "Eme hau mai, ite hang cama"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Eme hau mai, ite hang cama",
+      "indonesia": "Jika kamu datang, kita makan bersama"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Nanti malam kita makan bersama",
+    "manggarai": [
+      "Ding wie ite hang cama"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ding wie ite hang cama",
+      "indonesia": "Nanti malam kita makan bersama"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Saya sudah mandi, sekarang lagi santai",
+    "manggarai": [
+      "Aku puli cebong, wale laing sante"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku puli cebong, wale laing sante",
+      "indonesia": "Saya sudah mandi, sekarang lagi santai"
+    },
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Paragraf tentang aktivitas sehari-hari",
+    "manggarai": [
+      "Aku puli cebong leso bari. Wale aku laing pande code one mbaru. Aku niak mo hang wie ding. Eme hau mai, ite hang cama."
+    ],
+    "kategori": "paragraf",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku puli cebong leso bari. Wale aku laing pande code one mbaru. Aku niak mo hang wie ding. Eme hau mai, ite hang cama.",
+      "indonesia": "Saya sudah mandi pagi ini. Sekarang saya sedang membuat program di rumah. Saya mau makan malam nanti. Jika kamu datang, kita makan bersama."
+    },
+    "sumber": "pembuatan_paragraf",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Paragraf tentang belajar bahasa Manggarai",
+    "manggarai": [
+      "Aku laing tuing hau belajar bahasa Manggarai. Hau ngance pande ca kalimat baru? Aku ngance kawe kosakata one kamus. Makasih banyak yo tuing aku!"
+    ],
+    "kategori": "paragraf",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku laing tuing hau belajar bahasa Manggarai. Hau ngance pande ca kalimat baru? Aku ngance kawe kosakata one kamus. Makasih banyak yo tuing aku!",
+      "indonesia": "Saya sedang mengajar kamu belajar bahasa Manggarai. Kamu bisa membuat satu kalimat baru? Saya bisa mencari kosakata di kamus. Terima kasih banyak ya ajar saya!"
+    },
+    "sumber": "pembuatan_paragraf",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Permintaan 10 sapaan menanyakan kabar dalam bahasa Indonesia untuk diterjemahkan ke bahasa Manggarai",
+    "manggarai": [
+      "Menunggu terjemahan dari kopi.flores"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Co'o kabar?",
+      "indonesia": "Apa kabar?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "apa kabar",
+    "manggarai": [
+      "co'o kabar gah"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Co'o kabar gah?",
+      "indonesia": "Apa kabar?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bagaimana kabarmu",
+    "manggarai": [
+      "co'o kabar gau gah"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Co'o kabar gau gah?",
+      "indonesia": "Bagaimana kabarmu?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "apa kabar hari ini",
+    "manggarai": [
+      "co'o kabar leso hoo gah"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Co'o kabar leso hoo gah?",
+      "indonesia": "Apa kabar hari ini?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "kabar baik",
+    "manggarai": [
+      "kabar di'a"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Kabar di'a?",
+      "indonesia": "Kabar baik?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "selamat pagi",
+    "manggarai": [
+      "tabe gula"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe gula, co'o kabar?",
+      "indonesia": "Selamat pagi, apa kabar?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "selamat siang",
+    "manggarai": [
+      "tabe leso"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe leso, kabar di'a?",
+      "indonesia": "Selamat siang, kabar baik?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "selamat sore",
+    "manggarai": [
+      "tabe mane"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe mane, co'o kabar gau gah?",
+      "indonesia": "Selamat sore, bagaimana kabarmu?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "selamat malam",
+    "manggarai": [
+      "tabe wie"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe wie, co'o kabar?",
+      "indonesia": "Selamat malam, apa kabar?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "hari ini",
+    "manggarai": [
+      "leso hoo"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Co'o kabar leso hoo gah?",
+      "indonesia": "Apa kabar hari ini?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "baik/bagus",
+    "manggarai": [
+      "di'a"
+    ],
+    "kategori": "kata_sifat",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Kabar di'a?",
+      "indonesia": "Kabar baik?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "selamat (salam)",
+    "manggarai": [
+      "tabe"
+    ],
+    "kategori": "sapaan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe gula",
+      "indonesia": "Selamat pagi"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sore",
+    "manggarai": [
+      "mane"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe mane",
+      "indonesia": "Selamat sore"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sudah lama",
+    "manggarai": [
+      "nais"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Nais toe manga cumang tau",
+      "indonesia": "Lama tidak bertemu"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "berjumpa/bertemu",
+    "manggarai": [
+      "cumang tau"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Nais toe manga cumang tau",
+      "indonesia": "Lama tidak bertemu"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "keluarga",
+    "manggarai": [
+      "keluaga"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Co'o kabar keluaga gah?",
+      "indonesia": "Apa kabar keluarga?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh penggunaan sapaan dalam percakapan",
+    "manggarai": [
+      "Tabe gula, Bosku! Co'o kabar gah?"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Tabe gula, Bosku! Co'o kabar gah?",
+      "indonesia": "Selamat pagi, Bosku! Apa kabar?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "ini",
+    "manggarai": [
+      "hoo"
+    ],
+    "kategori": "kata_ganti",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Contoh tombo hoo",
+      "indonesia": "Contoh percakapan ini"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "miliku",
+    "manggarai": [
+      "gaku"
+    ],
+    "kategori": "kata_ganti",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Database gaku",
+      "indonesia": "Databaseku"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Permintaan contoh kalimat dari kopi.flores",
+    "manggarai": [
+      "Pisa contoh kalimat ata bae gau gah?"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pisa contoh kalimat ata bae gau gah?",
+      "indonesia": "Berapa contoh kalimat orang sudah kerja?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 1: Aku sudah makan",
+    "manggarai": [
+      "Aku poli hang"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku poli hang",
+      "indonesia": "Saya sudah makan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 2: Kamu kerja di sekolah",
+    "manggarai": [
+      "Hau gau one skola"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hau gau one skola",
+      "indonesia": "Kamu kerja di sekolah"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 3: Dia sedang berbicara bahasa Manggarai",
+    "manggarai": [
+      "Hia laing tombo bahasa Manggarai"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hia laing tombo bahasa Manggarai",
+      "indonesia": "Dia sedang berbicara bahasa Manggarai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 4: Kami ingin pergi beli makanan",
+    "manggarai": [
+      "Ami niak mo weli hang"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ami niak mo weli hang",
+      "indonesia": "Kami ingin pergi beli makanan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 5: Kalian sudah belajar bahasa Manggarai",
+    "manggarai": [
+      "Meu poli belajar bahasa Manggarai"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Meu poli belajar bahasa Manggarai",
+      "indonesia": "Kalian sudah belajar bahasa Manggarai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 6: Mereka sedang bekerja",
+    "manggarai": [
+      "Isé laing gau"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Isé laing gau",
+      "indonesia": "Mereka sedang bekerja"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 7: Rumahku di mana?",
+    "manggarai": [
+      "Mbaru gaku di ngéré?"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Mbaru gaku di ngéré?",
+      "indonesia": "Rumahku di mana?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 8: Saya ingin belajar lagi",
+    "manggarai": [
+      "Aku niak pulé kole"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku niak pulé kole",
+      "indonesia": "Saya ingin belajar lagi"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 9: Terima kasih banyak",
+    "manggarai": [
+      "Makasih banyak"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Makasih banyak",
+      "indonesia": "Terima kasih banyak"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Contoh kalimat 10: Sampai jumpa lagi",
+    "manggarai": [
+      "Sampai cumang tau kole"
+    ],
+    "kategori": "contoh_percakapan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Sampai cumang tau kole",
+      "indonesia": "Sampai jumpa lagi"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita dalam bahasa Manggarai dengan campuran bahasa Indonesia untuk kata yang belum diketahui",
+    "manggarai": [
+      "Cerita akan diperbaiki oleh kopi.flores"
+    ],
+    "kategori": "cerita",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku niak pulé bahasa Manggarai",
+      "indonesia": "Saya ingin belajar bahasa Manggarai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "adalah",
+    "manggarai": [
+      "go"
+    ],
+    "kategori": "kata_hubung",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku go ata",
+      "indonesia": "Saya adalah orang"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "juga",
+    "manggarai": [
+      "goh"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Bahasa Manggarai htu goh bahasa weru",
+      "indonesia": "Bahasa Manggarai itu juga bahasa baru"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "itu",
+    "manggarai": [
+      "htu"
+    ],
+    "kategori": "kata_ganti",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Bahasa Manggarai htu",
+      "indonesia": "Bahasa Manggarai itu"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "suatu/sebuah",
+    "manggarai": [
+      "manga ca"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Manga ca leso",
+      "indonesia": "Suatu hari"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "seorang",
+    "manggarai": [
+      "cengata"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Cengata teman",
+      "indonesia": "Seorang teman"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "namanya",
+    "manggarai": [
+      "ngasang na"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ngasang na ko kopi.flores",
+      "indonesia": "Namanya adalah kopi.flores"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "berkata/mengatakan",
+    "manggarai": [
+      "ri"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ri gaku",
+      "indonesia": "Berkata saya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bicara",
+    "manggarai": [
+      "jaong"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Jaong gaku",
+      "indonesia": "Bicara saya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sedang/masih",
+    "manggarai": [
+      "laing"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku laing pande",
+      "indonesia": "Saya sedang pandai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "itu (unjuk)",
+    "manggarai": [
+      "tu'u"
+    ],
+    "kategori": "kata_ganti",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku senang tu'u",
+      "indonesia": "Saya senang itu"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "mendapat",
+    "manggarai": [
+      "dapat"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku dapat guru di'a",
+      "indonesia": "Saya mendapat guru yang baik"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sedikit",
+    "manggarai": [
+      "cekoe"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ngance tombo cekoe",
+      "indonesia": "Bisa bicara sedikit"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "partikel ya",
+    "manggarai": [
+      "e"
+    ],
+    "kategori": "partikel",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Makasih banyak e",
+      "indonesia": "Terima kasih banyak ya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita baru: Pergi ke Pasar",
+    "manggarai": [
+      "Cerita baru akan diperbaiki oleh kopi.flores"
+    ],
+    "kategori": "cerita",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku niak mo weli hang",
+      "indonesia": "Saya ingin pergi beli makanan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bangun",
+    "manggarai": [
+      "too"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku too gula",
+      "indonesia": "Saya bangun pagi"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "jalan",
+    "manggarai": [
+      "salang"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "One salang",
+      "indonesia": "Di jalan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "ramai",
+    "manggarai": [
+      "rame"
+    ],
+    "kategori": "kata_sifat",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Pasar rame",
+      "indonesia": "Pasar ramai"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "banyak",
+    "manggarai": [
+      "do"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Do ata",
+      "indonesia": "Banyak orang"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "yang dijual",
+    "manggarai": [
+      "ata pika"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Do barang ata pika",
+      "indonesia": "Banyak barang yang dijual"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "melihat",
+    "manggarai": [
+      "lelo"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku lelo do buah",
+      "indonesia": "Saya melihat banyak buah"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "buah",
+    "manggarai": [
+      "buah iwo"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Buah iwo segar",
+      "indonesia": "Buah segar"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "pisang",
+    "manggarai": [
+      "muku"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Apel, muku, agu ndiru",
+      "indonesia": "Apel, pisang, dan jeruk"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "jeruk",
+    "manggarai": [
+      "ndiru"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Apel, muku, agu ndiru",
+      "indonesia": "Apel, pisang, dan jeruk"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sayur",
+    "manggarai": [
+      "ute"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Do ute",
+      "indonesia": "Banyak sayur"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "penjual",
+    "manggarai": [
+      "ata pika"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ri ata pika",
+      "indonesia": "Berkata penjual"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "dua",
+    "manggarai": [
+      "sua"
+    ],
+    "kategori": "angka",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Sua kilogram",
+      "indonesia": "Dua kilogram"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "untuk dimasak",
+    "manggarai": [
+      "teneng diang"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Daging ta teneng diang",
+      "indonesia": "Daging untuk dimasak"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "balik",
+    "manggarai": [
+      "sekang"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku agu Bos Fred kole sekang",
+      "indonesia": "Saya dan Bos Fred sudah balik"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita baru: Memasak Bersama",
+    "manggarai": [
+      "Cerita baru tentang memasak bersama keluarga"
+    ],
+    "kategori": "cerita",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ite teneng diang cama-cama",
+      "indonesia": "Kita masak bersama"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "masak",
+    "manggarai": [
+      "teneng"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku teneng masakan",
+      "indonesia": "Saya memasak masakan"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "besok",
+    "manggarai": [
+      "diang"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Teneng diang",
+      "indonesia": "Masak besok"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bagus itu (untuk memuji)",
+    "manggarai": [
+      "di'a htu gah"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Di'a htu gah!",
+      "indonesia": "Bagus itu!"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "banget",
+    "manggarai": [
+      "tuung"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Enak tuung",
+      "indonesia": "Enak banget"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "ayah",
+    "manggarai": [
+      "ame"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Ame gaku",
+      "indonesia": "Ayahku"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bagaimana",
+    "manggarai": [
+      "coo"
+    ],
+    "kategori": "kata_tanya",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Coo rasa na ine?",
+      "indonesia": "Bagaimana rasa masakannya?"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "terlebih dahulu",
+    "manggarai": [
+      "olo"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Hau olo cuci dea",
+      "indonesia": "Kamu terlebih dahulu cuci dulu"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "hari",
+    "manggarai": [
+      "leso"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso hoo",
+      "indonesia": "Hari ini"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "paling",
+    "manggarai": [
+      "paling"
+    ],
+    "kategori": "kata_keterangan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso paling senang",
+      "indonesia": "Hari paling senang"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "bagi",
+    "manggarai": [
+      "latang"
+    ],
+    "kategori": "kata_depan",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso paling senang latang aku",
+      "indonesia": "Hari paling senang bagi saya"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita final: Memasak Bersama",
+    "manggarai": [
+      "Leso hoo goh, leso paling senang latang aku."
+    ],
+    "kategori": "cerita",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso hoo goh, leso paling senang latang aku.",
+      "indonesia": "Hari ini juga, hari paling senang bagi saya."
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita Sehari-hari",
+    "manggarai": [
+      "Leso ho aku bangun leso bari. Aku puli cebong. Wale aku laing pande kopi one dapur. Aku niak mo hang leso cama ema. Eme hau mai, ite hang wie cama. Ding wie, aku gorin tuing hau bahasa Manggarai."
+    ],
+    "kategori": "cerita",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso ho aku bangun leso bari. Aku puli cebong. Wale aku laing pande kopi one dapur. Aku niak mo hang leso cama ema. Eme hau mai, ite hang wie cama. Ding wie, aku gorin tuing hau bahasa Manggarai.",
+      "indonesia": "Hari ini saya bangun pagi. Saya sudah mandi. Sekarang saya sedang membuat kopi di dapur. Saya mau makan siang bersama bapak. Jika kamu datang, kita makan malam bersama. Nanti malam, saya akan mengajar kamu bahasa Manggarai."
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita Panjang: Leso Aku one Pasar",
+    "manggarai": [
+      "Leso ho aku bangun leso bari. Aku puli cebong. Aku niak mo lako pasar cama iné. Emé, ngance mai lako pasar? Yo, ding mai. Wale aku laing pande kopi one dapur. Aku puli hang kopi, wale aku laing nunggu iné. Iné puli siap, ite lako pasar. Niawan hau lako gah? Aku lako pasar cama iné. Eme hau mai, ite hang cama. One pasar, aku ita ca ata ngance pande kue. Caing hau pande kue gah? Aku pande kue leso. Aku niak mo tuing pande kue. Yo, ding mai tuing hau. Wale aku puli pande kue ca. Makasih banyak yo tuing aku! Ding wie, aku gorin pande kue kole. Aku ngance pande kue, wau aku laing sante. Leso ho bae, aku puli lako pasar. Aku puli pande kue. Aku ngance pande kue wau."
+    ],
+    "kategori": "cerita_panjang",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso ho aku bangun leso bari. Aku puli cebong. Aku niak mo lako pasar cama iné. Emé, ngance mai lako pasar? Yo, ding mai. Wale aku laing pande kopi one dapur. Aku puli hang kopi, wale aku laing nunggu iné. Iné puli siap, ite lako pasar. Niawan hau lako gah? Aku lako pasar cama iné. Eme hau mai, ite hang cama. One pasar, aku ita ca ata ngance pande kue. Caing hau pande kue gah? Aku pande kue leso. Aku niak mo tuing pande kue. Yo, ding mai tuing hau. Wale aku puli pande kue ca. Makasih banyak yo tuing aku! Ding wie, aku gorin pande kue kole. Aku ngance pande kue, wau aku laing sante. Leso ho bae, aku puli lako pasar. Aku puli pande kue. Aku ngance pande kue wau.",
+      "indonesia": "Hari ini saya bangun pagi. Saya sudah mandi. Saya mau pergi ke pasar bersama ibu. Bu, bisa pergi ke pasar? Ya, nanti pergi. Sekarang saya sedang membuat kopi di dapur. Saya sudah minum kopi, sekarang saya sedang menunggu ibu. Ibu sudah siap, kita pergi ke pasar. Kamu pergi ke mana? Saya pergi ke pasar bersama ibu. Jika kamu datang, kita makan bersama. Di pasar, saya melihat satu orang bisa membuat kue. Siapa kamu membuat kue kah? Saya membuat kue setiap hari. Saya mau belajar membuat kue. Ya, nanti pergi ajar kamu. Sekarang saya sudah membuat kue satu. Terima kasih banyak ya ajar saya! Nanti malam, saya akan membuat kue lagi. Saya bisa membuat kue, sekarang saya sedang santai. Hari ini saja, saya sudah pergi ke pasar. Saya sudah membuat kue. Saya bisa membuat kue sekarang."
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita Panjang: Sehari di Desa Manggarai",
+    "manggarai": [
+      "Leso ho aku bangun leso bari. Aku puli cebong. Aku niak mo lako sawah cama ema. Emé, ngance mai lako sawah? Yo, ding mai. Wale aku laing pande kopi one dapur. Aku puli hang kopi, wale aku laing nunggu iné. Iné puli siap, ite lako sawah. Niawan hau lako gah? Aku lako sawah cama iné. Eme hau mai, ite hang cama. One sawah, aku ita ca ata ngance pande padi. Caing hau pande padi gah? Aku pande padi leso. Aku niak mo tuing pande padi. Yo, ding mai tuing hau. Wale aku puli pande padi ca. Makasih banyak yo tuing aku! Ding wie, aku gorin pande padi kole. Aku ngance pande padi, wau aku laing sante. Leso ho bae, aku puli lako sawah. Aku puli pande padi. Aku ngance pande padi wau."
+    ],
+    "kategori": "cerita_panjang",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso ho aku bangun leso bari. Aku puli cebong. Aku niak mo lako sawah cama iné. Emé, ngance mai lako sawah? Yo, ding mai. Wale aku laing pande kopi one dapur. Aku puli hang kopi, wale aku laing nunggu iné. Iné puli siap, ite lako sawah. Niawan hau lako gah? Aku lako sawah cama iné. Eme hau mai, ite hang cama. One sawah, aku ita ca ata ngance pande padi. Caing hau pande padi gah? Aku pande padi leso. Aku niak mo tuing pande padi. Yo, ding mai tuing hau. Wale aku puli pande padi ca. Makasih banyak yo tuing aku! Ding wie, aku gorin pande padi kole. Aku ngance pande padi, wau aku laing sante. Leso ho bae, aku puli lako sawah. Aku puli pande padi. Aku ngance pande padi wau.",
+      "indonesia": "Hari ini saya bangun pagi. Saya sudah mandi. Saya mau pergi ke sawah bersama ibu. Bu, bisa pergi ke sawah? Ya, nanti pergi. Sekarang saya sedang membuat kopi di dapur. Saya sudah minum kopi, sekarang saya sedang menunggu ibu. Ibu sudah siap, kita pergi ke sawah. Kamu pergi ke mana? Saya pergi ke sawah bersama ibu. Jika kamu datang, kita makan bersama. Di sawah, saya melihat satu orang bisa membuat padi. Siapa kamu membuat padi kah? Saya membuat padi setiap hari. Saya mau belajar membuat padi. Ya, nanti pergi ajar kamu. Sekarang saya sudah membuat padi satu. Terima kasih banyak ya ajar saya! Nanti malam, saya akan membuat padi lagi. Saya bisa membuat padi, sekarang saya sedang santai. Hari ini saja, saya sudah pergi ke sawah. Saya sudah membuat padi. Saya bisa membuat padi sekarang."
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "sawah",
+    "manggarai": [
+      "sawa"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku lako sawa cama iné",
+      "indonesia": "Saya pergi ke sawah bersama ibu"
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "padi",
+    "manggarai": [
+      "woja"
+    ],
+    "kategori": "kata_benda",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku pande woja leso",
+      "indonesia": "Saya membuat padi setiap hari"
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "menunggu",
+    "manggarai": [
+      "nunggu"
+    ],
+    "kategori": "kata_kerja",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku laing nunggu iné",
+      "indonesia": "Saya sedang menunggu ibu"
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "siap",
+    "manggarai": [
+      "siap"
+    ],
+    "kategori": "kata_sifat",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Iné puli siap",
+      "indonesia": "Ibu sudah siap"
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita Panjang: Sehari di Desa Manggarai (Koreksi)",
+    "manggarai": [
+      "Leso ho aku bangun leso bari. Aku puli cebong. Aku niak mo lako sawa cama iné. Emé, ngance mai lako sawah? Yo, ding mai. Wale aku laing pande kopi one dapur. Aku puli hang kopi, wale aku laing nunggu iné. Iné puli siap, ite lako sawah. Niawan hau lako gah? Aku lako sawah cama iné. Eme hau mai, ite hang cama. One sawah, aku ita ca ata ngance pande woja. Caing hau pande woja gah? Aku pande woja leso. Aku niak mo tuing pande woja. Yo, ding mai tuing hau. Wale aku puli pande woja ca. Makasih banyak yo tuing aku! Ding wie, aku gorin pande woja kole. Aku ngance pande woja, wau aku laing sante. Leso ho bae, aku puli lako sawah. Aku puli pande woja. Aku ngance pande woja wau."
+    ],
+    "kategori": "cerita_panjang",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Leso ho aku bangun leso bari. Aku puli cebong. Aku niak mo lako sawa cama iné. Emé, ngance mai lako sawah? Yo, ding mai. Wale aku laing pande kopi one dapur. Aku puli hang kopi, wale aku laing nunggu iné. Iné puli siap, ite lako sawah. Niawan hau lako gah? Aku lako sawah cama iné. Eme hau mai, ite hang cama. One sawah, aku ita ca ata ngance pande woja. Caing hau pande woja gah? Aku pande woja leso. Aku niak mo tuing pande woja. Yo, ding mai tuing hau. Wale aku puli pande woja ca. Makasih banyak yo tuing aku! Ding wie, aku gorin pande woja kole. Aku ngance pande woja, wau aku laing sante. Leso ho bae, aku puli lako sawah. Aku puli pande woja. Aku ngance pande woja wau.",
+      "indonesia": "Hari ini saya bangun pagi. Saya sudah mandi. Saya mau pergi ke sawah bersama ibu. Bu, bisa pergi ke sawah? Ya, nanti pergi. Sekarang saya sedang membuat kopi di dapur. Saya sudah minum kopi, sekarang saya sedang menunggu ibu. Ibu sudah siap, kita pergi ke sawah. Kamu pergi ke mana? Saya pergi ke sawah bersama ibu. Jika kamu datang, kita makan bersama. Di sawah, saya melihat satu orang bisa membuat padi. Siapa kamu membuat padi kah? Saya membuat padi setiap hari. Saya mau belajar membuat padi. Ya, nanti pergi ajar kamu. Sekarang saya sudah membuat padi satu. Terima kasih banyak ya ajar saya! Nanti malam, saya akan membuat padi lagi. Saya bisa membuat padi, sekarang saya sedang santai. Hari ini saja, saya sudah pergi ke sawah. Saya sudah membuat padi. Saya bisa membuat padi sekarang."
+    },
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "Cerita baru: Pergi ke Sekolah",
+    "manggarai": [
+      "Cerita tentang pergi ke sekolah"
+    ],
+    "kategori": "cerita",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Aku niak mo ce skola",
+      "indonesia": "Saya ingin pergi ke sekolah"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
+  }
+]

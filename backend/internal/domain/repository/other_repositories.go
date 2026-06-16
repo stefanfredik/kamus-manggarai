@@ -19,6 +19,7 @@ type SubmissionRepository interface {
 type ReportRepository interface {
 	Create(ctx context.Context, report *entity.Report) error
 	ListOpen(ctx context.Context, page, limit int) ([]*entity.Report, int64, error)
+	ListByReporter(ctx context.Context, reporterID uuid.UUID, page, limit int) ([]*entity.Report, int64, error)
 	UpdateStatus(ctx context.Context, id uuid.UUID, status string, resolverID uuid.UUID) error
 }
 

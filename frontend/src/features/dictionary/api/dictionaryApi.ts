@@ -3,6 +3,7 @@ import type { ApiResponse, PaginationMeta } from '@/types/api.types';
 import type {
   EntryDetail,
   EntrySummary,
+  ReportItem,
   ReportPayload,
   SearchParams,
   SearchResult,
@@ -43,5 +44,10 @@ export const dictionaryApi = {
 
   async reportEntry(slug: string, payload: ReportPayload): Promise<void> {
     await api.post(`/entries/${encodeURIComponent(slug)}/reports`, payload);
+  },
+
+  async listMyReports(page = 1, limit = 20): Promise<{ items: ReportItem[]; meta: PaginationMeta }> {
+    const resp = await api.get<ApiResponse<ReportItem[]>>('/reports', { params: { page, limit } });
+    return { items: resp.data.data, meta: resp.data.meta ?? { page, limit, total: resp.data.data.length } };
   },
 };

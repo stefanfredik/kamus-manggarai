@@ -1,0 +1,360 @@
+[
+  {
+    "aturan": "Partikel konfirmasi 'ko' selalu ditempatkan di AKHIR kalimat, mirip 'kan?' dalam Bahasa Indonesia. Digunakan saat pembicara sudah tahu jawabannya dan hanya minta konfirmasi.",
+    "kategori": "partikel_tanya",
+    "contoh": [
+      {
+        "manggarai": "Hau ko orang Manggarai?",
+        "indonesia": "Kamu kan orang Manggarai?"
+      },
+      {
+        "manggarai": "Mbaru ini ko mbaru gaku?",
+        "indonesia": "Rumah ini kan rumahmu?"
+      },
+      {
+        "manggarai": "Puli hang wie ko?",
+        "indonesia": "Sudahkah kamu makan malam kan?"
+      }
+    ],
+    "catatan": "Jangan bingungkan dengan 'ko' sebagai konjungsi yang berarti 'jika/kalau'",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Partikel tanya 'gah' digunakan untuk pertanyaan biasa (bukan konfirmasi), mirip 'kah?' dalam Bahasa Indonesia. Dipakai saat pembicara BENAR-BENAR tidak tahu jawabannya.",
+    "kategori": "partikel_tanya",
+    "contoh": [
+      {
+        "manggarai": "Cai gah ema hau?",
+        "indonesia": "Siapa bapakmu?"
+      },
+      {
+        "manggarai": "Pisa gah harganya?",
+        "indonesia": "Berapa harganya?"
+      },
+      {
+        "manggarai": "Hau gah gau di ngéré?",
+        "indonesia": "Kamu kerja di mana?"
+      }
+    ],
+    "catatan": "Berbeda dengan 'ko' yang untuk konfirmasi",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Pola kalimat tanya mengikuti urutan V-Wh-S-gah (Verba - Kata Tanya - Subjek - Partikel Tanya)",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Pande apa hau gah?",
+        "indonesia": "Apa yang sedang kamu buat?"
+      },
+      {
+        "manggarai": "Niak pande apa gah?",
+        "indonesia": "Ingin buat apa?"
+      }
+    ],
+    "catatan": "Berbeda dari pola SVO biasa; khusus untuk kalimat tanya",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Kata 'gau' memiliki multi-arti tergantung konteks: (1) bekerja/kerja, (2) punyamu/milikmu",
+    "kategori": "lainnya",
+    "contoh": [
+      {
+        "manggarai": "Hau gau gah?",
+        "indonesia": "Kamu kerja kah? (gau = bekerja)"
+      },
+      {
+        "manggarai": "Mbaru gau di ngéré?",
+        "indonesia": "Rumahmu di mana? (gau = punyamu)"
+      }
+    ],
+    "catatan": "Konteks kalimat menentukan arti 'gau'. Jika diikuti partikel tanya → biasanya 'kerja'. Jika mengikuti kata benda → biasanya 'milikmu'.",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Kata 'puli' berfungsi ganda: dalam pernyataan berarti 'sudah', dalam pertanyaan berarti 'sudahkah'",
+    "kategori": "TAM",
+    "contoh": [
+      {
+        "manggarai": "Aku poli hang",
+        "indonesia": "Saya sudah makan (pernyataan)"
+      },
+      {
+        "manggarai": "Puli hang wie ko?",
+        "indonesia": "Sudahkah kamu makan malam kan? (pertanyaan)"
+      }
+    ],
+    "catatan": "Dalam SKILL.md juga tercatat sebagai 'poli' (varian ejaan/dialek)",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "'Io' berarti 'ya' tapi TIDAK SOPAN. Gunakan 'yo' untuk versi sopan.",
+    "kategori": "lainnya",
+    "contoh": [
+      {
+        "manggarai": "Makasih banyak yo, puli tuing aku",
+        "indonesia": "Terima kasih ya, sudah mengajar saya (sopan)"
+      }
+    ],
+    "catatan": "'Io' dianggap kasar/kurang sopan",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Tidak ada kata 'di' yang berdiri sendiri dalam Bahasa Manggarai. Gunakan 'one' untuk menyatakan lokasi (di/di dalam).",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Aku ngance kawe kosakata one kamus",
+        "indonesia": "Saya bisa mencari kosakata di kamus"
+      },
+      {
+        "manggarai": "Niawan hia kerja gah?",
+        "indonesia": "Dia kerja di mana? (tanpa kata 'di')"
+      }
+    ],
+    "catatan": "Pola lokasi menggunakan 'niawan' untuk bertanya dan 'one' untuk menyatakan",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Format pertanyaan yang benar: 'Apa pande gau gah?' BUKAN 'Kau laing pande gah?'",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Apa pande gau gah?",
+        "indonesia": "Apa yang sedang kamu buat? (benar)"
+      }
+    ],
+    "catatan": "Koreksi langsung dari Bos Fred",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bos Fred",
+    "tanggal": "2026-06-15"
+  },
+  {
+    "aturan": "Pande bisa berarti membuat (to make) atau apa (what) tergantung konteks",
+    "kategori": "morfologi",
+    "contoh": [
+      {
+        "manggarai": "Pande apa hau gah?",
+        "indonesia": "Apa yang sedang kamu lakukan?"
+      }
+    ],
+    "catatan": "Pande = membuat (to make) dalam konteks kerja, pande = apa (what) dalam konteks tanya",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bosku",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Gau memiliki dua arti: 1) bekerja/kerja (to work), 2) punyamu/milikmu (yours)",
+    "kategori": "morfologi",
+    "contoh": [
+      {
+        "manggarai": "Hau gau gah?",
+        "indonesia": "Kamu kerja kah?"
+      }
+    ],
+    "catatan": "Gau = bekerja dalam konteks kerja, gau = punyamu dalam konteks possessive",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "Bosku",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Pola kalimat: Aku ge [noun phrase]. [Subject] toe manga [adjective] ra. Arti: Saya hanya [noun phrase]. [Subject] tidak ada [adjective].",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Aku ge ata reba cee manggarai hoo. Ata bana toe manga reba ra.",
+        "indonesia": "Saya hanya orang handsome di Manggarai ini. Orang lain tidak ada handsome."
+      }
+    ],
+    "catatan": "ge = aja/only, toe manga = tidak ada, ra = kata pelengkap",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Koreksi: pande artinya membuat (to make), bukan pintar (smart). Untuk pintar gunakan pintar, molor nai, atau nggete.",
+    "kategori": "lainnya",
+    "contoh": [
+      {
+        "manggarai": "Aku ge ata pintar ce Manggarai ho. Ata bana toe manga pintar ra.",
+        "indonesia": "Saya hanya orang pintar di Manggarai ini. Orang lain tidak ada yang pintar."
+      },
+      {
+        "manggarai": "Pande = membuat (to make), bukan pintar (smart)",
+        "indonesia": "pande = membuat (to make), bukan pintar (smart)"
+      }
+    ],
+    "catatan": "Koreksi dari kopi.flores: pande tidak sama dengan pintar",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Permintaan untuk merespons penuh dalam Bahasa Manggarai, tidak menggunakan Bahasa Indonesia",
+    "kategori": "lainnya",
+    "contoh": [
+      {
+        "manggarai": "Coba ulang kole, caing hau pake bahasa manggarai",
+        "indonesia": "Coba ulang lagi, siapa kamu pakai bahasa manggarai"
+      }
+    ],
+    "catatan": "User meminta respons full Bahasa Manggarai",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Koreksi: yang benar adalah \"puli\" (sudah), bukan \"pule\" atau \"pulé\"",
+    "kategori": "lainnya",
+    "contoh": [
+      {
+        "manggarai": "Puli = sudah (already)",
+        "indonesia": "puli = sudah (already)"
+      }
+    ],
+    "catatan": "Koreksi dari kopi.flores tentang ejaan kata \"puli\"",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Suffix -na untuk kepemilikan (possessive): kata benda + na = miliknya. Contoh: hargana = harganya, mbaruna = rumahnya",
+    "kategori": "morfologi",
+    "contoh": [
+      {
+        "manggarai": "Pisa hargana?",
+        "indonesia": "Berapa harganya?"
+      },
+      {
+        "manggarai": "Mbaruna di ngéré?",
+        "indonesia": "Rumahnya di mana?"
+      }
+    ],
+    "catatan": "-na = suffix kepemilikan (his/her/its)",
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Penanda TAM (Tense-Aspect-Mood): puli=sudah, gorin=akan, laing=sedang/lagi",
+    "kategori": "TAM",
+    "contoh": [
+      {
+        "manggarai": "Aku puli hang",
+        "indonesia": "Saya sudah makan"
+      },
+      {
+        "manggarai": "Aku gorin hang wie",
+        "indonesia": "Saya akan makan malam"
+      },
+      {
+        "manggarai": "Aku laing pande code",
+        "indonesia": "Saya sedang membuat program"
+      }
+    ],
+    "catatan": "puli untuk aspek kompletif, gorin untuk masa depan, laing untuk progresif",
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Partikel tanya: ko (konfirmasi) vs gah (tanya biasa)",
+    "kategori": "partikel_tanya",
+    "contoh": [
+      {
+        "manggarai": "Hau puli hang ko?",
+        "indonesia": "Kamu sudah makan kan? (konfirmasi)"
+      },
+      {
+        "manggarai": "Hau gah puli hang?",
+        "indonesia": "Kamu sudah makan kah? (tanya biasa)"
+      }
+    ],
+    "catatan": "ko untuk konfirmasi yang sudah tahu jawabannya, gah untuk pertanyaan yang benar-benar tidak tahu",
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Partikel ra = kata pelengkap/filler, mirip \"ya\" atau \"kan\" dalam bahasa Indonesia",
+    "kategori": "partikel",
+    "contoh": [
+      {
+        "manggarai": "Aku laing sante ra",
+        "indonesia": "Saya lagi santai ya"
+      },
+      {
+        "manggarai": "Mbaru na ra",
+        "indonesia": "Rumahnya ya"
+      }
+    ],
+    "catatan": "ra digunakan di akhir kalimat untuk penekanan atau konfirmasi ringan",
+    "sumber": "pembuatan_kalimat",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Struktur paragraf: kalimat-kalimat dihubungkan dengan konjungsi (eme=jika, wale=sekarang, ding=nanti) dan partikel (ra, ko, gah)",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Aku puli cebong leso bari. Wale aku laing pande code one mbaru.",
+        "indonesia": "Saya sudah mandi pagi ini. Sekarang saya sedang membuat program di rumah."
+      },
+      {
+        "manggarai": "Eme hau mai, ite hang cama.",
+        "indonesia": "Jika kamu datang, kita makan bersama."
+      }
+    ],
+    "catatan": "Gunakan konjungsi untuk menghubungkan kalimat dan menciptakan alur narasi",
+    "sumber": "pembuatan_paragraf",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Struktur cerita: urutan kronologis menggunakan kata keterangan waktu (leso ho=hari ini, leso bari=pagi ini, wale=sekarang, ding wie=nanti malam)",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Leso ho aku bangun leso bari. Aku puli cebong.",
+        "indonesia": "Hari ini saya bangun pagi. Saya sudah mandi."
+      }
+    ],
+    "catatan": "Gunakan kata keterangan waktu untuk mengatur alur cerita",
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16"
+  },
+  {
+    "aturan": "Struktur cerita panjang: urutan kronologis dengan dialog, penggunaan konjungsi (eme=jika, wale=sekarang, ding=nanti), dan partikel (ko, gah, ra)",
+    "kategori": "struktur_kalimat",
+    "contoh": [
+      {
+        "manggarai": "Leso ho aku bangun leso bari. Aku puli cebong.",
+        "indonesia": "Hari ini saya bangun pagi. Saya sudah mandi."
+      },
+      {
+        "manggarai": "Emé, ngance mai lako sawah? Yo, ding mai.",
+        "indonesia": "Bu, bisa pergi ke sawah? Ya, nanti pergi."
+      }
+    ],
+    "catatan": "Cerita panjang menggunakan kombinasi kalimat berita, tanya, dan perintah dengan partikel yang tepat",
+    "sumber": "pembuatan_cerita",
+    "diajarkan_oleh": "Kamus_Bahasa_Manggarai",
+    "tanggal": "2026-06-16"
+  }
+]

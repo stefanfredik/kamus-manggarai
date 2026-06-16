@@ -10,7 +10,7 @@ export function PageLayout({
   mainRef,
 }: {
   children: ReactNode;
-  mainRef?: RefObject<HTMLElement>;
+  mainRef?: RefObject<HTMLElement | null>;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState<boolean>(() => {

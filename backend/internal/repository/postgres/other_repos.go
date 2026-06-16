@@ -39,7 +39,7 @@ func (r *reportRepo) Create(ctx context.Context, rep *entity.Report) error {
 func (r *reportRepo) ListOpen(ctx context.Context, page, limit int) ([]*entity.Report, int64, error) {
 	offset := (page - 1) * limit
 	rows, err := r.db.Query(ctx, `
-		SELECT r.id, r.entry_id, COALESCE(w.lemma, ''), r.reported_by, r.reason, r.description, r.status, r.resolved_by, r.resolved_at, r.created_at
+		SELECT r.id, r.entry_id, COALESCE(w.lemma, ''), COALESCE(w.slug, ''), COALESCE(w.language, ''), r.reported_by, r.reason, r.description, r.status, r.resolved_by, r.resolved_at, r.created_at
 		FROM reports r
 		LEFT JOIN words w ON w.id = r.entry_id
 		WHERE r.status = 'open'
@@ -53,13 +53,46 @@ func (r *reportRepo) ListOpen(ctx context.Context, page, limit int) ([]*entity.R
 	res := make([]*entity.Report, 0)
 	for rows.Next() {
 		rep := &entity.Report{}
-		if err := rows.Scan(&rep.ID, &rep.EntryID, &rep.EntryName, &rep.ReportedBy, &rep.Reason, &rep.Description, &rep.Status, &rep.ResolvedBy, &rep.ResolvedAt, &rep.CreatedAt); err != nil {
+		if err := rows.Scan(&rep.ID, &rep.EntryID, &rep.EntryName, &rep.EntrySlug, &rep.EntryLanguage, &rep.ReportedBy, &rep.Reason, &rep.Description, &rep.Status, &rep.ResolvedBy, &rep.ResolvedAt, &rep.CreatedAt); err != nil {
 			return nil, 0, err
 		}
 		res = append(res, rep)
 	}
 	var total int64
 	if err := r.db.QueryRow(ctx, `SELECT COUNT(*) FROM reports WHERE status = 'open'`).Scan(&total); err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
+}
+
+func (r *reportRepo) ListByReporter(ctx context.Context, reporterID uuid.UUID, page, limit int) ([]*entity.Report, int64, error) {
+	offset := (page - 1) * limit
+	rows, err := r.db.Query(ctx, `
+		SELECT r.id, r.entry_id, COALESCE(w.lemma, ''), COALESCE(w.slug, ''), COALESCE(w.language, ''), r.reported_by, r.reason, r.description, r.status, r.resolved_by, r.resolved_at, r.created_at
+		FROM reports r
+		LEFT JOIN words w ON w.id = r.entry_id
+		WHERE r.reported_by = $1
+		ORDER BY r.created_at DESC
+		LIMIT $2 OFFSET $3`, reporterID, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	res := make([]*entity.Report, 0)
+	for rows.Next() {
+		rep := &entity.Report{}
+		if err := rows.Scan(&rep.ID, &rep.EntryID, &rep.EntryName, &rep.EntrySlug, &rep.EntryLanguage, &rep.ReportedBy, &rep.Reason, &rep.Description, &rep.Status, &rep.ResolvedBy, &rep.ResolvedAt, &rep.CreatedAt); err != nil {
+			return nil, 0, err
+		}
+		res = append(res, rep)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, 0, err
+	}
+
+	var total int64
+	if err := r.db.QueryRow(ctx, `SELECT COUNT(*) FROM reports WHERE reported_by = $1`, reporterID).Scan(&total); err != nil {
 		return nil, 0, err
 	}
 	return res, total, nil

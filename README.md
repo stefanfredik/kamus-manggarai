@@ -1,14 +1,14 @@
 # Kamus Digital Bahasa Manggarai – Bahasa Indonesia
 
-Platform kamus dua arah Bahasa Manggarai ↔ Bahasa Indonesia dengan dukungan multi-dialek dan sistem kontribusi komunitas.
+Platform kamus dua arah Bahasa Manggarai ↔ Bahasa Indonesia dengan sistem kontribusi komunitas.
 
 ## Stack Teknologi
 
-- **Backend**: Go 1.23+ (Fiber v3, sqlc, pgx)
-- **Frontend**: React 19 + TypeScript + Vite 6 + Tailwind CSS v4
+- **Backend**: Go 1.23+ (Fiber v3, pgx)
+- **Frontend**: React 19 + TypeScript + Vite 6 + Tailwind CSS v3
 - **Database**: PostgreSQL 16
 - **Cache**: Redis 7
-- **Search**: Meilisearch v1.x
+- **Search**: PostgreSQL full-text/trigram search
 - **Reverse Proxy**: Nginx
 - **Containerization**: Docker + Docker Compose
 
@@ -32,14 +32,13 @@ docker-compose up -d --build
 # 3. Jalankan migration
 docker-compose exec backend ./api migrate up
 
-# 4. Seed data awal (admin + dialek + kosakata contoh)
-docker-compose exec backend ./api seed
+# 4. Import data kamus awal
+docker-compose exec backend ./import_kbim -file /data/kamus_indonesia_manggarai.json
 ```
 
 Akses:
-- Frontend: http://localhost
-- Backend API: http://localhost/api/v1
-- Swagger docs: http://localhost/api/v1/docs (development only)
+- Frontend: http://localhost:8088
+- Backend API: http://localhost:8088/api/v1
 
 ### Development tanpa Docker
 

@@ -6,6 +6,7 @@ import {
   House,
   ClipboardList,
   CircleCheck,
+  Flag,
   Settings,
   Sun,
   Moon,
@@ -68,6 +69,7 @@ export function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarP
   if (isAuthenticated) {
     userNav.push({ to: '/dashboard', label: 'Dashboard', icon: House });
     userNav.push({ to: '/dashboard/submissions', label: 'Submission Saya', icon: ClipboardList });
+    userNav.push({ to: '/dashboard/reports', label: 'Laporan Saya', icon: Flag });
   }
   if (user?.role === 'validator' || user?.role === 'admin') {
     userNav.push({ to: '/validator', label: 'Review', icon: CircleCheck });

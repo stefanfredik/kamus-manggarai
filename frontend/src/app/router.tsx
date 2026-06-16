@@ -21,6 +21,9 @@ const DashboardPage = lazy(() =>
 const SubmissionsPage = lazy(() =>
   import('@/features/contribution/pages/SubmissionsPage').then((m) => ({ default: m.SubmissionsPage })),
 );
+const ReportsPage = lazy(() =>
+  import('@/features/contribution/pages/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+);
 const ReviewQueuePage = lazy(() =>
   import('@/features/review/pages/ReviewQueuePage').then((m) => ({ default: m.ReviewQueuePage })),
 );
@@ -92,6 +95,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
             <SubmissionsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/dashboard/reports',
+        element: (
+          <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
+            <ReportsPage />
           </ProtectedRoute>
         ),
       },

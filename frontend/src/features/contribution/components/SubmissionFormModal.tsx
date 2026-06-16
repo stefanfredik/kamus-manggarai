@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -34,6 +34,7 @@ type TranslationDraft = {
   part_of_speech: string;
   notes: string;
   examples: SubmissionExampleInput[];
+  showNotes: boolean;
 };
 
 const emptyTranslation = (): TranslationDraft => ({
@@ -41,6 +42,7 @@ const emptyTranslation = (): TranslationDraft => ({
   part_of_speech: '',
   notes: '',
   examples: [],
+  showNotes: false,
 });
 
 // cleanExamples trims each pair and drops any where both sides are blank,
@@ -70,6 +72,8 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
   const [translations, setTranslations] = useState<TranslationDraft[]>([emptyTranslation()]);
   const [derived, setDerived] = useState<SubmissionDerivedInput[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const errorRef = useRef<HTMLDivElement>(null);
 
   const targetLang: Language = sourceLang === 'mgr' ? 'id' : 'mgr';
 
@@ -81,6 +85,20 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
     setTranslations([emptyTranslation()]);
     setDerived([]);
     setError(null);
+    setSubmitted(false);
+  }
+
+  // The form is "dirty" once the user has entered any content worth losing.
+  function isDirty() {
+    return (
+      headword.trim() !== '' ||
+      partOfSpeech !== '' ||
+      source.trim() !== '' ||
+      derived.length > 0 ||
+      translations.some(
+        (t) => t.lemma.trim() !== '' || t.notes.trim() !== '' || t.examples.length > 0,
+      )
+    );
   }
 
   const submitMutation = useMutation({
@@ -95,13 +113,23 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
       reset();
       onClose();
     },
-    onError: (err) => setError(extractError(err)),
+    onError: (err) => showError(extractError(err)),
   });
 
   function close() {
     if (submitMutation.isPending) return;
+    if (isDirty() && !window.confirm('Buang isian yang belum dikirim?')) return;
     reset();
     onClose();
+  }
+
+  // Set the error and bring it into view — the modal scrolls, so a message at
+  // the bottom can otherwise sit off-screen after the user hits submit.
+  function showError(msg: string) {
+    setError(msg);
+    requestAnimationFrame(() =>
+      errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+    );
   }
 
   // ---- translations ----
@@ -154,9 +182,10 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setSubmitted(true);
 
     if (!headword.trim()) {
-      setError(`Kata Bahasa ${LANG_LABEL[sourceLang]} wajib diisi`);
+      showError(`Kata Bahasa ${LANG_LABEL[sourceLang]} wajib diisi`);
       return;
     }
 
@@ -170,7 +199,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
       .filter((t) => t.lemma !== '');
 
     if (cleanedTranslations.length === 0) {
-      setError(`Minimal satu terjemahan Bahasa ${LANG_LABEL[targetLang]} wajib diisi`);
+      showError(`Minimal satu terjemahan Bahasa ${LANG_LABEL[targetLang]} wajib diisi`);
       return;
     }
 
@@ -178,7 +207,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
       .map((d) => ({ word: d.word.trim(), translation: d.translation.trim() }))
       .filter((d) => d.word !== '');
     if (cleanedDerived.some((d) => d.translation === '')) {
-      setError('Setiap kata turunan harus memiliki terjemahan');
+      showError('Setiap kata turunan harus memiliki terjemahan');
       return;
     }
 
@@ -197,6 +226,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
       open={open}
       onClose={close}
       dismissible={!submitMutation.isPending}
+      closeOnOverlayClick={false}
       labelledBy="submit-modal-title"
       className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-pop dark:bg-slate-800"
     >
@@ -212,10 +242,11 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
         {/* Direction selector */}
         <div>
           <span className="mb-1 block text-sm font-medium">Arah</span>
-          <div className="inline-flex rounded-xl bg-slate-100 p-0.5 text-sm dark:bg-slate-700/40">
+          <div className="inline-flex rounded-xl bg-slate-100 p-0.5 text-sm dark:bg-slate-700/40" role="group" aria-label="Arah terjemahan">
             <button
               type="button"
               onClick={() => setSourceLang('mgr')}
+              aria-pressed={sourceLang === 'mgr'}
               className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
                 sourceLang === 'mgr'
                   ? 'bg-white text-primary-700 shadow-sm dark:bg-slate-700 dark:text-primary-200'
@@ -227,6 +258,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
             <button
               type="button"
               onClick={() => setSourceLang('id')}
+              aria-pressed={sourceLang === 'id'}
               className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
                 sourceLang === 'id'
                   ? 'bg-white text-primary-700 shadow-sm dark:bg-slate-700 dark:text-primary-200'
@@ -246,8 +278,10 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
             <input
               value={headword}
               onChange={(e) => setHeadword(e.target.value)}
-              className="input"
+              className={`input ${submitted && !headword.trim() ? 'border-rose-400 focus:border-rose-400' : ''}`}
               required
+              aria-invalid={submitted && !headword.trim()}
+              data-autofocus
               placeholder={sourceLang === 'mgr' ? 'Contoh: hang' : 'Contoh: makan'}
             />
           </div>
@@ -263,7 +297,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium">Kelas kata kata utama (opsional)</label>
+          <label className="mb-1 block text-sm font-medium">Kelas kata utama (opsional)</label>
           <select
             value={partOfSpeech}
             onChange={(e) => setPartOfSpeech(e.target.value)}
@@ -317,12 +351,14 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                     value={t.lemma}
                     onChange={(e) => updateTranslation(idx, { lemma: e.target.value })}
                     className="input text-sm"
+                    aria-label={`Terjemahan ${idx + 1}: kata Bahasa ${LANG_LABEL[targetLang]}`}
                     placeholder={`Kata Bahasa ${LANG_LABEL[targetLang]} *`}
                   />
                   <select
                     value={t.part_of_speech}
                     onChange={(e) => updateTranslation(idx, { part_of_speech: e.target.value })}
                     className="input text-sm"
+                    aria-label={`Terjemahan ${idx + 1}: kelas kata`}
                   >
                     <option value="">— kelas kata —</option>
                     {PARTS_OF_SPEECH.map((p) => (
@@ -332,13 +368,6 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                     ))}
                   </select>
                 </div>
-                <textarea
-                  value={t.notes}
-                  onChange={(e) => updateTranslation(idx, { notes: e.target.value })}
-                  rows={2}
-                  className="input text-sm"
-                  placeholder="Catatan penggunaan untuk terjemahan ini (opsional)…"
-                />
 
                 {/* Example sentences for this translation */}
                 <div className="rounded-md bg-slate-50 p-2.5 dark:bg-slate-700/30">
@@ -364,6 +393,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                               updateExample(idx, exIdx, { manggarai: e.target.value })
                             }
                             className="input text-sm"
+                            aria-label={`Contoh ${exIdx + 1}: kalimat ${LANG_LABEL.mgr}`}
                             placeholder={`Kalimat ${LANG_LABEL.mgr}`}
                           />
                           <input
@@ -372,12 +402,14 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                               updateExample(idx, exIdx, { indonesian: e.target.value })
                             }
                             className="input text-sm"
+                            aria-label={`Contoh ${exIdx + 1}: arti ${LANG_LABEL.id}`}
                             placeholder={`Arti ${LANG_LABEL.id}`}
                           />
                           <button
                             type="button"
                             onClick={() => removeExample(idx, exIdx)}
                             className="text-sm text-rose-600 hover:underline"
+                            aria-label={`Hapus contoh ${exIdx + 1}`}
                           >
                             Hapus
                           </button>
@@ -386,6 +418,26 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                     </div>
                   )}
                 </div>
+
+                {/* Usage note: collapsed to a button until the user opts in. */}
+                {t.showNotes || t.notes.trim() ? (
+                  <textarea
+                    value={t.notes}
+                    onChange={(e) => updateTranslation(idx, { notes: e.target.value })}
+                    rows={2}
+                    autoFocus={t.showNotes && !t.notes}
+                    className="input text-sm"
+                    placeholder="Catatan penggunaan untuk terjemahan ini (opsional)…"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => updateTranslation(idx, { showNotes: true })}
+                    className="flex items-center gap-1 text-xs font-medium text-primary-600 hover:underline"
+                  >
+                    <Plus size={13} /> Tambah catatan
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -415,18 +467,21 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                     value={d.word}
                     onChange={(e) => updateDerived(idx, { word: e.target.value })}
                     className="input text-sm"
+                    aria-label={`Kata turunan ${idx + 1} (${LANG_LABEL[sourceLang]})`}
                     placeholder={`Kata turunan (${LANG_LABEL[sourceLang]})`}
                   />
                   <input
                     value={d.translation}
                     onChange={(e) => updateDerived(idx, { translation: e.target.value })}
                     className="input text-sm"
+                    aria-label={`Kata turunan ${idx + 1}: arti (${LANG_LABEL[targetLang]})`}
                     placeholder={`Arti (${LANG_LABEL[targetLang]})`}
                   />
                   <button
                     type="button"
                     onClick={() => removeDerived(idx)}
                     className="text-sm text-rose-600 hover:underline"
+                    aria-label={`Hapus kata turunan ${idx + 1}`}
                   >
                     Hapus
                   </button>
@@ -437,7 +492,11 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
         </div>
 
         {error && (
-          <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-900/20 dark:text-rose-300">
+          <div
+            ref={errorRef}
+            role="alert"
+            className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-900/20 dark:text-rose-300"
+          >
             {error}
           </div>
         )}

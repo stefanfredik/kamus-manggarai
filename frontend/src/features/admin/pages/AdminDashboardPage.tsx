@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { PenLine, Plus, Trash2 } from 'lucide-react';
-import { adminApi, type AnalyticsData } from '../api/adminApi';
+import { CheckCircle2, ExternalLink, Flag, PenLine, Plus, Trash2, XCircle } from 'lucide-react';
+import { adminApi, type AnalyticsData, type ReportItem } from '../api/adminApi';
 import { WordEditModal } from '../components/WordEditModal';
 import { dictionaryApi } from '@/features/dictionary/api/dictionaryApi';
 import { goetApi, type Goet } from '@/features/goet/api/goetApi';
@@ -13,6 +13,7 @@ import { Pagination } from '@/shared/components/Pagination';
 import { ActionMenu } from '@/shared/components/ActionMenu';
 import { Modal } from '@/shared/components/Modal';
 import { useToast } from '@/shared/components/Toast';
+import { formatRelative } from '@/shared/utils/formatters';
 import { extractError } from '@/lib/axios';
 
 type Tab = 'analytics' | 'users' | 'reports' | 'kosakata' | 'goet';
@@ -73,6 +74,9 @@ function AnalyticsTab() {
   if (!q.data) return <div className="text-slate-500">Tidak ada data.</div>;
 
   const a: AnalyticsData = q.data;
+  // The Go API serializes empty slices as null, so guard before reading them.
+  const contributors = a.top_contributors ?? [];
+  const growth = a.growth_by_month ?? [];
   return (
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-3">
@@ -84,11 +88,11 @@ function AnalyticsTab() {
       <div className="grid gap-3 md:grid-cols-2">
         <div className="card">
           <h3 className="mb-3 font-semibold">Top kontributor</h3>
-          {a.top_contributors.length === 0 ? (
+          {contributors.length === 0 ? (
             <p className="text-sm text-slate-500">Belum ada data.</p>
           ) : (
             <ol className="space-y-1.5 text-sm">
-              {a.top_contributors.map((c, i) => (
+              {contributors.map((c, i) => (
                 <li key={c.user_id} className="flex items-center justify-between">
                   <span>{i + 1}. {c.name}</span>
                   <span className="font-semibold">{c.total}</span>
@@ -99,11 +103,11 @@ function AnalyticsTab() {
         </div>
         <div className="card">
           <h3 className="mb-3 font-semibold">Pertumbuhan per bulan</h3>
-          {a.growth_by_month.length === 0 ? (
+          {growth.length === 0 ? (
             <p className="text-sm text-slate-500">Belum ada data.</p>
           ) : (
             <ul className="space-y-1.5 text-sm">
-              {a.growth_by_month.map((m) => (
+              {growth.map((m) => (
                 <li key={m.month} className="flex items-center justify-between">
                   <span>{m.month}</span>
                   <span className="font-semibold">{m.total}</span>
@@ -899,45 +903,158 @@ function PasswordModal({
 
 function ReportsTab() {
   const qc = useQueryClient();
+  const toast = useToast();
   const q = useQuery({ queryKey: ['admin', 'reports'], queryFn: () => adminApi.listReports(1, 100) });
   const handle = useMutation({
     mutationFn: ({ id, action }: { id: string; action: 'resolved' | 'dismissed' }) => adminApi.handleReport(id, action),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'reports'] }),
+    onSuccess: (_, variables) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'reports'] });
+      toast.success(variables.action === 'resolved' ? 'Laporan ditandai selesai.' : 'Laporan ditutup tanpa perubahan.');
+    },
+    onError: (err) => toast.error(extractError(err)),
   });
 
-  if (q.isLoading) return <div>Memuat…</div>;
+  const reports = q.data?.items ?? [];
+  const urgentCount = reports.filter((r) => r.reason === 'konten_tidak_pantas').length;
+  const activeId = handle.variables?.id;
 
   return (
-    <div className="space-y-2">
-      {q.data?.items.length === 0 ? (
-        <div className="card text-center text-sm text-slate-500">Tidak ada laporan terbuka.</div>
-      ) : (
-        q.data?.items.map((r) => (
-          <div key={r.id} className="card">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="font-semibold">{r.entry_name ?? 'Kosakata'}</div>
-                <div className="mt-1 text-xs text-slate-500">{r.reason}</div>
-                {r.description && <p className="mt-2 text-sm">{r.description}</p>}
-              </div>
-              <div className="flex gap-1.5">
-                <button
-                  className="btn-outline text-xs"
-                  onClick={() => handle.mutate({ id: r.id, action: 'resolved' })}
-                >
-                  Resolve
-                </button>
-                <button
-                  className="btn-outline text-xs"
-                  onClick={() => handle.mutate({ id: r.id, action: 'dismissed' })}
-                >
-                  Dismiss
-                </button>
-              </div>
-            </div>
+    <div className="space-y-4">
+      <div className="grid gap-3 md:grid-cols-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Laporan terbuka</div>
+          <div className="mt-2 text-2xl font-semibold">{q.isLoading ? '...' : reports.length}</div>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Prioritas tinggi</div>
+          <div className="mt-2 text-2xl font-semibold text-rose-600 dark:text-rose-300">{q.isLoading ? '...' : urgentCount}</div>
+        </div>
+        <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+          <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Alur kerja</div>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            Buka entri, koreksi bila perlu, lalu tandai selesai. Tutup jika laporan tidak valid.
+          </p>
+        </div>
+      </div>
+
+      {q.isLoading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="card h-28 animate-pulse" />
+          ))}
+        </div>
+      ) : q.isError ? (
+        <div className="rounded-lg bg-rose-50 p-4 text-sm text-rose-700 dark:bg-rose-900/20 dark:text-rose-300">
+          {extractError(q.error)}
+        </div>
+      ) : reports.length === 0 ? (
+        <div className="card text-center">
+          <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300">
+            <CheckCircle2 size={22} />
           </div>
-        ))
+          <h3 className="font-semibold">Tidak ada laporan terbuka</h3>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Semua laporan sudah diproses.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {reports.map((report) => (
+            <ReportReviewCard
+              key={report.id}
+              report={report}
+              isBusy={handle.isPending && activeId === report.id}
+              onResolve={() => handle.mutate({ id: report.id, action: 'resolved' })}
+              onDismiss={() => handle.mutate({ id: report.id, action: 'dismissed' })}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
 }
+
+const REPORT_REASON_LABELS: Record<string, string> = {
+  ejaan_salah: 'Ejaan salah',
+  arti_tidak_tepat: 'Arti tidak tepat',
+  contoh_salah: 'Contoh kalimat salah',
+  konten_tidak_pantas: 'Konten tidak pantas',
+  lainnya: 'Lainnya',
+};
+
+function ReportReviewCard({
+  report,
+  isBusy,
+  onResolve,
+  onDismiss,
+}: {
+  report: ReportItem;
+  isBusy: boolean;
+  onResolve: () => void;
+  onDismiss: () => void;
+}) {
+  const isUrgent = report.reason === 'konten_tidak_pantas';
+  const entryUrl = report.entry_slug ? `/kata/${report.entry_slug}` : undefined;
+
+  return (
+    <div className="card">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${isUrgent ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-200' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-200'}`}>
+              <Flag size={13} /> {REPORT_REASON_LABELS[report.reason] ?? report.reason}
+            </span>
+            {report.entry_language && (
+              <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-300">
+                {report.entry_language === 'id' ? 'Indonesia' : 'Manggarai'}
+              </span>
+            )}
+            <span className="text-xs text-slate-500 dark:text-slate-400">{formatRelative(report.created_at)}</span>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50">{report.entry_name || 'Kosakata'}</h3>
+            {entryUrl && (
+              <a
+                href={entryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-300"
+              >
+                Buka entri <ExternalLink size={14} />
+              </a>
+            )}
+          </div>
+
+          {report.description ? (
+            <p className="mt-3 rounded-lg bg-slate-50 p-3 text-sm leading-6 text-slate-700 dark:bg-slate-700/40 dark:text-slate-200">
+              {report.description}
+            </p>
+          ) : (
+            <p className="mt-3 text-sm italic text-slate-500 dark:text-slate-400">Pelapor tidak menambahkan detail.</p>
+          )}
+        </div>
+
+        <div className="flex shrink-0 flex-wrap gap-2 lg:justify-end">
+          <button
+            type="button"
+            className="btn-outline border-rose-200 text-rose-600 hover:bg-rose-50 dark:border-rose-800 dark:hover:bg-rose-900/20"
+            disabled={isBusy}
+            onClick={onDismiss}
+            title="Tutup laporan jika tidak valid atau tidak perlu perubahan."
+          >
+            <XCircle size={16} /> Tutup
+          </button>
+          <button
+            type="button"
+            className="btn-primary"
+            disabled={isBusy}
+            onClick={onResolve}
+            title="Tandai selesai setelah entri diperiksa atau diperbaiki."
+          >
+            <CheckCircle2 size={16} /> {isBusy ? 'Memproses...' : 'Selesai'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+

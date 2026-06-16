@@ -6,6 +6,8 @@ interface ModalProps {
   children: ReactNode;
   /** Prevent closing via overlay click / Escape (e.g. while submitting). */
   dismissible?: boolean;
+  /** Close when the backdrop outside the dialog is clicked. Defaults to true. */
+  closeOnOverlayClick?: boolean;
   labelledBy?: string;
   className?: string;
 }
@@ -19,6 +21,7 @@ export function Modal({
   onClose,
   children,
   dismissible = true,
+  closeOnOverlayClick = true,
   labelledBy,
   className,
 }: ModalProps) {
@@ -32,9 +35,12 @@ export function Modal({
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    const toFocus = dialogRef.current?.querySelector<HTMLElement>(
-      'input, textarea, select, button, [href], [tabindex]:not([tabindex="-1"])',
-    );
+    // Prefer an explicitly-marked field, else the first focusable element.
+    const toFocus =
+      dialogRef.current?.querySelector<HTMLElement>('[data-autofocus]') ??
+      dialogRef.current?.querySelector<HTMLElement>(
+        'input, textarea, select, button, [href], [tabindex]:not([tabindex="-1"])',
+      );
     toFocus?.focus();
 
     return () => {
@@ -58,7 +64,7 @@ export function Modal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-      onClick={() => dismissible && onClose()}
+      onClick={() => dismissible && closeOnOverlayClick && onClose()}
     >
       <div
         ref={dialogRef}

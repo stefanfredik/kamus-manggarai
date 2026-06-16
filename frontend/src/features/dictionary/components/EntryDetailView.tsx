@@ -26,6 +26,11 @@ export function EntryDetailView({ entry, onEdit, onDelete }: EntryDetailViewProp
             <div className="flex items-center gap-2">
               <h1 className="text-3xl font-bold text-primary-700 dark:text-primary-300">
                 {entry.lemma}
+                {entry.homonym_number != null && (
+                  <sup className="ml-1 text-base font-semibold text-slate-400 dark:text-slate-500">
+                    {entry.homonym_number}
+                  </sup>
+                )}
               </h1>
               <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                 {LANG_LABEL[entry.language] ?? entry.language}

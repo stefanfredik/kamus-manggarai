@@ -38,6 +38,11 @@ export function HeroSearch({
 
   return (
     <div className="w-full">
+      {showDirectionToggle && onDirectionChange && (
+        <div className="mb-2 flex justify-center">
+          <DirectionToggle value={direction} onChange={onDirectionChange} />
+        </div>
+      )}
       <div className="group flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-soft transition-shadow focus-within:border-primary-300 focus-within:shadow-md focus-within:ring-4 focus-within:ring-primary-100 dark:border-slate-700 dark:bg-slate-900 dark:focus-within:ring-primary-900/40">
         <Search className="ml-1 shrink-0 text-slate-400" size={20} />
 
@@ -67,12 +72,6 @@ export function HeroSearch({
           >
             <X size={16} />
           </button>
-        )}
-
-        {showDirectionToggle && onDirectionChange && (
-          <div className="shrink-0 border-l border-slate-200 pl-2 dark:border-slate-700">
-            <DirectionToggle value={direction} onChange={onDirectionChange} />
-          </div>
         )}
       </div>
     </div>

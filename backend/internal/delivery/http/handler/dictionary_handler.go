@@ -74,6 +74,19 @@ func (h *DictionaryHandler) Search(c fiber.Ctx) error {
 	return response.Success(c, result)
 }
 
+func (h *DictionaryHandler) ListMyReports(c fiber.Ctx) error {
+	uid, ok := middleware.GetUserID(c)
+	if !ok {
+		return response.Error(c, apperror.ErrUnauthorized)
+	}
+	p := pagination.FromQuery(c)
+	reports, total, err := h.reportUC.ListMine(c.Context(), uid, p.Page, p.Limit)
+	if err != nil {
+		return response.Error(c, err)
+	}
+	return response.Paginated(c, reports, p.Page, p.Limit, total)
+}
+
 type reportEntryRequest struct {
 	Reason      string  `json:"reason"`
 	Description *string `json:"description"`

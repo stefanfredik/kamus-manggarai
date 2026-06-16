@@ -39,3 +39,16 @@ func (u *ReportUseCase) ReportEntry(ctx context.Context, slug string, input Crea
 	}
 	return report, nil
 }
+
+func (u *ReportUseCase) ListMine(ctx context.Context, reporterID uuid.UUID, page, limit int) ([]*entity.Report, int64, error) {
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 20
+	}
+	if limit > 50 {
+		limit = 50
+	}
+	return u.reportRepo.ListByReporter(ctx, reporterID, page, limit)
+}

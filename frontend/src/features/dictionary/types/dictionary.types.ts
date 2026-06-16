@@ -76,3 +76,18 @@ export interface ReportPayload {
   reason: 'ejaan_salah' | 'arti_tidak_tepat' | 'contoh_salah' | 'konten_tidak_pantas' | 'lainnya';
   description?: string;
 }
+
+
+export interface ReportItem {
+  id: string;
+  entry_id: string;
+  entry_name?: string;
+  entry_slug?: string;
+  entry_language?: Language;
+  reported_by?: string;
+  reason: ReportPayload['reason'];
+  description?: string;
+  status: 'open' | 'resolved' | 'dismissed';
+  resolved_at?: string;
+  created_at: string;
+}

@@ -9,6 +9,9 @@ export interface ReportItem {
   id: string;
   entry_id: string;
   entry_name?: string;
+  entry_slug?: string;
+  entry_language?: 'id' | 'mgr';
+  reported_by?: string;
   reason: string;
   description?: string;
   status: 'open' | 'resolved' | 'dismissed';

@@ -19,16 +19,18 @@ const (
 )
 
 type Report struct {
-	ID          uuid.UUID  `json:"id"`
-	EntryID     uuid.UUID  `json:"entry_id"`
-	EntryName   string     `json:"entry_name,omitempty"`
-	ReportedBy  *uuid.UUID `json:"reported_by,omitempty"`
-	Reason      string     `json:"reason"`
-	Description *string    `json:"description,omitempty"`
-	Status      string     `json:"status"`
-	ResolvedBy  *uuid.UUID `json:"resolved_by,omitempty"`
-	ResolvedAt  *time.Time `json:"resolved_at,omitempty"`
-	CreatedAt   time.Time  `json:"created_at"`
+	ID            uuid.UUID  `json:"id"`
+	EntryID       uuid.UUID  `json:"entry_id"`
+	EntryName     string     `json:"entry_name,omitempty"`
+	EntrySlug     string     `json:"entry_slug,omitempty"`
+	EntryLanguage string     `json:"entry_language,omitempty"`
+	ReportedBy    *uuid.UUID `json:"reported_by,omitempty"`
+	Reason        string     `json:"reason"`
+	Description   *string    `json:"description,omitempty"`
+	Status        string     `json:"status"`
+	ResolvedBy    *uuid.UUID `json:"resolved_by,omitempty"`
+	ResolvedAt    *time.Time `json:"resolved_at,omitempty"`
+	CreatedAt     time.Time  `json:"created_at"`
 }
 
 type Notification struct {
