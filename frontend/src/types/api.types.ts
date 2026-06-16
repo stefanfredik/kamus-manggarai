@@ -28,4 +28,5 @@ export interface User {
   is_suspended: boolean;
   created_at: string;
   updated_at: string;
+  is_google_user: boolean;
 }

@@ -195,3 +195,43 @@ func (h *AuthHandler) TokenExchange(c fiber.Ctx) error {
 	})
 }
 
+type changePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
+func (h *AuthHandler) ChangePassword(c fiber.Ctx) error {
+	uid, ok := middleware.GetUserID(c)
+	if !ok {
+		return response.Error(c, apperror.ErrUnauthorized)
+	}
+	var req changePasswordRequest
+	if err := c.Bind().Body(&req); err != nil {
+		return response.Error(c, apperror.ErrBadRequest.WithCause(err))
+	}
+	if err := h.authUC.ChangePassword(c.Context(), uid, req.CurrentPassword, req.NewPassword); err != nil {
+		return response.Error(c, err)
+	}
+	return response.Success(c, fiber.Map{"message": "password berhasil diubah"})
+}
+
+type updateProfileRequest struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+func (h *AuthHandler) UpdateProfile(c fiber.Ctx) error {
+	uid, ok := middleware.GetUserID(c)
+	if !ok {
+		return response.Error(c, apperror.ErrUnauthorized)
+	}
+	var req updateProfileRequest
+	if err := c.Bind().Body(&req); err != nil {
+		return response.Error(c, apperror.ErrBadRequest.WithCause(err))
+	}
+	if err := h.authUC.UpdateProfile(c.Context(), uid, req.Name, req.Email); err != nil {
+		return response.Error(c, err)
+	}
+	return response.Success(c, fiber.Map{"message": "profil berhasil diperbarui"})
+}
+

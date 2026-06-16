@@ -45,6 +45,8 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	authProtected := authGroup.Group("", middleware.AuthRequired(authUC))
 	authProtected.Post("/logout", h.Auth.Logout)
 	authProtected.Get("/me", h.Auth.Me)
+	authProtected.Post("/change-password", h.Auth.ChangePassword)
+	authProtected.Put("/profile", h.Auth.UpdateProfile)
 
 	publicGroup := api.Group("")
 	publicGroup.Use(middleware.RateLimit(cache, middleware.RateLimitConfig{

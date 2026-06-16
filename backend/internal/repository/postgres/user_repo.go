@@ -54,7 +54,12 @@ func (r *userRepo) Create(ctx context.Context, u *entity.User) error {
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING created_at, updated_at`,
 		u.ID, u.GoogleID, u.Email, u.Name, u.AvatarURL, u.PasswordHash, u.Role, u.IsSuspended)
-	return row.Scan(&u.CreatedAt, &u.UpdatedAt)
+	err := row.Scan(&u.CreatedAt, &u.UpdatedAt)
+	if err != nil {
+		return err
+	}
+	u.IsGoogleUser = u.GoogleID != nil
+	return nil
 }
 
 func (r *userRepo) UpdateRole(ctx context.Context, id uuid.UUID, role string) error {
@@ -155,5 +160,6 @@ func scanUser(row rowScanner) (*entity.User, error) {
 		}
 		return nil, err
 	}
+	u.IsGoogleUser = u.GoogleID != nil
 	return u, nil
 }

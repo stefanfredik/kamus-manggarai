@@ -333,3 +333,55 @@ func (u *AuthUseCase) Login(ctx context.Context, email, password string) (*Login
 	}
 	return u.issueTokens(ctx, user)
 }
+
+func (u *AuthUseCase) ChangePassword(ctx context.Context, userID uuid.UUID, currentPassword, newPassword string) error {
+	user, err := u.userRepo.FindByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	if user.PasswordHash == nil || *user.PasswordHash == "" {
+		return apperror.ErrValidation.WithMessage("akun Google tidak memiliki password lokal untuk diubah")
+	}
+	if err := bcrypt.CompareHashAndPassword([]byte(*user.PasswordHash), []byte(currentPassword)); err != nil {
+		return apperror.ErrUnauthorized.WithMessage("password saat ini salah")
+	}
+	if len(newPassword) < 8 {
+		return apperror.ErrValidation.WithMessage("password baru minimal 8 karakter")
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return apperror.ErrInternal.WithCause(err)
+	}
+	return u.userRepo.UpdatePassword(ctx, userID, string(hash))
+}
+
+func (u *AuthUseCase) UpdateProfile(ctx context.Context, userID uuid.UUID, name, email string) error {
+	user, err := u.userRepo.FindByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	name = strings.TrimSpace(name)
+	email = strings.ToLower(strings.TrimSpace(email))
+
+	if name == "" {
+		return apperror.ErrValidation.WithMessage("nama wajib diisi")
+	}
+
+	if user.GoogleID != nil && email != user.Email {
+		return apperror.ErrValidation.WithMessage("email akun Google tidak dapat diubah")
+	}
+
+	if email != user.Email {
+		if email == "" || !strings.Contains(email, "@") {
+			return apperror.ErrValidation.WithMessage("email tidak valid")
+		}
+		existing, err := u.userRepo.FindByEmail(ctx, email)
+		if err == nil && existing != nil {
+			return apperror.ErrConflict.WithMessage("email sudah digunakan oleh pengguna lain")
+		} else if err != nil && !errors.Is(err, apperror.ErrNotFound) {
+			return err
+		}
+	}
+
+	return u.userRepo.UpdateProfile(ctx, userID, name, email, user.Role)
+}

@@ -33,6 +33,9 @@ const ReviewDetailPage = lazy(() =>
 const AdminDashboardPage = lazy(() =>
   import('@/features/admin/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })),
 );
+const ProfilePage = lazy(() =>
+  import('@/features/auth/pages/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+);
 
 function SuspenseFallback() {
   return (
@@ -103,6 +106,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
             <ReportsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/dashboard/profile',
+        element: (
+          <ProtectedRoute roles={['contributor', 'validator', 'admin']}>
+            <ProfilePage />
           </ProtectedRoute>
         ),
       },

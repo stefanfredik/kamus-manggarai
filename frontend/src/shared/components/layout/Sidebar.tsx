@@ -14,6 +14,7 @@ import {
   PanelLeftOpen,
   LogOut,
   ArrowRight,
+  User as UserIcon,
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTheme } from '@/shared/theme';
@@ -195,6 +196,14 @@ export function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarP
                     onClick={() => { setMenuOpen(false); onClose(); }}
                   >
                     <House size={15} /> Dashboard
+                  </Link>
+                  <Link
+                    to="/dashboard/profile"
+                    role="menuitem"
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-700"
+                    onClick={() => { setMenuOpen(false); onClose(); }}
+                  >
+                    <UserIcon size={15} /> Profil Saya
                   </Link>
                   <button
                     role="menuitem"

@@ -23,6 +23,7 @@ type User struct {
 	IsSuspended  bool      `json:"is_suspended"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+	IsGoogleUser bool      `json:"is_google_user"`
 }
 
 func (u *User) IsAdmin() bool       { return u.Role == RoleAdmin }

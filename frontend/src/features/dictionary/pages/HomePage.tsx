@@ -65,24 +65,21 @@ export function HomePage() {
       <div className={`hero-glow pointer-events-none absolute inset-x-0 top-0 h-72 transition-opacity duration-300 ${isSearchActive ? 'opacity-0' : 'opacity-100'}`} />
 
       <div className={`mx-auto w-full px-4 transition-all duration-500 ease-out ${isSearchActive
-          ? 'max-w-3xl flex-1 py-6'
-          : 'max-w-2xl flex flex-1 flex-col justify-center py-12'
+        ? 'max-w-3xl flex-1 py-6'
+        : 'max-w-2xl flex flex-1 flex-col justify-center py-12'
         }`}>
 
         {/* Hero Header Content: animated height/opacity */}
         <div className={`relative z-10 text-center transition-all duration-300 ${isSearchActive
-            ? 'max-h-0 opacity-0 overflow-hidden mb-0 scale-95 pointer-events-none'
-            : 'max-h-[500px] opacity-100 mb-8 scale-100'
+          ? 'max-h-0 opacity-0 overflow-hidden mb-0 scale-95 pointer-events-none'
+          : 'max-h-[500px] opacity-100 mb-8 scale-100'
           }`}>
           <div className="mb-6 flex justify-center">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary-600 to-emerald-500 rounded-3xl blur-md opacity-25 group-hover:opacity-40 transition duration-1000" />
-              <img
-                src="/logo.jpg"
-                alt="Logo Kamus Manggarai"
-                className="relative h-28 w-28 rounded-3xl object-cover shadow-md border border-slate-100/50 dark:border-slate-800/50"
-              />
-            </div>
+            <img
+              src="/logo.jpg"
+              alt="Logo Kamus Manggarai"
+              className="h-28 w-28 rounded-xl object-cover border border-slate-100/50 dark:border-slate-800/50"
+            />
           </div>
           <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
             🇲🇨 Kamus Dua Arah Digital
@@ -97,8 +94,8 @@ export function HomePage() {
 
         {/* Search Bar Wrapper: becomes sticky when isSearchActive */}
         <div className={`z-20 transition-all duration-300 ${isSearchActive
-            ? 'sticky top-0 -mx-4 border-b border-slate-100 bg-white/90 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 shadow-sm'
-            : 'relative'
+          ? 'sticky top-0 -mx-4 border-b border-slate-100 bg-white/90 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 shadow-sm'
+          : 'relative'
           }`}>
           <HeroSearch
             query={query}
@@ -113,8 +110,8 @@ export function HomePage() {
 
         {/* Quick search suggestions */}
         <div className={`transition-all duration-300 ${isSearchActive
-            ? 'max-h-0 opacity-0 overflow-hidden mt-0 scale-95 pointer-events-none'
-            : 'max-h-[200px] opacity-100 mt-8 scale-100'
+          ? 'max-h-0 opacity-0 overflow-hidden mt-0 scale-95 pointer-events-none'
+          : 'max-h-[200px] opacity-100 mt-8 scale-100'
           }`}>
         </div>
 
