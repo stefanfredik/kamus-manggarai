@@ -100,7 +100,7 @@ services:
 
   # Migration runner: jalankan migrate up, lalu keluar (tidak makan RAM terus)
   migrate:
-    image: migrate/migrate:v4
+    image: migrate/migrate:v4.17.0
     container_name: kamus_migrate
     volumes:
       - ./backend/db/migrations:/migrations
