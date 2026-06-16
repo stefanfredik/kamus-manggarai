@@ -169,7 +169,30 @@ docker compose restart backend
 docker compose restart nginx
 ```
 
-### Backup Database
+### Backup & Restore Database (Otomatis)
+
+Kami menyediakan script otomatis untuk melakukan ekspor (backup) dan impor (restore) database:
+
+```bash
+# 1. Ekspor database (dari dev atau prod)
+# Secara default mendeteksi kontainer yang berjalan (kamus_postgres_dev atau kamus_postgres)
+# dan menyimpannya ke backup_kamus_dev.sql
+./db-export.sh
+
+# Pilihan tambahan:
+# ./db-export.sh -c nama_kontainer -o nama_file.sql
+
+# 2. Impor database (ke prod atau dev)
+# Membaca file backup_kamus_dev.sql dan mengimpor ke kontainer PostgreSQL yang aktif
+./db-import.sh
+
+# Pilihan tambahan (melewati konfirmasi keamanan):
+# ./db-import.sh -c nama_kontainer -i nama_file.sql -y
+```
+
+### Backup Database (Manual)
+
+Jika ingin melakukannya secara manual:
 
 ```bash
 # Buat backup

@@ -3,7 +3,8 @@ CREATE EXTENSION IF NOT EXISTS "unaccent";
 
 -- IMMUTABLE wrapper so unaccent can be used in functional indexes
 CREATE OR REPLACE FUNCTION immutable_unaccent(text) RETURNS text
-    LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
+    LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT
+    SET search_path = public, pg_catalog AS
     $$ SELECT unaccent('unaccent', $1) $$;
 
 CREATE TABLE entries (

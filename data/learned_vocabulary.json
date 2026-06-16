@@ -2256,5 +2256,21 @@
     "diajarkan_oleh": "kopi.flores",
     "tanggal": "2026-06-16",
     "terverifikasi": true
+  },
+  {
+    "kata_indonesia": "syukur",
+    "manggarai": [
+      "dia eme nggitu"
+    ],
+    "kategori": "frasa",
+    "dialek": "umum",
+    "contoh_kalimat": {
+      "manggarai": "Dia eme nggitu hau laing sehat",
+      "indonesia": "Syukur kamu masih sehat"
+    },
+    "sumber": "percakapan_whatsapp",
+    "diajarkan_oleh": "kopi.flores",
+    "tanggal": "2026-06-16",
+    "terverifikasi": true
   }
 ]
