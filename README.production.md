@@ -26,14 +26,14 @@ docker compose version  # Harus v2.x
 ### 2. Install tools tambahan
 
 ```bash
-sudo apt install -y git certbot curl wget ufw
+sudo apt install -y git curl wget ufw
 ```
 
 ### 3. Setup Firewall
 
 ```bash
 sudo ufw allow 22/tcp   # SSH
-sudo ufw allow 80/tcp   # HTTP (untuk Let's Encrypt)
+sudo ufw allow 80/tcp   # HTTP (redirect ke HTTPS)
 sudo ufw allow 443/tcp  # HTTPS
 sudo ufw enable
 sudo ufw status
@@ -81,53 +81,40 @@ nano backend/.env
    ```
 5. Simpan perubahan
 
-### Step 4: Dapatkan Sertifikat SSL (Let's Encrypt)
+### Step 4: Setup SSL (Cloudflare Origin CA)
 
-**4a. Jalankan Nginx dulu (HTTP only, sementara):**
+> **Prasyarat:** Domain `kamus.florescyber.tech` sudah dikelola di Cloudflare
+> dengan DNS A record mengarah ke IP VPS dan **Proxy status: Proxied** (☁️).
 
-> Edit sementara `nginx/nginx.conf` untuk menonaktifkan blok HTTPS dan hanya pakai port 80
-> **ATAU** gunakan konfigurasi bootstrap berikut:
+**4a. Set SSL Mode di Cloudflare Dashboard:**
+
+- Buka **SSL/TLS → Overview** → pilih **Full (Strict)**
+
+**4b. Generate Origin Certificate:**
+
+1. Buka **SSL/TLS → Origin Server → Create Certificate**
+2. Pilih:
+   - Private key type: **RSA (2048)**
+   - Hostnames: `*.florescyber.tech, florescyber.tech`
+   - Validity: **15 years**
+3. Klik **Create**
+
+**4c. Simpan sertifikat ke VPS:**
 
 ```bash
-# Buat nginx config sementara hanya untuk ACME challenge
-cat > /tmp/nginx-bootstrap.conf << 'EOF'
-events { worker_connections 1024; }
-http {
-    server {
-        listen 80;
-        server_name kamus.florescyber.tech;
-        location /.well-known/acme-challenge/ {
-            root /var/www/certbot;
-        }
-        location / { return 200 "OK"; }
-    }
-}
-EOF
+# Paste Origin Certificate dari Cloudflare
+nano nginx/ssl/fullchain.pem
 
-docker run -d --name nginx-bootstrap \
-  -p 80:80 \
-  -v /tmp/nginx-bootstrap.conf:/etc/nginx/nginx.conf:ro \
-  -v certbot_webroot:/var/www/certbot \
-  nginx:alpine
+# Paste Private Key dari Cloudflare
+nano nginx/ssl/privkey.pem
 
-# Dapatkan sertifikat
-sudo certbot certonly \
-  --webroot \
-  --webroot-path=/var/lib/docker/volumes/certbot_webroot/_data \
-  -d kamus.florescyber.tech \
-  --email admin@florescyber.tech \
-  --agree-tos \
-  --non-interactive
-
-# Salin sertifikat
-sudo cp /etc/letsencrypt/live/kamus.florescyber.tech/fullchain.pem nginx/ssl/fullchain.pem
-sudo cp /etc/letsencrypt/live/kamus.florescyber.tech/privkey.pem nginx/ssl/privkey.pem
-sudo chmod 644 nginx/ssl/fullchain.pem
-sudo chmod 600 nginx/ssl/privkey.pem
-
-# Hentikan nginx sementara
-docker stop nginx-bootstrap && docker rm nginx-bootstrap
+# Set permission
+chmod 644 nginx/ssl/fullchain.pem
+chmod 600 nginx/ssl/privkey.pem
 ```
+
+> ⚠️ **PENTING:** Cloudflare tidak menyimpan private key setelah halaman ditutup.
+> Pastikan Anda menyimpan backup di tempat aman.
 
 ### Step 5: Deploy Stack Production
 
@@ -194,15 +181,13 @@ cat backup.sql | docker compose exec -T postgres \
   psql -U kamus_user kamus_manggarai
 ```
 
-### Perpanjangan SSL Otomatis
+### Catatan SSL
 
-Tambahkan ke crontab (`crontab -e`):
+Sertifikat Cloudflare Origin CA berlaku **15 tahun** — tidak perlu renewal otomatis.
+Tanggal expired bisa dicek dengan:
 
 ```bash
-0 3 1 */2 * certbot renew --quiet && \
-  cp /etc/letsencrypt/live/kamus.florescyber.tech/fullchain.pem /opt/kamus-manggarai/nginx/ssl/fullchain.pem && \
-  cp /etc/letsencrypt/live/kamus.florescyber.tech/privkey.pem /opt/kamus-manggarai/nginx/ssl/privkey.pem && \
-  docker compose -f /opt/kamus-manggarai/docker-compose.yml exec nginx nginx -s reload
+openssl x509 -in nginx/ssl/fullchain.pem -text -noout | grep "Not After"
 ```
 
 ---
@@ -214,8 +199,9 @@ Tambahkan ke crontab (`crontab -e`):
 - [ ] `JWT_ACCESS_SECRET` dan `JWT_REFRESH_SECRET` sudah di-generate (min 64 karakter)
 - [ ] `GOOGLE_REDIRECT_URL` sudah diupdate ke `https://kamus.florescyber.tech/...`
 - [ ] URL production sudah ditambahkan di Google Cloud Console OAuth
-- [ ] Sertifikat SSL sudah diletakkan di `nginx/ssl/`
-- [ ] Domain `kamus.florescyber.tech` sudah mengarah ke IP VPS (cek DNS A record)
+- [ ] Sertifikat Cloudflare Origin CA sudah diletakkan di `nginx/ssl/`
+- [ ] Cloudflare SSL/TLS mode sudah di-set ke **Full (Strict)**
+- [ ] Domain `kamus.florescyber.tech` sudah mengarah ke IP VPS dengan Proxy **Proxied** (☁️)
 - [ ] Firewall sudah dikonfigurasi (port 80, 443, 22)
 - [ ] Database migration sudah berjalan sukses
 - [ ] Health check `https://kamus.florescyber.tech/health` mengembalikan 200

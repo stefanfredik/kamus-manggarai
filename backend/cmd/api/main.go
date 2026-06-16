@@ -87,7 +87,7 @@ func main() {
 	goetRepo := postgres.NewGoetRepo(pgPool)
 	dialectRepo := postgres.NewDialectRepo(pgPool)
 
-	authUC := usecase.NewAuthUseCase(cfg.JWT, cfg.App.FrontendURL, userRepo, tokenRepo, oauthSvc)
+	authUC := usecase.NewAuthUseCase(cfg.JWT, cfg.App.FrontendURL, userRepo, tokenRepo, oauthSvc, cacheRepo)
 	notifUC := usecase.NewNotificationUseCase(notifRepo)
 	wordUC := usecase.NewWordUseCase(wordRepo, cacheRepo)
 	searchUC := usecase.NewSearchUseCase(wordRepo, cacheRepo)

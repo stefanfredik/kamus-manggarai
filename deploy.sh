@@ -79,7 +79,7 @@ log_success "Stack production berjalan"
 
 # ─── Health Check ─────────────────────────────────────────────────────────────
 log_info "Memeriksa health check backend..."
-sleep 15  # Beri waktu backend untuk startup
+sleep 15  # Beri waktu backend untuk startup (nginx build lebih lama karena build frontend)
 
 MAX_RETRIES=5
 RETRY=0

@@ -38,6 +38,7 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	authGroup.Post("/register", h.Auth.Register)
 	authGroup.Post("/login", h.Auth.Login)
 	authGroup.Post("/refresh", h.Auth.Refresh)
+	authGroup.Post("/token-exchange", h.Auth.TokenExchange)
 
 	authProtected := authGroup.Group("", middleware.AuthRequired(authUC))
 	authProtected.Post("/logout", h.Auth.Logout)

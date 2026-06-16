@@ -1,69 +1,80 @@
 # Direktori SSL — Kamus Manggarai
 
-Letakkan file sertifikat SSL Let's Encrypt di direktori ini.
+Sertifikat SSL menggunakan **Cloudflare Origin CA** dengan mode **Full (Strict)**.
+
+## Prasyarat
+
+- Domain `kamus.florescyber.tech` sudah di-manage di Cloudflare
+- DNS A record mengarah ke IP VPS dengan **Proxy status: Proxied** (☁️ orange cloud)
+- SSL/TLS mode di Cloudflare dashboard di-set ke **Full (Strict)**
 
 ## File yang Dibutuhkan
 
 | File | Deskripsi |
 |------|-----------|
-| `fullchain.pem` | Sertifikat lengkap (cert + chain) dari Let's Encrypt |
-| `privkey.pem`   | Private key dari Let's Encrypt |
+| `fullchain.pem` | Origin Certificate dari Cloudflare |
+| `privkey.pem`   | Private Key dari Cloudflare |
 
-## Cara Mendapatkan Sertifikat (Let's Encrypt + Certbot)
+## Cara Mendapatkan Sertifikat
 
-### 1. Install Certbot di VPS
+### 1. Buka Cloudflare Dashboard
 
-```bash
-sudo apt update
-sudo apt install -y certbot
-```
+Masuk ke: **SSL/TLS → Origin Server → Create Certificate**
 
-### 2. Jalankan stack DULU tanpa SSL (HTTP saja)
+### 2. Generate Certificate
 
-Sebelum menjalankan certbot, pastikan nginx sudah berjalan untuk path ACME challenge:
+- **Private key type**: RSA (2048)
+- **Hostnames**: `*.florescyber.tech, florescyber.tech`
+- **Certificate Validity**: 15 years
+- Klik **Create**
 
-```bash
-docker compose up -d nginx
-```
+### 3. Salin Sertifikat
 
-### 3. Dapatkan sertifikat via certbot webroot
+Setelah certificate dibuat, Cloudflare akan menampilkan dua blok teks:
 
-```bash
-sudo certbot certonly \
-  --webroot \
-  --webroot-path=/var/lib/docker/volumes/kamus-manggarai_certbot_webroot/_data \
-  -d kamus.florescyber.tech \
-  --email admin@florescyber.tech \
-  --agree-tos \
-  --non-interactive
-```
-
-### 4. Salin sertifikat ke direktori ini
+**Origin Certificate** → simpan sebagai `fullchain.pem`:
 
 ```bash
-sudo cp /etc/letsencrypt/live/kamus.florescyber.tech/fullchain.pem ./nginx/ssl/fullchain.pem
-sudo cp /etc/letsencrypt/live/kamus.florescyber.tech/privkey.pem ./nginx/ssl/privkey.pem
-sudo chmod 644 ./nginx/ssl/fullchain.pem
-sudo chmod 600 ./nginx/ssl/privkey.pem
+nano ./nginx/ssl/fullchain.pem
+# Paste isi "Origin Certificate" dari Cloudflare, lalu save
 ```
 
-### 5. Restart nginx dengan konfigurasi HTTPS
+**Private Key** → simpan sebagai `privkey.pem`:
+
+```bash
+nano ./nginx/ssl/privkey.pem
+# Paste isi "Private Key" dari Cloudflare, lalu save
+```
+
+### 4. Set Permission
+
+```bash
+chmod 644 ./nginx/ssl/fullchain.pem
+chmod 600 ./nginx/ssl/privkey.pem
+```
+
+### 5. Restart Nginx
 
 ```bash
 docker compose restart nginx
 ```
 
-## Perpanjangan Otomatis
+## Setting Cloudflare Dashboard
 
-Tambahkan cron job di VPS untuk perpanjangan otomatis setiap 60 hari:
+Pastikan konfigurasi berikut di Cloudflare Dashboard:
 
-```bash
-# Edit crontab
-crontab -e
+| Setting | Nilai |
+|---------|-------|
+| **SSL/TLS Mode** | Full (Strict) |
+| **Always Use HTTPS** | On |
+| **Minimum TLS Version** | 1.2 |
+| **Automatic HTTPS Rewrites** | On |
+| **DNS Proxy Status** | Proxied (☁️) |
 
-# Tambahkan baris ini:
-0 3 1 */2 * certbot renew --quiet && \
-  cp /etc/letsencrypt/live/kamus.florescyber.tech/fullchain.pem /path/to/kamus-manggarai/nginx/ssl/fullchain.pem && \
-  cp /etc/letsencrypt/live/kamus.florescyber.tech/privkey.pem /path/to/kamus-manggarai/nginx/ssl/privkey.pem && \
-  docker compose -f /path/to/kamus-manggarai/docker-compose.yml exec nginx nginx -s reload
-```
+## Catatan Penting
+
+- ⚠️ **JANGAN share private key** — file `privkey.pem` sudah ada di `.gitignore`
+- 🔒 Sertifikat Origin CA **hanya valid** jika traffic melewati Cloudflare proxy.
+  Jika proxy dimatikan (grey cloud), browser akan menampilkan SSL warning.
+- 🕐 Sertifikat berlaku **15 tahun** — tidak perlu renewal otomatis seperti Let's Encrypt
+- 📋 Simpan backup sertifikat di tempat aman. Cloudflare tidak menyimpan private key setelah halaman ditutup.

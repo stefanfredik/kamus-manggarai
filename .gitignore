@@ -1,16 +1,31 @@
-# Environment
+# ─── Environment (JANGAN commit file .env dengan secret asli) ─────────────
 .env
-.env.local
-*.env
+.env.*
+!.env.example
+!.env.production.example
+!.env.*.example
 
-# Backend (Go)
+# ─── SSL / TLS Certificates & Keys ──────────────────────────────────────────
+# Cloudflare Origin CA atau sertifikat lainnya
+nginx/ssl/*.pem
+nginx/ssl/*.key
+nginx/ssl/*.crt
+nginx/ssl/*.csr
+nginx/ssl/*.p12
+nginx/ssl/*.pfx
+*.pem
+*.key
+*.crt
+!nginx/ssl/README.md
+
+# ─── Backend (Go) ───────────────────────────────────────────────────────────
 backend/bin/
 backend/tmp/
 backend/*.exe
 backend/coverage.out
 backend/vendor/
 
-# Frontend (Node)
+# ─── Frontend (Node) ────────────────────────────────────────────────────────
 frontend/node_modules/
 frontend/dist/
 frontend/build/
@@ -19,20 +34,29 @@ frontend/coverage/
 frontend/*.log
 frontend/.eslintcache
 
-# IDE
+# ─── IDE ─────────────────────────────────────────────────────────────────────
 .idea/
 .vscode/
 *.swp
 *.swo
-.DS_Store
+*.DS_Store
+Thumbs.db
 
-# Docker
+# ─── Docker ──────────────────────────────────────────────────────────────────
 docker-compose.override.yml
 
-# Logs
+# ─── Logs ────────────────────────────────────────────────────────────────────
 logs/
 *.log
 
-# Backup
+# ─── Database Dumps & Backups ────────────────────────────────────────────────
+# Hanya exclude dump/backup, BUKAN migration files (backend/db/migrations/)
+backup_*.sql
+*.dump
 *.bak
 *.backup
+
+# ─── OS Files ────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

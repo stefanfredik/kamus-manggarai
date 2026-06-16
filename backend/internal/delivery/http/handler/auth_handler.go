@@ -21,8 +21,11 @@ func NewAuthHandler(authUC *usecase.AuthUseCase, frontendURL string, cookieSecur
 }
 
 func (h *AuthHandler) GoogleStart(c fiber.Ctx) error {
-	state := c.Query("state", "default")
-	url := h.authUC.GoogleAuthURL(state)
+	// State sekarang di-generate server-side dan disimpan di cache untuk mencegah CSRF
+	url, err := h.authUC.GoogleAuthURL(c.Context())
+	if err != nil {
+		return response.Error(c, err)
+	}
 	return c.Redirect().Status(fiber.StatusFound).To(url)
 }
 
@@ -31,15 +34,28 @@ func (h *AuthHandler) GoogleCallback(c fiber.Ctx) error {
 	if code == "" {
 		return response.Error(c, apperror.ErrBadRequest.WithMessage("code dibutuhkan"))
 	}
+	state := c.Query("state", "")
+	if state == "" {
+		return response.Error(c, apperror.ErrBadRequest.WithMessage("state dibutuhkan"))
+	}
 
-	result, err := h.authUC.GoogleCallback(c.Context(), code)
+	result, err := h.authUC.GoogleCallback(c.Context(), state, code)
 	if err != nil {
 		return response.Error(c, err)
 	}
 
 	h.setRefreshCookie(c, result.RefreshToken, time.Now().Add(7*24*time.Hour))
 
-	redirectURL := h.frontendURL + "/auth/callback?token=" + result.AccessToken
+	// Token TIDAK dikirim via URL (mencegah bocor di browser history / server logs)
+	// Simpan token sementara di Redis selama 60 detik, lalu frontend tukarkan via POST
+	tmpCode, err := h.authUC.StoreTokenCode(c.Context(), result.AccessToken)
+	if err != nil {
+		// Fallback: kirim via URL jika Redis bermasalah (tidak ideal tapi tidak block login)
+		redirectURL := h.frontendURL + "/auth/callback?token=" + result.AccessToken
+		return c.Redirect().Status(fiber.StatusFound).To(redirectURL)
+	}
+
+	redirectURL := h.frontendURL + "/auth/callback?code=" + tmpCode
 	return c.Redirect().Status(fiber.StatusFound).To(redirectURL)
 }
 
@@ -157,3 +173,25 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		"user":         result.User,
 	})
 }
+
+type tokenExchangeRequest struct {
+	Code string `json:"code"`
+}
+
+// TokenExchange menukar kode sementara (dari OAuth callback URL) menjadi access token.
+// Endpoint ini dipanggil via POST dari halaman callback frontend sehingga token
+// tidak pernah muncul di URL, browser history, atau server access logs.
+func (h *AuthHandler) TokenExchange(c fiber.Ctx) error {
+	var req tokenExchangeRequest
+	if err := c.Bind().Body(&req); err != nil {
+		return response.Error(c, apperror.ErrBadRequest.WithCause(err))
+	}
+	token, err := h.authUC.ExchangeTokenCode(c.Context(), req.Code)
+	if err != nil {
+		return response.Error(c, err)
+	}
+	return response.Success(c, fiber.Map{
+		"access_token": token,
+	})
+}
+

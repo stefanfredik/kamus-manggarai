@@ -25,15 +25,17 @@ type AuthUseCase struct {
 	userRepo    repository.UserRepository
 	tokenRepo   repository.TokenRepository
 	oauth       service.OAuthService
+	cache       repository.CacheRepository
 	frontendURL string
 }
 
-func NewAuthUseCase(cfg config.JWTConfig, frontendURL string, userRepo repository.UserRepository, tokenRepo repository.TokenRepository, oauth service.OAuthService) *AuthUseCase {
+func NewAuthUseCase(cfg config.JWTConfig, frontendURL string, userRepo repository.UserRepository, tokenRepo repository.TokenRepository, oauth service.OAuthService, cache repository.CacheRepository) *AuthUseCase {
 	return &AuthUseCase{
 		cfg:         cfg,
 		userRepo:    userRepo,
 		tokenRepo:   tokenRepo,
 		oauth:       oauth,
+		cache:       cache,
 		frontendURL: frontendURL,
 	}
 }
@@ -52,16 +54,36 @@ type LoginResult struct {
 	User         *entity.User `json:"user"`
 }
 
-func (u *AuthUseCase) GoogleAuthURL(state string) string {
-	if state == "" {
-		b := make([]byte, 16)
-		_, _ = rand.Read(b)
-		state = hex.EncodeToString(b)
+// GoogleAuthURL generates a secure state, stores it in cache, and returns the OAuth redirect URL.
+// The state is verified in GoogleCallback to prevent CSRF attacks.
+func (u *AuthUseCase) GoogleAuthURL(ctx context.Context) (string, error) {
+	b := make([]byte, 24)
+	if _, err := rand.Read(b); err != nil {
+		return "", apperror.ErrInternal.WithCause(err)
 	}
-	return u.oauth.AuthURL(state)
+	state := hex.EncodeToString(b)
+	// Store state in cache for 10 minutes — single use
+	_ = u.cache.Set(ctx, "oauth:state:"+state, true, 600)
+	return u.oauth.AuthURL(state), nil
 }
 
-func (u *AuthUseCase) GoogleCallback(ctx context.Context, code string) (*LoginResult, error) {
+// verifyOAuthState checks that the state parameter was issued by us and
+// immediately deletes it to prevent replay attacks.
+func (u *AuthUseCase) verifyOAuthState(ctx context.Context, state string) error {
+	key := "oauth:state:" + state
+	var ok bool
+	if err := u.cache.Get(ctx, key, &ok); err != nil || !ok {
+		return apperror.ErrUnauthorized.WithMessage("state OAuth tidak valid atau sudah kedaluwarsa")
+	}
+	// Consume the state — one time use
+	_ = u.cache.Delete(ctx, key)
+	return nil
+}
+
+func (u *AuthUseCase) GoogleCallback(ctx context.Context, state, code string) (*LoginResult, error) {
+	if err := u.verifyOAuthState(ctx, state); err != nil {
+		return nil, err
+	}
 	if code == "" {
 		return nil, apperror.ErrBadRequest.WithMessage("authorization code dibutuhkan")
 	}
@@ -215,6 +237,34 @@ func (u *AuthUseCase) generateRefreshToken() (string, string, error) {
 func hashToken(t string) string {
 	h := sha256.Sum256([]byte(t))
 	return hex.EncodeToString(h[:])
+}
+
+// StoreTokenCode menyimpan access token sementara di Redis dengan kode acak selama 60 detik.
+// Digunakan agar access token tidak perlu dikirim via URL (menghindari bocor di logs/history).
+func (u *AuthUseCase) StoreTokenCode(ctx context.Context, accessToken string) (string, error) {
+	b := make([]byte, 16)
+	if _, err := rand.Read(b); err != nil {
+		return "", apperror.ErrInternal.WithCause(err)
+	}
+	code := hex.EncodeToString(b)
+	if err := u.cache.Set(ctx, "oauth:tkn:"+code, accessToken, 60); err != nil {
+		return "", apperror.ErrInternal.WithCause(err)
+	}
+	return code, nil
+}
+
+// ExchangeTokenCode menukar kode sementara menjadi access token. Kode langsung dihapus (single use).
+func (u *AuthUseCase) ExchangeTokenCode(ctx context.Context, code string) (string, error) {
+	if code == "" {
+		return "", apperror.ErrBadRequest.WithMessage("code dibutuhkan")
+	}
+	key := "oauth:tkn:" + code
+	var token string
+	if err := u.cache.Get(ctx, key, &token); err != nil || token == "" {
+		return "", apperror.ErrUnauthorized.WithMessage("kode tidak valid atau sudah kedaluwarsa")
+	}
+	_ = u.cache.Delete(ctx, key)
+	return token, nil
 }
 
 type RegisterInput struct {

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"strconv"
 	"time"
@@ -59,7 +60,34 @@ func Load() (*Config, error) {
 		},
 	}
 
+	if err := cfg.Validate(); err != nil {
+		return nil, err
+	}
 	return cfg, nil
+}
+
+// Validate checks that critical secrets are not left as insecure defaults.
+func (c *Config) Validate() error {
+	if c.App.Env == "production" {
+		insecureJWT := c.JWT.AccessSecret == "change_me" || c.JWT.AccessSecret == "change_me_in_production_to_a_strong_random_string" ||
+			c.JWT.RefreshSecret == "change_me_refresh" || c.JWT.RefreshSecret == "change_me_in_production_to_another_strong_random_string"
+		if insecureJWT {
+			return errors.New("KEAMANAN: JWT_ACCESS_SECRET dan JWT_REFRESH_SECRET wajib diubah dari nilai default di production")
+		}
+		if len(c.JWT.AccessSecret) < 32 {
+			return errors.New("KEAMANAN: JWT_ACCESS_SECRET harus minimal 32 karakter")
+		}
+		if len(c.JWT.RefreshSecret) < 32 {
+			return errors.New("KEAMANAN: JWT_REFRESH_SECRET harus minimal 32 karakter")
+		}
+		if c.DB.Password == "" || c.DB.Password == "kamus_pass_dev" {
+			return errors.New("KEAMANAN: DB_PASSWORD wajib diubah dari nilai default di production")
+		}
+		if c.Redis.Password == "" || c.Redis.Password == "redis_pass_dev" {
+			return errors.New("KEAMANAN: REDIS_PASSWORD wajib diubah dari nilai default di production")
+		}
+	}
+	return nil
 }
 
 func getEnv(key, defaultValue string) string {

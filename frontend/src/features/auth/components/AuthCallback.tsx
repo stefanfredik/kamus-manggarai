@@ -2,16 +2,42 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api/v1';
+
 export function AuthCallback() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const setAuth = useAuthStore((s) => s.setAuth);
 
   useEffect(() => {
+    const redirect = params.get('redirect') || '/dashboard';
+
+    // Metode baru: tukar kode sementara via POST (token tidak bocor di URL/history)
+    const code = params.get('code');
+    if (code) {
+      fetch(`${API_BASE}/auth/token-exchange`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ code }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.data?.access_token) {
+            setAuth(data.data.access_token);
+            navigate(redirect, { replace: true });
+          } else {
+            navigate('/?error=auth_failed', { replace: true });
+          }
+        })
+        .catch(() => navigate('/?error=auth_failed', { replace: true }));
+      return;
+    }
+
+    // Fallback untuk kompatibilitas mundur (jika Redis bermasalah dan backend kirim token langsung)
     const token = params.get('token');
     if (token) {
       setAuth(token);
-      const redirect = params.get('redirect') || '/dashboard';
       navigate(redirect, { replace: true });
     } else {
       navigate('/', { replace: true });
