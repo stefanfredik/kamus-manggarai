@@ -42,6 +42,12 @@ if [ ! -f "$PROJECT_DIR/$BACKEND_ENV_FILE" ]; then
     log_error "File $BACKEND_ENV_FILE tidak ditemukan!\nJalankan: cp backend/.env.production.example backend/.env && nano backend/.env"
 fi
 
+# Pastikan ada symlink .env di root agar docker compose bisa membaca variabel
+if [ ! -f "$PROJECT_DIR/.env" ] && [ ! -L "$PROJECT_DIR/.env" ]; then
+    log_info "Membuat symlink .env di root..."
+    ln -s "$BACKEND_ENV_FILE" "$PROJECT_DIR/.env"
+fi
+
 # Periksa sertifikat SSL
 if [ ! -f "$PROJECT_DIR/nginx/ssl/fullchain.pem" ] || [ ! -f "$PROJECT_DIR/nginx/ssl/privkey.pem" ]; then
     log_warn "Sertifikat SSL belum ditemukan di nginx/ssl/"
