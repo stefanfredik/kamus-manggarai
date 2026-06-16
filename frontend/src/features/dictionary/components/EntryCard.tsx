@@ -21,7 +21,7 @@ export function EntryCard({ item, dense = false }: { item: EntrySummary; dense?:
       }`}
     >
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
+        <div className="flex flex-wrap items-baseline gap-2">
           <h3
             className={`truncate font-semibold text-slate-900 dark:text-slate-100 ${
               dense ? 'text-base' : 'text-lg'
@@ -41,6 +41,19 @@ export function EntryCard({ item, dense = false }: { item: EntrySummary; dense?:
             <span className="shrink-0 text-xs italic text-slate-500 dark:text-slate-400">
               {item.part_of_speech}
             </span>
+          )}
+          {item.dialects && item.dialects.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {item.dialects.map((d) => (
+                <span
+                  key={d.id}
+                  className="inline-flex items-center rounded-full bg-primary-50 px-1.5 py-0.5 text-[9px] font-medium text-primary-700 border border-primary-100 dark:bg-primary-950/30 dark:text-primary-300 dark:border-primary-900/30"
+                  title={d.description}
+                >
+                  {d.name}
+                </span>
+              ))}
+            </div>
           )}
         </div>
         {translations && (

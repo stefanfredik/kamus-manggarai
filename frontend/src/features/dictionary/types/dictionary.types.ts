@@ -3,6 +3,12 @@
 
 export type Language = 'id' | 'mgr';
 
+export interface TranslationDialect {
+  id: string;
+  name: string;
+  description?: string;
+}
+
 export interface DerivedWord {
   id: string;
   word_id: string;
@@ -17,6 +23,7 @@ export interface TranslationExample {
   manggarai: string;
   indonesian: string;
   sort_order: number;
+  dialect_id?: string;
 }
 
 export interface TranslationLink {
@@ -27,7 +34,8 @@ export interface TranslationLink {
   part_of_speech?: string;
   notes?: string;
   source?: string;
-  examples?: TranslationExample[];
+  dialects?: TranslationDialect[];
+  examples: TranslationExample[];
 }
 
 export interface EntrySummary {
@@ -38,6 +46,7 @@ export interface EntrySummary {
   homonym_number?: number;
   part_of_speech?: string;
   translations?: string[];
+  dialects?: TranslationDialect[];
 }
 
 export interface EntryDetail {
@@ -53,6 +62,7 @@ export interface EntryDetail {
   created_by_name?: string;
   translations: TranslationLink[];
   derived_words: DerivedWord[];
+  dialects?: TranslationDialect[];
 }
 
 export type SearchDirection = 'manggarai_to_indonesia' | 'indonesia_to_manggarai';

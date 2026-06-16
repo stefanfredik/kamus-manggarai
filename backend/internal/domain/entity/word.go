@@ -31,13 +31,20 @@ type Word struct {
 
 // TranslationExample is a bilingual example sentence attached to a translation.
 type TranslationExample struct {
-	ID         uuid.UUID `json:"id"`
-	Manggarai  string    `json:"manggarai"`
-	Indonesian string    `json:"indonesian"`
-	SortOrder  int       `json:"sort_order"`
+	ID         uuid.UUID  `json:"id"`
+	Manggarai  string     `json:"manggarai"`
+	Indonesian string     `json:"indonesian"`
+	SortOrder  int        `json:"sort_order"`
+	DialectID  *uuid.UUID `json:"dialect_id,omitempty"`
 }
 
-// TranslationLink is a counterpart word plus the metadata of the relationship.
+type TranslationDialect struct {
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description,omitempty"`
+}
+
+// TranslationLink joins a word in the target language to the headword.
 type TranslationLink struct {
 	TranslationID uuid.UUID            `json:"translation_id"`
 	WordID        uuid.UUID            `json:"word_id"`
@@ -46,6 +53,7 @@ type TranslationLink struct {
 	PartOfSpeech  *string              `json:"part_of_speech,omitempty"`
 	Notes         *string              `json:"notes,omitempty"`
 	Source        *string              `json:"source,omitempty"`
+	Dialects      []TranslationDialect `json:"dialects,omitempty"`
 	Examples      []TranslationExample `json:"examples,omitempty"`
 }
 
@@ -62,19 +70,21 @@ type DerivedWord struct {
 // WordDetail is a word with all its translations and derived words.
 type WordDetail struct {
 	Word
-	Translations  []TranslationLink `json:"translations"`
-	DerivedWords  []DerivedWord     `json:"derived_words"`
-	CreatedByName string            `json:"created_by_name,omitempty"`
+	Translations  []TranslationLink    `json:"translations"`
+	DerivedWords  []DerivedWord        `json:"derived_words"`
+	Dialects      []TranslationDialect `json:"dialects,omitempty"`
+	CreatedByName string               `json:"created_by_name,omitempty"`
 }
 
 // WordSummary is a compact representation for lists and search results.
 type WordSummary struct {
-	ID            uuid.UUID `json:"id"`
-	Language      string    `json:"language"`
-	Lemma         string    `json:"lemma"`
-	Slug          string    `json:"slug"`
-	HomonymNumber *int      `json:"homonym_number,omitempty"`
-	PartOfSpeech  *string   `json:"part_of_speech,omitempty"`
+	ID            uuid.UUID            `json:"id"`
+	Language      string               `json:"language"`
+	Lemma         string               `json:"lemma"`
+	Slug          string               `json:"slug"`
+	HomonymNumber *int                 `json:"homonym_number,omitempty"`
+	PartOfSpeech  *string              `json:"part_of_speech,omitempty"`
 	// Translations are the counterpart lemmas in the other language.
-	Translations []string `json:"translations,omitempty"`
+	Translations []string             `json:"translations,omitempty"`
+	Dialects     []TranslationDialect `json:"dialects,omitempty"`
 }

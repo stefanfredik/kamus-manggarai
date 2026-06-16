@@ -11,12 +11,14 @@ export type Language = 'id' | 'mgr';
 export interface SubmissionExampleInput {
   manggarai: string;
   indonesian: string;
+  dialect_id?: string;
 }
 
 export interface SubmissionTranslationInput {
   lemma: string;
   part_of_speech?: string;
   notes?: string;
+  dialect_ids?: string[];
   examples?: SubmissionExampleInput[];
 }
 
@@ -25,6 +27,7 @@ export interface SubmissionPayload {
   headword: string;
   part_of_speech?: string;
   source?: string;
+  dialect_ids?: string[];
   translations: SubmissionTranslationInput[];
   derived?: SubmissionDerivedInput[];
 }

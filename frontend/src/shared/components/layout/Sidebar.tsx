@@ -95,9 +95,11 @@ export function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarP
         {/* Brand + collapse */}
         <div className="flex items-center justify-between gap-2 px-3 py-3">
           <Link to="/" onClick={onClose} className="flex min-w-0 items-center gap-2.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-sm">
-              <span className="text-xs font-bold">KM</span>
-            </div>
+            <img 
+              src="/logo.jpg" 
+              alt="Logo Kamus Manggarai" 
+              className="h-8 w-8 shrink-0 rounded-lg object-cover shadow-sm border border-slate-100 dark:border-slate-800"
+            />
             {!collapsed && (
               <div className="min-w-0">
                 <div className="truncate text-sm font-semibold leading-tight tracking-tight">

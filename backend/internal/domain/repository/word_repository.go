@@ -30,6 +30,7 @@ type CreateTranslationParams struct {
 	Slug         string
 	PartOfSpeech *string
 	Notes        *string
+	DialectIDs   []uuid.UUID
 	Examples     []entity.TranslationExample
 }
 
@@ -44,6 +45,7 @@ type CreateWordParams struct {
 	Source        *string
 	Status        string
 	CreatedBy     *uuid.UUID
+	DialectIDs    []uuid.UUID
 	Translations  []CreateTranslationParams
 	Derived       []entity.SubmissionDerivedInput
 }
@@ -56,6 +58,7 @@ type UpdateWordParams struct {
 	Headword     string
 	PartOfSpeech *string
 	Source       *string
+	DialectIDs   []uuid.UUID
 	Translations []CreateTranslationParams
 	Derived      []entity.SubmissionDerivedInput
 }

@@ -72,6 +72,7 @@ type CreateWordInput struct {
 	Headword     string                              `json:"headword" validate:"required,min=1"`
 	PartOfSpeech *string                             `json:"part_of_speech,omitempty"`
 	Source       *string                             `json:"source,omitempty"`
+	DialectIDs   []uuid.UUID                         `json:"dialect_ids,omitempty"`
 	Translations []entity.SubmissionTranslationInput `json:"translations" validate:"required,min=1,dive"`
 	Derived      []entity.SubmissionDerivedInput     `json:"derived,omitempty"`
 }
@@ -95,6 +96,7 @@ func (u *WordUseCase) CreateWord(ctx context.Context, input CreateWordInput, cre
 			Slug:         slugFor(t.Lemma),
 			PartOfSpeech: t.PartOfSpeech,
 			Notes:        t.Notes,
+			DialectIDs:   t.DialectIDs,
 			Examples:     mapExamples(t.Examples),
 		})
 	}
@@ -115,6 +117,7 @@ func (u *WordUseCase) CreateWord(ctx context.Context, input CreateWordInput, cre
 		Source:       input.Source,
 		Status:       entity.StatusPublished,
 		CreatedBy:    creatorID,
+		DialectIDs:   input.DialectIDs,
 		Translations: translations,
 		Derived:      input.Derived,
 	})
@@ -132,6 +135,7 @@ type UpdateWordInput struct {
 	Headword     string                              `json:"headword" validate:"required,min=1"`
 	PartOfSpeech *string                             `json:"part_of_speech,omitempty"`
 	Source       *string                             `json:"source,omitempty"`
+	DialectIDs   []uuid.UUID                         `json:"dialect_ids,omitempty"`
 	Translations []entity.SubmissionTranslationInput `json:"translations" validate:"required,min=1,dive"`
 	Derived      []entity.SubmissionDerivedInput     `json:"derived,omitempty"`
 }
@@ -154,6 +158,7 @@ func (u *WordUseCase) UpdateWord(ctx context.Context, id uuid.UUID, input Update
 			Slug:         slugFor(t.Lemma),
 			PartOfSpeech: t.PartOfSpeech,
 			Notes:        t.Notes,
+			DialectIDs:   t.DialectIDs,
 			Examples:     mapExamples(t.Examples),
 		})
 	}
@@ -166,6 +171,7 @@ func (u *WordUseCase) UpdateWord(ctx context.Context, id uuid.UUID, input Update
 		Headword:     strings.TrimSpace(input.Headword),
 		PartOfSpeech: input.PartOfSpeech,
 		Source:       input.Source,
+		DialectIDs:   input.DialectIDs,
 		Translations: translations,
 		Derived:      input.Derived,
 	})
@@ -216,6 +222,7 @@ func mapExamples(in []entity.SubmissionExampleInput) []entity.TranslationExample
 		out = append(out, entity.TranslationExample{
 			Manggarai:  strings.TrimSpace(ex.Manggarai),
 			Indonesian: strings.TrimSpace(ex.Indonesian),
+			DialectID:  ex.DialectID,
 		})
 	}
 	return out

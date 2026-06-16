@@ -15,8 +15,10 @@ import { Modal } from '@/shared/components/Modal';
 import { useToast } from '@/shared/components/Toast';
 import { formatRelative } from '@/shared/utils/formatters';
 import { extractError } from '@/lib/axios';
+import { dialectApi } from '../api/dialectApi';
+import type { TranslationDialect } from '@/features/dictionary/types/dictionary.types';
 
-type Tab = 'analytics' | 'users' | 'reports' | 'kosakata' | 'goet';
+type Tab = 'analytics' | 'users' | 'reports' | 'kosakata' | 'goet' | 'dialects';
 
 interface Props {
   initialTab?: Tab;
@@ -30,7 +32,7 @@ export function AdminDashboardPage({ initialTab = 'analytics' }: Props) {
       <h1 className="mb-4 text-2xl font-bold">Admin Dashboard</h1>
 
       <div className="mb-6 flex gap-1 overflow-x-auto border-b border-slate-200 dark:border-slate-700">
-        {(['analytics', 'kosakata', 'goet', 'users', 'reports'] as Tab[]).map((t) => (
+        {(['analytics', 'kosakata', 'goet', 'dialects', 'users', 'reports'] as Tab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -48,6 +50,7 @@ export function AdminDashboardPage({ initialTab = 'analytics' }: Props) {
       {tab === 'analytics' && <AnalyticsTab />}
       {tab === 'kosakata' && <KosakataTab />}
       {tab === 'goet' && <GoetTab />}
+      {tab === 'dialects' && <DialectsTab />}
       {tab === 'users' && <UsersTab />}
       {tab === 'reports' && <ReportsTab />}
     </div>
@@ -59,6 +62,7 @@ function labelFor(t: Tab) {
     analytics: 'Analytics',
     kosakata: 'Kosakata',
     goet: 'Goet',
+    dialects: 'Dialek',
     users: 'Pengguna',
     reports: 'Laporan',
   } as Record<Tab, string>)[t];
@@ -1058,3 +1062,212 @@ function ReportReviewCard({
   );
 }
 
+function DialectsTab() {
+  const qc = useQueryClient();
+  const toast = useToast();
+
+  const [showCreate, setShowCreate] = useState(false);
+  const [editItem, setEditItem] = useState<TranslationDialect | null>(null);
+  const [deleteItem, setDeleteItem] = useState<TranslationDialect | null>(null);
+
+  const q = useQuery({
+    queryKey: ['admin', 'dialects'],
+    queryFn: dialectApi.list,
+  });
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ['admin', 'dialects'] });
+    qc.invalidateQueries({ queryKey: ['dialects'] });
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => dialectApi.delete(id),
+    onSuccess: () => {
+      toast.success('Dialek dihapus.');
+      invalidate();
+      setDeleteItem(null);
+    },
+    onError: (err) => toast.error(extractError(err)),
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <button onClick={() => setShowCreate(true)} className="btn-primary text-sm">
+          <Plus size={15} /> Tambah Dialek
+        </button>
+      </div>
+
+      {q.isLoading ? (
+        <div className="card text-sm text-slate-500">Memuat…</div>
+      ) : q.data && q.data.length > 0 ? (
+        <div className="space-y-2">
+          {q.data.map((d) => (
+            <div key={d.id} className="card">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <span className="font-semibold text-slate-800 dark:text-slate-200 block">
+                    {d.name}
+                  </span>
+                  {d.description && (
+                    <span className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 block">
+                      {d.description}
+                    </span>
+                  )}
+                </div>
+                <ActionMenu
+                  items={[
+                    { label: 'Edit', onClick: () => setEditItem(d) },
+                    { label: 'Hapus', onClick: () => setDeleteItem(d), variant: 'danger' },
+                  ]}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="card text-center text-sm text-slate-500">
+          Belum ada dialek yang tersimpan.
+        </div>
+      )}
+
+      <DialectFormModal open={showCreate} onClose={() => setShowCreate(false)} onSaved={invalidate} />
+      {editItem && (
+        <DialectFormModal
+          open={Boolean(editItem)}
+          onClose={() => setEditItem(null)}
+          onSaved={invalidate}
+          dialect={editItem}
+        />
+      )}
+
+      <Modal
+        open={Boolean(deleteItem)}
+        onClose={() => setDeleteItem(null)}
+        dismissible={!deleteMutation.isPending}
+        labelledBy="delete-dialect-title"
+      >
+        <h2 id="delete-dialect-title" className="text-lg font-semibold">
+          Hapus dialek
+        </h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Yakin ingin menghapus dialek ini? Tindakan ini tidak dapat dibatalkan.
+        </p>
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            onClick={() => setDeleteItem(null)}
+            disabled={deleteMutation.isPending}
+            className="btn-outline"
+          >
+            Batal
+          </button>
+          <button
+            onClick={() => deleteItem && deleteMutation.mutate(deleteItem.id)}
+            disabled={deleteMutation.isPending}
+            className="btn-danger"
+          >
+            {deleteMutation.isPending ? 'Menghapus…' : 'Hapus'}
+          </button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+function DialectFormModal({
+  open,
+  onClose,
+  onSaved,
+  dialect,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSaved: () => void;
+  dialect?: TranslationDialect;
+}) {
+  const toast = useToast();
+  const isEdit = Boolean(dialect);
+
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setName(dialect?.name ?? '');
+    setDescription(dialect?.description ?? '');
+    setError(null);
+  }, [open, dialect]);
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      return isEdit 
+        ? dialectApi.update(dialect!.id, name.trim(), description.trim()) 
+        : dialectApi.create(name.trim(), description.trim());
+    },
+    onSuccess: () => {
+      toast.success(isEdit ? 'Dialek diperbarui.' : 'Dialek ditambahkan.');
+      onSaved();
+      onClose();
+    },
+    onError: (err) => setError(extractError(err)),
+  });
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    if (!name.trim()) return setError('Nama dialek wajib diisi');
+    mutation.mutate();
+  }
+
+  return (
+    <Modal
+      open={open}
+      onClose={() => !mutation.isPending && onClose()}
+      dismissible={!mutation.isPending}
+      labelledBy="dialect-form-title"
+      className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-2xl bg-white p-6 shadow-pop dark:bg-slate-800"
+    >
+      <h2 id="dialect-form-title" className="text-lg font-semibold">
+        {isEdit ? 'Edit Dialek' : 'Tambah Dialek'}
+      </h2>
+      <form onSubmit={submit} className="mt-4 space-y-3">
+        <div>
+          <label className="mb-1 block text-sm font-medium">Nama Dialek *</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="input"
+            placeholder="Mis. Manggarai Tengah"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium">Keterangan Wilayah (opsional)</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="input min-h-[80px] py-2 text-sm"
+            placeholder="Mis. Berlaku di wilayah Ruteng, Reok, Cibal, dll."
+          />
+        </div>
+
+        {error && (
+          <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700 dark:bg-rose-900/20 dark:text-rose-300">
+            {error}
+          </div>
+        )}
+
+        <div className="flex justify-end gap-2 pt-1">
+          <button type="button" onClick={onClose} disabled={mutation.isPending} className="btn-outline">
+            Batal
+          </button>
+          <button type="submit" disabled={mutation.isPending} className="btn-primary">
+            {mutation.isPending ? 'Menyimpan…' : 'Simpan'}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}

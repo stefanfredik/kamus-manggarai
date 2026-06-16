@@ -31,6 +31,7 @@ export interface WordUpdatePayload {
   headword: string;
   part_of_speech?: string;
   source?: string;
+  dialect_ids?: string[];
   translations: SubmissionTranslationInput[];
   derived?: SubmissionDerivedInput[];
 }

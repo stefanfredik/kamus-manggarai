@@ -19,8 +19,9 @@ type SubmissionDerivedInput struct {
 
 // SubmissionExampleInput is one bilingual example sentence for a translation.
 type SubmissionExampleInput struct {
-	Manggarai  string `json:"manggarai"`
-	Indonesian string `json:"indonesian"`
+	Manggarai  string     `json:"manggarai"`
+	Indonesian string     `json:"indonesian"`
+	DialectID  *uuid.UUID `json:"dialect_id,omitempty"`
 }
 
 // SubmissionTranslationInput is one counterpart lemma proposed for the
@@ -29,6 +30,7 @@ type SubmissionTranslationInput struct {
 	Lemma        string                   `json:"lemma"`
 	PartOfSpeech *string                  `json:"part_of_speech,omitempty"`
 	Notes        *string                  `json:"notes,omitempty"`
+	DialectIDs   []uuid.UUID              `json:"dialect_ids,omitempty"`
 	Examples     []SubmissionExampleInput `json:"examples,omitempty"`
 }
 
@@ -40,6 +42,7 @@ type SubmissionPayload struct {
 	Headword     string                       `json:"headword"`
 	PartOfSpeech *string                      `json:"part_of_speech,omitempty"`
 	Source       *string                      `json:"source,omitempty"`
+	DialectIDs   []uuid.UUID                  `json:"dialect_ids,omitempty"`
 	Translations []SubmissionTranslationInput `json:"translations"`
 	Derived      []SubmissionDerivedInput     `json:"derived,omitempty"`
 }

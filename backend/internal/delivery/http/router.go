@@ -16,6 +16,7 @@ type Handlers struct {
 	Review     *handler.ReviewHandler
 	Admin      *handler.AdminHandler
 	Goet       *handler.GoetHandler
+	Dialect    *handler.DialectHandler
 }
 
 func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cache repository.CacheRepository, cfg *config.Config) {
@@ -56,6 +57,7 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	publicGroup.Get("/search", h.Dictionary.Search)
 	publicGroup.Get("/goet", h.Goet.List)
 	publicGroup.Get("/goet/:id", h.Goet.GetByID)
+	publicGroup.Get("/dialects", h.Dialect.FindAll)
 
 	contributor := api.Group("", middleware.AuthRequired(authUC), middleware.RequireContributor())
 	contributor.Post("/submissions", h.Submission.Submit)
@@ -90,4 +92,7 @@ func RegisterRoutes(app *fiber.App, h Handlers, authUC *usecase.AuthUseCase, cac
 	admin.Post("/goet", h.Goet.Create)
 	admin.Put("/goet/:id", h.Goet.Update)
 	admin.Delete("/goet/:id", h.Goet.Delete)
+	admin.Post("/dialects", h.Dialect.Create)
+	admin.Put("/dialects/:id", h.Dialect.Update)
+	admin.Delete("/dialects/:id", h.Dialect.Delete)
 }

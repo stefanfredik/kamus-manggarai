@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -61,6 +62,11 @@ func (r *wordRepo) FindDetailBySlug(ctx context.Context, slug string) (*entity.W
 		detail.CreatedByName = creatorName
 	}
 
+	dialects, err := r.findDialectsByWordID(ctx, word.ID)
+	if err == nil {
+		detail.Dialects = dialects
+	}
+
 	links, err := r.findTranslations(ctx, word.ID, word.Language)
 	if err != nil {
 		return nil, err
@@ -74,6 +80,29 @@ func (r *wordRepo) FindDetailBySlug(ctx context.Context, slug string) (*entity.W
 	detail.DerivedWords = derived
 
 	return detail, nil
+}
+
+func (r *wordRepo) findDialectsByWordID(ctx context.Context, wordID uuid.UUID) ([]entity.TranslationDialect, error) {
+	rows, err := r.db.Query(ctx, `
+		SELECT d.id, d.name, d.description 
+		FROM dialects d
+		JOIN word_dialects wd ON wd.dialect_id = d.id
+		WHERE wd.word_id = $1
+		ORDER BY d.name ASC`, wordID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	out := make([]entity.TranslationDialect, 0)
+	for rows.Next() {
+		var d entity.TranslationDialect
+		if err := rows.Scan(&d.ID, &d.Name, &d.Description); err != nil {
+			return nil, err
+		}
+		out = append(out, d)
+	}
+	return out, rows.Err()
 }
 
 // findTranslations returns the counterpart words for a given word. The join
@@ -115,13 +144,18 @@ func (r *wordRepo) findTranslations(ctx context.Context, wordID uuid.UUID, langu
 			return nil, err
 		}
 		out[i].Examples = examples
+
+		dialects, err := r.findDialectsByWordID(ctx, out[i].WordID)
+		if err == nil {
+			out[i].Dialects = dialects
+		}
 	}
 	return out, nil
 }
 
 func (r *wordRepo) findExamplesByTranslationID(ctx context.Context, translationID uuid.UUID) ([]entity.TranslationExample, error) {
 	rows, err := r.db.Query(ctx, `
-		SELECT id, manggarai, indonesian, sort_order
+		SELECT id, manggarai, indonesian, sort_order, dialect_id
 		FROM translation_examples WHERE translation_id = $1
 		ORDER BY sort_order ASC, created_at ASC`, translationID)
 	if err != nil {
@@ -132,7 +166,7 @@ func (r *wordRepo) findExamplesByTranslationID(ctx context.Context, translationI
 	out := make([]entity.TranslationExample, 0)
 	for rows.Next() {
 		ex := entity.TranslationExample{}
-		if err := rows.Scan(&ex.ID, &ex.Manggarai, &ex.Indonesian, &ex.SortOrder); err != nil {
+		if err := rows.Scan(&ex.ID, &ex.Manggarai, &ex.Indonesian, &ex.SortOrder, &ex.DialectID); err != nil {
 			return nil, err
 		}
 		out = append(out, ex)
@@ -179,10 +213,21 @@ func scanSummaryRows(rows pgx.Rows) ([]*entity.WordSummary, error) {
 	for rows.Next() {
 		s := &entity.WordSummary{}
 		var translations []string
-		if err := rows.Scan(&s.ID, &s.Language, &s.Lemma, &s.Slug, &s.HomonymNumber, &s.PartOfSpeech, &translations); err != nil {
+		var dialectsRaw []byte
+		if err := rows.Scan(&s.ID, &s.Language, &s.Lemma, &s.Slug, &s.HomonymNumber, &s.PartOfSpeech, &translations, &dialectsRaw); err != nil {
 			return nil, err
 		}
 		s.Translations = translations
+		if len(dialectsRaw) > 0 {
+			var dialects []entity.TranslationDialect
+			if err := json.Unmarshal(dialectsRaw, &dialects); err == nil {
+				s.Dialects = dialects
+			} else {
+				s.Dialects = []entity.TranslationDialect{}
+			}
+		} else {
+			s.Dialects = []entity.TranslationDialect{}
+		}
 		items = append(items, s)
 	}
 	return items, rows.Err()
@@ -218,7 +263,8 @@ func (r *wordRepo) FindPublished(ctx context.Context, filter repository.WordFilt
 	// checks both columns.
 	listQ := fmt.Sprintf(`
 		SELECT w.id, w.language, w.lemma, w.slug, w.homonym_number, w.part_of_speech,
-		       COALESCE(agg.translations, '{}') AS translations
+		       COALESCE(agg.translations, '{}') AS translations,
+		       COALESCE(dlg.dialects, '[]'::json) AS dialects
 		FROM words w
 		LEFT JOIN LATERAL (
 			SELECT array_agg(cw.lemma ORDER BY t.created_at ASC) AS translations
@@ -227,6 +273,12 @@ func (r *wordRepo) FindPublished(ctx context.Context, filter repository.WordFilt
 			WHERE (w.language = 'id' AND t.id_word_id = w.id)
 			   OR (w.language = 'mgr' AND t.mgr_word_id = w.id)
 		) agg ON TRUE
+		LEFT JOIN LATERAL (
+			SELECT json_agg(json_build_object('id', d.id, 'name', d.name, 'description', COALESCE(d.description, '')) ORDER BY d.name ASC) AS dialects
+			FROM dialects d
+			JOIN word_dialects wd ON wd.dialect_id = d.id
+			WHERE wd.word_id = w.id
+		) dlg ON TRUE
 		WHERE %s
 		ORDER BY LOWER(w.lemma) ASC, w.id ASC
 		LIMIT $%d OFFSET $%d`, whereClause, idx, idx+1)
@@ -275,9 +327,16 @@ func (r *wordRepo) Search(ctx context.Context, filter repository.SearchFilter) (
 
 	listQ := fmt.Sprintf(`
 		SELECT w.id, w.language, w.lemma, w.slug, w.homonym_number, w.part_of_speech,
-		       COALESCE(agg.translations, '{}') AS translations
+		       COALESCE(agg.translations, '{}') AS translations,
+		       COALESCE(dlg.dialects, '[]'::json) AS dialects
 		FROM words w
 		%s
+		LEFT JOIN LATERAL (
+			SELECT json_agg(json_build_object('id', d.id, 'name', d.name, 'description', COALESCE(d.description, '')) ORDER BY d.name ASC) AS dialects
+			FROM dialects d
+			JOIN word_dialects wd ON wd.dialect_id = d.id
+			WHERE wd.word_id = w.id
+		) dlg ON TRUE
 		WHERE w.status = 'published' AND w.language = $4
 		  AND (%s %% immutable_unaccent(lower($1))
 		       OR %s LIKE immutable_unaccent(lower($1)) || '%%')
@@ -380,6 +439,15 @@ func (r *wordRepo) CreateWord(ctx context.Context, p repository.CreateWordParams
 		return nil, err
 	}
 
+	if p.SourceLang == entity.LangManggarai && len(p.DialectIDs) > 0 {
+		for _, did := range p.DialectIDs {
+			_, err = tx.Exec(ctx, `INSERT INTO word_dialects (word_id, dialect_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, head.ID, did)
+			if err != nil {
+				return nil, fmt.Errorf("insert headword dialect: %w", err)
+			}
+		}
+	}
+
 	for _, t := range p.Translations {
 		if strings.TrimSpace(t.Lemma) == "" {
 			continue
@@ -455,6 +523,16 @@ func (r *wordRepo) upsertWordTx(ctx context.Context, tx pgx.Tx, language string,
 	if err != nil {
 		return uuid.Nil, fmt.Errorf("insert counterpart word: %w", err)
 	}
+
+	if language == entity.LangManggarai && len(t.DialectIDs) > 0 {
+		for _, did := range t.DialectIDs {
+			_, err = tx.Exec(ctx, `INSERT INTO word_dialects (word_id, dialect_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, id, did)
+			if err != nil {
+				return uuid.Nil, fmt.Errorf("insert counterpart dialect: %w", err)
+			}
+		}
+	}
+
 	return id, nil
 }
 
@@ -468,9 +546,9 @@ func insertExamplesTx(ctx context.Context, tx pgx.Tx, translationID uuid.UUID, e
 			continue
 		}
 		_, err := tx.Exec(ctx, `
-			INSERT INTO translation_examples (translation_id, manggarai, indonesian, sort_order)
-			VALUES ($1, $2, $3, $4)`,
-			translationID, mgr, id, sort)
+			INSERT INTO translation_examples (translation_id, manggarai, indonesian, sort_order, dialect_id)
+			VALUES ($1, $2, $3, $4, $5)`,
+			translationID, mgr, id, sort, ex.DialectID)
 		if err != nil {
 			return fmt.Errorf("insert translation_example: %w", err)
 		}
@@ -548,6 +626,21 @@ func (r *wordRepo) UpdateWord(ctx context.Context, p repository.UpdateWordParams
 	if err != nil {
 		return nil, fmt.Errorf("clear translations: %w", err)
 	}
+
+	if head.Language == entity.LangManggarai {
+		if _, err = tx.Exec(ctx, `DELETE FROM word_dialects WHERE word_id = $1`, head.ID); err != nil {
+			return nil, fmt.Errorf("clear dialects: %w", err)
+		}
+		if len(p.DialectIDs) > 0 {
+			for _, did := range p.DialectIDs {
+				_, err = tx.Exec(ctx, `INSERT INTO word_dialects (word_id, dialect_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`, head.ID, did)
+				if err != nil {
+					return nil, fmt.Errorf("insert updated dialects: %w", err)
+				}
+			}
+		}
+	}
+
 	if _, err = tx.Exec(ctx, `DELETE FROM derived_words WHERE word_id = $1`, head.ID); err != nil {
 		return nil, fmt.Errorf("clear derived_words: %w", err)
 	}

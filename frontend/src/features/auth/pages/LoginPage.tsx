@@ -40,9 +40,11 @@ export function LoginPage() {
       <div className="w-full max-w-md animate-rise">
         <div className="surface p-7 shadow-card">
           <div className="mb-6 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-600 text-white shadow-soft">
-              <span className="text-base font-bold">KM</span>
-            </div>
+            <img 
+              src="/logo.jpg" 
+              alt="Logo Kamus Manggarai" 
+              className="mx-auto mb-4 h-12 w-12 rounded-2xl object-cover shadow-soft border border-slate-100 dark:border-slate-800"
+            />
             <h1 className="text-2xl font-semibold tracking-tight">Selamat datang kembali</h1>
             <p className="mt-1 text-sm text-slate-500">
               Belum punya akun?{' '}

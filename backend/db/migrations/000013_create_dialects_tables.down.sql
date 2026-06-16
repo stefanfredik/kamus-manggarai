@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS word_dialects;
+DROP TABLE IF EXISTS dialects;

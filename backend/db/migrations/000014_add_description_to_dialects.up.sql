@@ -1,0 +1,1 @@
+ALTER TABLE dialects ADD COLUMN description TEXT NOT NULL DEFAULT '';
