@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { HeroSearch } from '../components/HeroSearch';
 import { SearchResultList } from '../components/SearchResultList';
 import { useSearch } from '../hooks/useSearch';
@@ -7,12 +6,8 @@ import { Pagination } from '@/shared/components/Pagination';
 import type { SearchDirection } from '../types/dictionary.types';
 
 export function HomePage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [query, setQuery] = useState(searchParams.get('q') ?? '');
-  const [direction, setDirection] = useState<SearchDirection>(
-    (searchParams.get('dir') as SearchDirection) || 'manggarai_to_indonesia',
-  );
+  const [query, setQuery] = useState('');
+  const [direction, setDirection] = useState<SearchDirection>('manggarai_to_indonesia');
   const [page, setPage] = useState(1);
   const limit = 20;
 
@@ -23,17 +18,11 @@ export function HomePage() {
   function handleQueryChange(q: string) {
     setQuery(q);
     setPage(1);
-    if (q.trim()) {
-      setSearchParams({ q, dir: direction }, { replace: true });
-    } else {
-      setSearchParams({}, { replace: true });
-    }
   }
 
   function handleDirection(d: SearchDirection) {
     setDirection(d);
     setPage(1);
-    if (query.trim()) setSearchParams({ q: query, dir: d }, { replace: true });
   }
 
   const hasQuery = query.trim().length > 0;

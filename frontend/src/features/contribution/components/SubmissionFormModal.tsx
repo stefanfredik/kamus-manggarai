@@ -270,7 +270,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
       dismissible={!submitMutation.isPending}
       closeOnOverlayClick={false}
       labelledBy="submit-modal-title"
-      className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-pop dark:bg-slate-800"
+      className="max-h-[92vh] sm:max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-3.5 sm:p-6 shadow-pop dark:bg-slate-800"
     >
       <h2 id="submit-modal-title" className="text-xl font-bold">
         Submit Kosakata Baru
@@ -335,7 +335,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
         </div>
 
         {/* Kata Utama Section */}
-        <div className="space-y-4 rounded-xl border border-slate-200 p-5 dark:border-slate-700 bg-slate-50/30 dark:bg-slate-800/20 shadow-soft">
+        <div className="space-y-4 rounded-xl border-0 sm:border border-slate-200 p-0 sm:p-5 dark:border-slate-700 bg-transparent sm:bg-slate-50/30 dark:bg-transparent dark:sm:bg-slate-800/20 shadow-none sm:shadow-soft">
           <div className="flex items-start gap-3">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-bold">
               <BookOpen size={16} />
@@ -440,7 +440,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
           )}
         </div>
         {/* Translations */}
-        <div className="space-y-4 rounded-xl border border-slate-200 p-5 dark:border-slate-700 shadow-soft">
+        <div className="space-y-4 rounded-xl border-0 sm:border border-slate-200 p-0 sm:p-5 dark:border-slate-700 bg-transparent shadow-none sm:shadow-soft">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/50 pb-3">
             <div className="flex items-start gap-3">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-bold">
@@ -465,7 +465,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
             {translations.map((t, idx) => (
               <div
                 key={idx}
-                className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/20 p-4 dark:border-slate-700/70 dark:bg-slate-800/10"
+                className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/20 p-3 sm:p-4 dark:border-slate-700/70 dark:bg-slate-800/10"
               >
                 <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/30 pb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -553,7 +553,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
                 )}
 
                 {/* Example sentences for this translation */}
-                <div className="rounded-xl bg-slate-100/60 p-3.5 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/30">
+                <div className="rounded-xl bg-slate-100/60 p-2.5 sm:p-3.5 dark:bg-slate-800/40 border border-slate-200/50 dark:border-slate-700/30">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Contoh Kalimat (opsional)
@@ -643,7 +643,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
           </div>
         </div>
         {/* Derived words */}
-        <div className="space-y-4 rounded-xl border border-slate-200 p-5 dark:border-slate-700 shadow-soft">
+        <div className="space-y-4 rounded-xl border-0 sm:border border-slate-200 p-0 sm:p-5 dark:border-slate-700 shadow-soft">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/50 pb-3">
             <div className="flex items-start gap-3">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold">
@@ -670,7 +670,7 @@ export function SubmissionFormModal({ open, onClose }: SubmissionFormModalProps)
             ) : (
               <div className="space-y-3">
                 {derived.map((d, idx) => (
-                  <div key={idx} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] items-center bg-slate-50/50 dark:bg-slate-850 p-2.5 rounded-lg border border-slate-200/40 dark:border-slate-750">
+                  <div key={idx} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] items-center bg-slate-50/50 dark:bg-slate-850 p-2 sm:p-2.5 rounded-lg border border-slate-200/40 dark:border-slate-750">
                     <div className="w-full">
                       <input
                         value={d.word}
