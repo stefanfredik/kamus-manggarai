@@ -68,7 +68,7 @@ export function Sidebar({ open, onClose, collapsed, onToggleCollapse }: SidebarP
 
   const userNav: NavItem[] = [];
   if (isAuthenticated) {
-    userNav.push({ to: '/dashboard', label: 'Dashboard', icon: House });
+    userNav.push({ to: '/dashboard', label: 'Dashboard', icon: House, end: true });
     userNav.push({ to: '/dashboard/submissions', label: 'Submission Saya', icon: ClipboardList });
     userNav.push({ to: '/dashboard/reports', label: 'Laporan Saya', icon: Flag });
   }
